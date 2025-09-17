@@ -1306,7 +1306,7 @@ const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalcul
       <Card className="bg-white shadow-lg border-yellow-400 border-2 mb-8 overflow-hidden">
         <CardHeader className="bg-gray-50/50">
           <CardTitle className="flex items-center gap-3 text-2xl text-gray-900"><Sparkles className="h-6 w-6 text-yellow-500" />Instant Solar Quote Calculator</CardTitle>
-          <CardDescription>Get a dynamic price estimate for any system size. For commercial quotes (>10 kW), select a mounting type.</CardDescription>
+          <CardDescription>Get a dynamic price estimate for any system size. For commercial quotes ({'>'}10 kW), select a mounting type.</CardDescription>
         </CardHeader>
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="p-6 space-y-4">
