@@ -1,0 +1,112 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.arpitsolar.com/</loc>
+    <priority>1.0</priority>
+  </url>
+   <url>
+    <loc>https://www.arpitsolar.com/solutions/residential</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/solutions/commercial-industrial</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/reliance</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/shakti-solar</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/tata-solar</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.arpitsolar.com/services</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/about/us</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/about/sustainability</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/contact</loc>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/get-quote</loc>
+  </url>
+</urlset> -->
+
+
+
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://www.arpitsolar.com/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Solutions -->
+  <url>
+    <loc>https://www.arpitsolar.com/solutions/residential</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/solutions/commercial-industrial</loc>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Brands -->
+  <url>
+    <loc>https://www.arpitsolar.com/reliance</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/shakti-solar</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/tata-solar</loc>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Other pages -->
+  <url>
+    <loc>https://www.arpitsolar.com/services</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/products</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/get-quote</loc>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- About -->
+  <url>
+    <loc>https://www.arpitsolar.com/about/us</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.arpitsolar.com/about/sustainability</loc>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://www.arpitsolar.com/contact</loc>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>

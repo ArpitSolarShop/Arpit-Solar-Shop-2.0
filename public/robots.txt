@@ -12,3 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+
+
+
+
+
+Sitemap: https://www.arpitsolar.com/sitemap.xml
