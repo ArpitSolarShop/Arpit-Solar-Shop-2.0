@@ -1729,7 +1729,9 @@ function RelianceGridTable({ data, largeData, onRowClick }: { data: GridTieSyste
           </div>
         </div>
         <div>
-          <h3 className="text-lg font-semibold mb-4">Commercial Systems (> 10 kWp)</h3>
+          <h3 className="text-lg font-semibold mb-4">
+  Commercial Systems (&gt; 10 kWp)
+</h3>
           <div className="rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>
