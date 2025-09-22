@@ -1,688 +1,3 @@
-// // import { useState, useEffect } from "react";
-// // import { supabase } from "@/integrations/supabase/client";
-// // import Navbar from "@/components/layout/Navbar";
-// // import Footer from "@/components/layout/Footer";
-// // import { Button } from "@/components/ui/button";
-// // import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-// // import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-// // import { Badge } from "@/components/ui/badge";
-
-// // interface Product {
-// //   id: string;
-// //   name: string;
-// //   brand: string;
-// //   category: string;
-// //   description: string | null
-// //   image_url: string | null;
-// //   specifications: any;
-// // }
-
-// // const Products = () => {
-// //   const [products, setProducts] = useState<Product[]>([]);
-// //   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-// //   const [selectedBrand, setSelectedBrand] = useState<string>("all");
-// //   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-// //   const [loading, setLoading] = useState(true);
-
-// //   useEffect(() => {
-// //     fetchProducts();
-// //   }, []);
-
-// //   useEffect(() => {
-// //     filterProducts();
-// //   }, [products, selectedBrand, selectedCategory]);
-
-// //   const fetchProducts = async () => {
-// //     try {
-// //       const { data, error } = await supabase
-// //         .from('products')
-// //         .select('*')
-// //         .eq('is_published', true)
-// //         .order('sort_order', { ascending: true });
-
-// //       if (error) throw error;
-// //       setProducts(data || []);
-// //     } catch (error) {
-// //       console.error('Error fetching products:', error);
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   const filterProducts = () => {
-// //     let filtered = products;
-
-// //     if (selectedBrand !== "all") {
-// //       filtered = filtered.filter(product => product.brand === selectedBrand);
-// //     }
-
-// //     if (selectedCategory !== "all") {
-// //       filtered = filtered.filter(product => product.category === selectedCategory);
-// //     }
-
-// //     setFilteredProducts(filtered);
-// //   };
-
-// //   const uniqueBrands = [...new Set(products.map(p => p.brand))];
-// //   const uniqueCategories = [...new Set(products.map(p => p.category))];
-
-// //   if (loading) {
-// //     return (
-// //       <div className="min-h-screen flex items-center justify-center">
-// //         <div className="text-2xl">Loading products...</div>
-// //       </div>
-// //     );
-// //   }
-
-// //   return (
-// //     <div className="min-h-screen bg-background">
-// //       <Navbar />
-// //       <main className="pt-24 pb-16">
-// //         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-// //           {/* Header */}
-// //           <div className="text-center mb-12">
-// //             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-// //               Solar Products
-// //             </h1>
-// //             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-// //               Explore our comprehensive range of premium solar products from leading manufacturers
-// //             </p>
-// //           </div>
-
-// //           {/* Filters */}
-// //           <div className="mb-8 flex flex-wrap gap-4 justify-center">
-// //             <div className="flex flex-wrap gap-2">
-// //               <Button
-// //                 variant={selectedBrand === "all" ? "default" : "outline"}
-// //                 onClick={() => setSelectedBrand("all")}
-// //                 size="sm"
-// //               >
-// //                 All Brands
-// //               </Button>
-// //               {uniqueBrands.map(brand => (
-// //                 <Button
-// //                   key={brand}
-// //                   variant={selectedBrand === brand ? "default" : "outline"}
-// //                   onClick={() => setSelectedBrand(brand)}
-// //                   size="sm"
-// //                 >
-// //                   {brand}
-// //                 </Button>
-// //               ))}
-// //             </div>
-
-// //             <div className="flex flex-wrap gap-2">
-// //               <Button
-// //                 variant={selectedCategory === "all" ? "default" : "outline"}
-// //                 onClick={() => setSelectedCategory("all")}
-// //                 size="sm"
-// //               >
-// //                 All Categories
-// //               </Button>
-// //               {uniqueCategories.map(category => (
-// //                 <Button
-// //                   key={category}
-// //                   variant={selectedCategory === category ? "default" : "outline"}
-// //                   onClick={() => setSelectedCategory(category)}
-// //                   size="sm"
-// //                 >
-// //                   {category}
-// //                 </Button>
-// //               ))}
-// //             </div>
-// //           </div>
-
-// //           {/* Products Grid */}
-// //           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-// //             {filteredProducts.map(product => (
-// //               <Card key={product.id} className="group hover:shadow-lg transition-shadow duration-300">
-// //                 <div className="aspect-square bg-muted rounded-t-lg overflow-hidden">
-// //                   {product.image_url ? (
-// //                     <img
-// //                       src={product.image_url}
-// //                       alt={product.name}
-// //                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-// //                     />
-// //                   ) : (
-// //                     <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-// //                       No Image
-// //                     </div>
-// //                   )}
-// //                 </div>
-// //                 <CardHeader className="pb-3">
-// //                   <div className="flex justify-between items-start mb-2">
-// //                     <Badge variant="secondary">{product.brand}</Badge>
-// //                     <Badge variant="outline">{product.category}</Badge>
-// //                   </div>
-// //                   <CardTitle className="text-lg line-clamp-2">{product.name}</CardTitle>
-// //                   {product.description && (
-// //                     <CardDescription className="line-clamp-2">
-// //                       {product.description}
-// //                     </CardDescription>
-// //                   )}
-// //                 </CardHeader>
-// //                 <CardContent className="pt-0">
-// //                   <Dialog>
-// //                     <DialogTrigger asChild>
-// //                       <Button className="w-full" variant="outline">
-// //                         View Details
-// //                       </Button>
-// //                     </DialogTrigger>
-// //                     <DialogContent className="max-w-2xl">
-// //                       <DialogHeader>
-// //                         <DialogTitle>{product.name}</DialogTitle>
-// //                         <DialogDescription>
-// //                           {product.brand} - {product.category}
-// //                         </DialogDescription>
-// //                       </DialogHeader>
-// //                       <div className="space-y-4">
-// //                         {product.image_url && (
-// //                           <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-// //                             <img
-// //                               src={product.image_url}
-// //                               alt={product.name}
-// //                               className="w-full h-full object-cover"
-// //                             />
-// //                           </div>
-// //                         )}
-// //                         {product.description && (
-// //                           <div>
-// //                             <h4 className="font-semibold mb-2">Description</h4>
-// //                             <p className="text-muted-foreground">{product.description}</p>
-// //                           </div>
-// //                         )}
-// //                         {product.specifications && (
-// //                           <div>
-// //                             <h4 className="font-semibold mb-2">Specifications</h4>
-// //                             <div className="bg-muted p-4 rounded-lg">
-// //                               <pre className="text-sm whitespace-pre-wrap">
-// //                                 {JSON.stringify(product.specifications, null, 2)}
-// //                               </pre>
-// //                             </div>
-// //                           </div>
-// //                         )}
-// //                       </div>
-// //                     </DialogContent>
-// //                   </Dialog>
-// //                 </CardContent>
-// //               </Card>
-// //             ))}
-// //           </div>
-
-// //           {filteredProducts.length === 0 && (
-// //             <div className="text-center py-12">
-// //               <p className="text-xl text-muted-foreground">No products found with the selected filters.</p>
-// //             </div>
-// //           )}
-// //         </div>
-// //       </main>
-// //       <Footer />
-// //     </div>
-// //   );
-// // };
-
-// // export default Products;
-
-
-
-
-
-
-
-
-
-
-
-
-// "use client"
-
-// import { useState } from "react"
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-// import { Label } from "@/components/ui/label"
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-// import { Sparkles, Sun, Zap, RefreshCcw, BarChart, Loader2 } from "lucide-react"
-// import CalculatorQuoteForm from "@/components/forms/calculator-quote-form"
-
-// // --- TYPES ---
-// type GridTieSystemData = {
-//   slNo: number;
-//   systemSize: number;
-//   noOfModules: number;
-//   inverterCapacity: number;
-//   phase: string;
-//   hdgElevatedWithGst: number;
-//   hdgElevatedPrice: number;
-// }
-
-// type LargeSystemData = {
-//   slNo: number;
-//   systemSizeKWp: number;
-//   systemSizeKW: number;
-//   noOfModules: number;
-//   inverterCapacity: number;
-//   phase: string;
-//   shortRailTinShedPricePerWatt: number;
-//   shortRailTinShedPrice: number;
-//   hdgElevatedRccPricePerWatt: number;
-//   hdgElevatedRccPrice: number;
-//   preGiMmsPricePerWatt: number;
-//   preGiMmsPrice: number;
-//   priceWithoutMmsPricePerWatt: number;
-//   priceWithoutMmsPrice: number;
-// }
-
-// interface CalculationResult {
-//   userInputKw: number;
-//   numberOfPanels: number;
-//   actualSystemSizeKwp: number;
-//   inverterSizeKw: number;
-//   pricePerWatt: number;
-//   basePrice: number;
-//   gstAmount: number;
-//   totalPrice: number;
-//   estimateBasis: string;
-// }
-
-// interface SolarQuoteCalculatorProps {
-//   gridData: GridTieSystemData[];
-//   largeData: LargeSystemData[];
-//   loading: boolean;
-// }
-
-// const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalculatorProps) => {
-//   const [kilowattInput, setKilowattInput] = useState<string>("")
-//   const [result, setResult] = useState<CalculationResult | null>(null)
-//   const [error, setError] = useState<string>("")
-//   const [mountingType, setMountingType] = useState<string>("rcc-elevated")
-//   const [isFormOpen, setIsFormOpen] = useState(false)
-
-//   const PANEL_WATTAGE = 710
-//   const RESIDENTIAL_THRESHOLD_KW = 10
-
-//   const handleCalculate = () => {
-//     setError("")
-//     const kw = parseFloat(kilowattInput)
-//     if (isNaN(kw) || kw <= 0) {
-//       setError("Please enter a valid power requirement (e.g., 5, 10.5).")
-//       setResult(null)
-//       return
-//     }
-//     let pricePerWatt = 0
-//     let inverterSizeKw = kw
-//     let estimateBasis = ""
-//     if (kw <= RESIDENTIAL_THRESHOLD_KW) {
-//       if (!gridData || gridData.length === 0) {
-//         setError("Residential pricing data is not available. Cannot calculate.")
-//         setResult(null)
-//         return
-//       }
-//       const applicableSlabs = gridData.filter(slab => slab.systemSize <= kw)
-//       let matchingSlab: GridTieSystemData
-//       if (applicableSlabs.length > 0) {
-//         matchingSlab = applicableSlabs.reduce((prev, curr) => curr.systemSize > prev.systemSize ? curr : prev)
-//       } else {
-//         matchingSlab = gridData.reduce((prev, curr) => curr.systemSize < prev.systemSize ? curr : prev)
-//       }
-//       pricePerWatt = matchingSlab.hdgElevatedWithGst
-//       inverterSizeKw = matchingSlab.inverterCapacity
-//       estimateBasis = `Based on ${matchingSlab.systemSize} kWp Residential price slab`
-//     } else {
-//       if (!largeData || largeData.length === 0) {
-//         setError("Commercial pricing data is not available. Cannot calculate.")
-//         setResult(null)
-//         return
-//       }
-//       const applicableSlabs = largeData.filter(slab => slab.systemSizeKWp <= kw)
-//       let matchingSlab: LargeSystemData
-//       if (applicableSlabs.length > 0) {
-//         matchingSlab = applicableSlabs.reduce((prev, curr) => curr.systemSizeKWp > prev.systemSizeKWp ? curr : prev)
-//       } else {
-//         matchingSlab = largeData.reduce((prev, curr) => curr.systemSizeKWp < prev.systemSizeKWp ? curr : prev)
-//       }
-//       switch (mountingType) {
-//         case 'tin-shed':
-//           pricePerWatt = matchingSlab.shortRailTinShedPricePerWatt
-//           estimateBasis = `Based on Commercial (Tin Shed) price slab >= ${matchingSlab.systemSizeKWp} kWp`
-//           break
-//         case 'pre-gi-mms':
-//           pricePerWatt = matchingSlab.preGiMmsPricePerWatt
-//           estimateBasis = `Based on Commercial (Pre GI MMS) price slab >= ${matchingSlab.systemSizeKWp} kWp`
-//           break
-//         case 'without-mms':
-//           pricePerWatt = matchingSlab.priceWithoutMmsPricePerWatt
-//           estimateBasis = `Based on Commercial (Without MMS) price slab >= ${matchingSlab.systemSizeKWp} kWp`
-//           break
-//         case 'rcc-elevated':
-//         default:
-//           pricePerWatt = matchingSlab.hdgElevatedRccPricePerWatt
-//           estimateBasis = `Based on Commercial (RCC Elevated) price slab >= ${matchingSlab.systemSizeKWp} kWp`
-//           break
-//       }
-//       inverterSizeKw = matchingSlab.inverterCapacity
-//     }
-//     const numberOfPanels = Math.ceil((kw * 1000) / PANEL_WATTAGE)
-//     const actualSystemSizeWp = numberOfPanels * PANEL_WATTAGE
-//     const actualSystemSizeKwp = parseFloat((actualSystemSizeWp / 1000).toFixed(2))
-//     const basePrice = actualSystemSizeWp * pricePerWatt
-//     const gstRate = 0.138
-//     const gstAmount = basePrice * gstRate
-//     const totalPrice = basePrice + gstAmount
-//     setResult({ userInputKw: kw, numberOfPanels, actualSystemSizeKwp, inverterSizeKw, pricePerWatt, basePrice, gstAmount, totalPrice, estimateBasis })
-//   }
-
-//   const handleReset = () => {
-//     setKilowattInput("")
-//     setResult(null)
-//     setError("")
-//   }
-
-//   const isCommercialSize = parseFloat(kilowattInput) > RESIDENTIAL_THRESHOLD_KW
-
-//   return (
-//     <>
-//       <Card className="bg-white shadow-lg border-yellow-400 border-2 mb-8 overflow-hidden">
-//         <CardHeader className="bg-gray-50/50 px-4 py-6 sm:px-6">
-//           <CardTitle className="flex items-center gap-3 text-xl sm:text-2xl text-gray-900">
-//             <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
-//             Instant Solar Quote Calculator
-//           </CardTitle>
-//           <CardDescription className="text-sm sm:text-base">
-//             Get a dynamic price estimate for any system size. For commercial quotes (&gt;10 kW), select a mounting type.
-//           </CardDescription>
-//         </CardHeader>
-//         <div className="flex flex-col sm:grid sm:grid-cols-1 md:grid-cols-2 gap-4">
-//           <div className="p-4 sm:p-6 space-y-4">
-//             <div>
-//               <Label htmlFor="kilowatt-input" className="text-base sm:text-lg font-medium text-gray-800">
-//                 Your Power Requirement (kW)
-//               </Label>
-//               <div className="flex items-center mt-2">
-//                 <Input
-//                   id="kilowatt-input"
-//                   type="number"
-//                   value={kilowattInput}
-//                   onChange={(e) => setKilowattInput(e.target.value)}
-//                   placeholder={loading ? "Loading data..." : "e.g., 25"}
-//                   className="text-base sm:text-lg w-full"
-//                   disabled={loading}
-//                 />
-//               </div>
-//             </div>
-//             {isCommercialSize && (
-//               <div className="animate-in fade-in-50 duration-500">
-//                 <Label htmlFor="mounting-type" className="text-base sm:text-lg font-medium text-gray-800">
-//                   Mounting Type (Commercial)
-//                 </Label>
-//                 <Select value={mountingType} onValueChange={setMountingType} disabled={loading}>
-//                   <SelectTrigger className="w-full mt-2 text-base sm:text-lg">
-//                     <SelectValue placeholder="Select a mounting type" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="rcc-elevated">RCC Elevated</SelectItem>
-//                     <SelectItem value="tin-shed">Tin Shed</SelectItem>
-//                     <SelectItem value="pre-gi-mms">Pre GI MMS</SelectItem>
-//                     <SelectItem value="without-mms">Without MMS</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//             )}
-//             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-//             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-//               <Button
-//                 onClick={handleCalculate}
-//                 size="lg"
-//                 className="w-full bg-black hover:bg-gray-800 text-white text-base sm:text-lg py-2 sm:py-3"
-//                 disabled={loading}
-//               >
-//                 {loading ? (
-//                   <>
-//                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading Prices...
-//                   </>
-//                 ) : (
-//                   <>
-//                     <BarChart className="mr-2 h-4 w-4" /> Calculate
-//                   </>
-//                 )}
-//               </Button>
-//               <Button
-//                 onClick={handleReset}
-//                 size="lg"
-//                 variant="outline"
-//                 className="w-full text-base sm:text-lg py-2 sm:py-3"
-//                 disabled={loading}
-//               >
-//                 <RefreshCcw className="mr-2 h-4 w-4" /> Reset
-//               </Button>
-//             </div>
-//           </div>
-//           <div className="bg-gray-50 p-4 sm:p-6 space-y-4 border-l md:border-l md:border-t-0 border-t">
-//             <h3 className="text-lg sm:text-xl font-bold text-center text-gray-800 mb-4">
-//               Your Estimated Quote
-//             </h3>
-//             {result ? (
-//               <div className="space-y-3 animate-in fade-in-50 duration-500">
-//                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
-//                   <span className="text-gray-600 flex items-center gap-2">
-//                     <Sun className="h-4 w-4 text-yellow-500" /> System Size:
-//                   </span>
-//                   <span className="font-bold text-gray-900">{result.actualSystemSizeKwp} kWp</span>
-//                 </div>
-//                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
-//                   <span className="text-gray-600 flex items-center gap-2">
-//                     <Zap className="h-4 w-4 text-blue-500" /> Recommended Inverter:
-//                   </span>
-//                   <span className="font-bold text-gray-900">{result.inverterSizeKw} kW</span>
-//                 </div>
-//                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs sm:text-sm">
-//                   <span className="text-gray-500">Panel Configuration:</span>
-//                   <span className="font-medium text-gray-700">
-//                     {result.numberOfPanels} x {PANEL_WATTAGE}Wp Modules
-//                   </span>
-//                 </div>
-//                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs sm:text-sm">
-//                   <span className="text-gray-500">Pricing Basis:</span>
-//                   <span className="font-medium text-gray-700">₹{result.pricePerWatt.toFixed(2)} / Watt</span>
-//                 </div>
-//                 <div className="pt-3 border-t mt-3">
-//                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
-//                     <span className="text-gray-600">Base Price (excl. GST):</span>
-//                     <span className="font-semibold text-gray-900">
-//                       ₹{result.basePrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-//                     </span>
-//                   </div>
-//                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
-//                     <span className="text-gray-600">GST @ 13.8%:</span>
-//                     <span className="font-semibold text-gray-900">
-//                       ₹{result.gstAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-//                     </span>
-//                   </div>
-//                 </div>
-//                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-lg sm:text-xl pt-3 border-t mt-3">
-//                   <span className="font-bold text-gray-800">Total Estimated Price:</span>
-//                   <span className="font-extrabold text-xl sm:text-2xl text-green-600">
-//                     ₹{result.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-//                   </span>
-//                 </div>
-//                 <Button
-//                   onClick={() => setIsFormOpen(true)}
-//                   size="lg"
-//                   className="w-full mt-4 bg-black hover:bg-gray-800 text-white text-base sm:text-lg py-2 sm:py-3"
-//                 >
-//                   Proceed to Get Quote
-//                 </Button>
-//                 <p className="text-xs text-center text-gray-500 pt-2">
-//                   {result.estimateBasis}. This is an estimate and is subject to final survey and terms.
-//                 </p>
-//               </div>
-//             ) : (
-//               <div className="text-center text-gray-500 py-8 sm:py-16">
-//                 <p className="text-sm sm:text-base">Your detailed quote will appear here.</p>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </Card>
-//       <CalculatorQuoteForm
-//         open={isFormOpen}
-//         onOpenChange={setIsFormOpen}
-//         quoteData={result}
-//         mountingType={isCommercialSize ? mountingType : null}
-//       />
-//     </>
-//   )
-// }
-
-// export default function Products() {
-//   // Mock data to prevent loading state issue
-//   const [gridData, setGridData] = useState<GridTieSystemData[]>([
-//     {
-//       slNo: 1,
-//       systemSize: 5,
-//       noOfModules: 7,
-//       inverterCapacity: 5,
-//       phase: "Single",
-//       hdgElevatedWithGst: 50.00,
-//       hdgElevatedPrice: 250000
-//     },
-//     {
-//       slNo: 2,
-//       systemSize: 10,
-//       noOfModules: 14,
-//       inverterCapacity: 10,
-//       phase: "Three",
-//       hdgElevatedWithGst: 48.00,
-//       hdgElevatedPrice: 480000
-//     }
-//   ])
-
-//   const [largeData, setLargeData] = useState<LargeSystemData[]>([
-//     {
-//       slNo: 1,
-//       systemSizeKWp: 20,
-//       systemSizeKW: 20,
-//       noOfModules: 28,
-//       inverterCapacity: 20,
-//       phase: "Three",
-//       shortRailTinShedPricePerWatt: 45.00,
-//       shortRailTinShedPrice: 900000,
-//       hdgElevatedRccPricePerWatt: 47.00,
-//       hdgElevatedRccPrice: 940000,
-//       preGiMmsPricePerWatt: 46.00,
-//       preGiMmsPrice: 920000,
-//       priceWithoutMmsPricePerWatt: 44.00,
-//       priceWithoutMmsPrice: 880000
-//     },
-//     {
-//       slNo: 2,
-//       systemSizeKWp: 50,
-//       systemSizeKW: 50,
-//       noOfModules: 70,
-//       inverterCapacity: 50,
-//       phase: "Three",
-//       shortRailTinShedPricePerWatt: 43.00,
-//       shortRailTinShedPrice: 2150000,
-//       hdgElevatedRccPricePerWatt: 45.00,
-//       hdgElevatedRccPrice: 2250000,
-//       preGiMmsPricePerWatt: 44.00,
-//       preGiMmsPrice: 2200000,
-//       priceWithoutMmsPricePerWatt: 42.00,
-//       priceWithoutMmsPrice: 2100000
-//     }
-//   ])
-
-//   const [loading, setLoading] = useState<boolean>(false) // Set to false to avoid permanent loading state
-
-//   // Optional Supabase fetching logic (commented out for reference)
-//   /*
-//   useEffect(() => {
-//     const loadData = async () => {
-//       try {
-//         const [gridRes, largeRes] = await Promise.all([
-//           supabase.from('reliance_grid_tie_systems').select('*').order('sl_no', { ascending: true }),
-//           supabase.from('reliance_large_systems').select('*').order('sl_no', { ascending: true }),
-//         ])
-//         if (gridRes.data) {
-//           setGridData(gridRes.data.map((r: any) => ({
-//             slNo: r.sl_no,
-//             systemSize: Number(r.system_size),
-//             noOfModules: r.no_of_modules,
-//             inverterCapacity: Number(r.inverter_capacity),
-//             phase: r.phase,
-//             hdgElevatedWithGst: Number(r.price_per_watt ?? r.hdg_elevated_with_gst ?? 0),
-//             hdgElevatedPrice: Number(r.hdg_elevated_price ?? 0),
-//           })))
-//         }
-//         if (largeRes.data) {
-//           setLargeData(largeRes.data.map((r: any) => ({
-//             slNo: r.sl_no,
-//             systemSizeKWp: Number(r.system_size_kwp),
-//             systemSizeKW: Number(r.system_size_kw),
-//             noOfModules: r.no_of_modules,
-//             inverterCapacity: Number(r.inverter_capacity),
-//             phase: r.phase,
-//             shortRailTinShedPricePerWatt: Number(r.short_rail_tin_shed_price_per_watt),
-//             shortRailTinShedPrice: Number(r.short_rail_tin_shed_price),
-//             hdgElevatedRccPricePerWatt: Number(r.hdg_elevated_rcc_price_per_watt),
-//             hdgElevatedRccPrice: Number(r.hdg_elevated_rcc_price),
-//             preGiMmsPricePerWatt: Number(r.pre_gi_mms_price_per_watt),
-//             preGiMmsPrice: Number(r.pre_gi_mms_price),
-//             priceWithoutMmsPricePerWatt: Number(r.price_without_mms_price_per_watt),
-//             priceWithoutMmsPrice: Number(r.price_without_mms_price),
-//           })))
-//         }
-//       } catch (error) {
-//         console.error("Error loading data:", error)
-//       } finally {
-//         setLoading(false)
-//       }
-//     }
-//     loadData()
-//   }, [])
-//   */
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-//       <div className="max-w-7xl mx-auto space-y-8">
-//         <div className="space-y-4">
-//           <div className="flex items-center justify-center gap-4 mb-4">
-//             <h1 className="text-4xl font-bold text-gray-900">Solar Quote Calculator</h1>
-//           </div>
-//           <SolarQuoteCalculator
-//             gridData={gridData}
-//             largeData={largeData}
-//             loading={loading}
-//           />
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client"
 
 // import { useState, useEffect } from "react"
@@ -754,7 +69,7 @@
 //   panelWattage: number;
 //   residentialThreshold: number;
 //   hasMountingOptions: boolean;
-//   systemSizeLimit?: number; // Made optional to handle unlimited cases
+//   systemSizeLimit?: number;
 // }
 
 // type TataGridData = GridTieSystemData & {
@@ -798,7 +113,6 @@
 //       return
 //     }
 
-//     // Only apply system size limit for Reliance if defined
 //     if (company === "Reliance" && systemSizeLimit && kw > systemSizeLimit) {
 //       setError(`${company} systems up to ${systemSizeLimit} kWp are available for instant calculation. For larger systems, please contact sales for a custom quote.`)
 //       setResult(null)
@@ -839,7 +153,6 @@
 //       inverterSizeKw = matchingSlab.inverterCapacity ?? null
 //       estimateBasis = `Based on ${matchingSlab.systemSize} kWp ${company} Residential price slab`
 //     } else {
-//       // Commercial calculation
 //       if (company === "Reliance") {
 //         if (!largeData || largeData.length === 0) {
 //           setError(`${company} commercial pricing data is not available. Please contact sales for a custom quote.`)
@@ -880,7 +193,6 @@
 //         }
 //         inverterSizeKw = matchingSlab.inverterCapacity
 //       } else {
-//         // Tata and Shakti commercial calculation using highest residential slab
 //         if (!gridData || gridData.length === 0) {
 //           setError(`${company} pricing data is not available. Cannot calculate.`)
 //           setResult(null)
@@ -928,6 +240,57 @@
 //     })
 //   }
 
+//   const handlePricePerWattChange = (value: string) => {
+//     setError("")
+//     const newPricePerWatt = value === "" ? 0 : parseFloat(value)
+//     if (isNaN(newPricePerWatt) || newPricePerWatt < 0) {
+//       setError("Please enter a valid price per watt.")
+//       return
+//     }
+//     if (result) {
+//       const newBasePrice = result.actualSystemSizeKwp * 1000 * newPricePerWatt
+//       const newGstAmount = newBasePrice * 0.138
+//       const newTotalPrice = newBasePrice + newGstAmount
+//       setResult({
+//         ...result,
+//         pricePerWatt: newPricePerWatt,
+//         basePrice: newBasePrice,
+//         gstAmount: newGstAmount,
+//         totalPrice: newTotalPrice,
+//         estimateBasis: `${result.estimateBasis} (Price per watt modified)`
+//       })
+//     }
+//   }
+
+//   const handleBasePriceChange = (value: string) => {
+//     setError("")
+//     const newBasePrice = value === "" ? 0 : parseFloat(value)
+//     if (isNaN(newBasePrice) || newBasePrice < 0) {
+//       setError("Please enter a valid base price.")
+//       return
+//     }
+//     if (result) {
+//       const newPricePerWatt = newBasePrice / (result.actualSystemSizeKwp * 1000)
+//       const newGstAmount = newBasePrice * 0.138
+//       const newTotalPrice = newBasePrice + newGstAmount
+//       setResult({
+//         ...result,
+//         pricePerWatt: newPricePerWatt,
+//         basePrice: newBasePrice,
+//         gstAmount: newGstAmount,
+//         totalPrice: newTotalPrice,
+//         estimateBasis: `${result.estimateBasis} (Base price modified)`
+//       })
+//     }
+//   }
+
+//   const handleKilowattInputChange = (value: string) => {
+//     setKilowattInput(value)
+//     if (value === "" || parseFloat(value) > 0) {
+//       setError("")
+//     }
+//   }
+
 //   const handleReset = () => {
 //     setKilowattInput("")
 //     setResult(null)
@@ -963,10 +326,12 @@
 //                   id="kilowatt-input"
 //                   type="number"
 //                   value={kilowattInput}
-//                   onChange={(e) => setKilowattInput(e.target.value)}
+//                   onChange={(e) => handleKilowattInputChange(e.target.value)}
 //                   placeholder={loading ? "Loading data..." : "e.g., 25"}
 //                   className="text-base sm:text-lg w-full"
 //                   disabled={loading}
+//                   min="0"
+//                   step="0.1"
 //                 />
 //               </div>
 //             </div>
@@ -1045,14 +410,32 @@
 //                 </div>
 //                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs sm:text-sm">
 //                   <span className="text-gray-500">Pricing Basis:</span>
-//                   <span className="font-medium text-gray-700">₹{result.pricePerWatt.toFixed(2)} / Watt</span>
+//                   <div className="flex items-center gap-2">
+//                     <Input
+//                       type="number"
+//                       value={result.pricePerWatt.toFixed(2)}
+//                       onChange={(e) => handlePricePerWattChange(e.target.value)}
+//                       className="w-24 text-sm"
+//                       min="0"
+//                       step="0.01"
+//                     />
+//                     <span className="font-medium text-gray-700">₹/Watt</span>
+//                   </div>
 //                 </div>
 //                 <div className="pt-3 border-t mt-3">
 //                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
 //                     <span className="text-gray-600">Base Price (excl. GST):</span>
-//                     <span className="font-semibold text-gray-900">
-//                       ₹{result.basePrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-//                     </span>
+//                     <div className="flex items-center gap-2">
+//                       <Input
+//                         type="number"
+//                         value={result.basePrice.toFixed(0)}
+//                         onChange={(e) => handleBasePriceChange(e.target.value)}
+//                         className="w-32 text-sm"
+//                         min="0"
+//                         step="1"
+//                       />
+//                       <span className="font-semibold text-gray-900">₹</span>
+//                     </div>
 //                   </div>
 //                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
 //                     <span className="text-gray-600">GST @ 13.8%:</span>
@@ -1774,9 +1157,6 @@
 
 
 
-
-
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -2023,7 +1403,7 @@ const SolarQuoteCalculator = ({
     setError("")
     const newPricePerWatt = value === "" ? 0 : parseFloat(value)
     if (isNaN(newPricePerWatt) || newPricePerWatt < 0) {
-      setError("Please enter a valid price per watt.")
+      setError("Please enter a valid price per watt (e.g., 50 or 50.5).")
       return
     }
     if (result) {
@@ -2191,12 +1571,11 @@ const SolarQuoteCalculator = ({
                   <span className="text-gray-500">Pricing Basis:</span>
                   <div className="flex items-center gap-2">
                     <Input
-                      type="number"
-                      value={result.pricePerWatt.toFixed(2)}
+                      type="text"
+                      value={result.pricePerWatt.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                       onChange={(e) => handlePricePerWattChange(e.target.value)}
                       className="w-24 text-sm"
-                      min="0"
-                      step="0.01"
+                      placeholder="e.g., 50.5"
                     />
                     <span className="font-medium text-gray-700">₹/Watt</span>
                   </div>
@@ -2252,8 +1631,10 @@ const SolarQuoteCalculator = ({
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         quoteData={result}
-        productName={`${company} ${result?.actualSystemSizeKwp || kilowattInput} kWp Solar System`}
+        productName={`${company} ${result?.actualSystemSizeKwp || kilowattInput || "Custom"} kWp Solar System`}
         powerDemandKw={result?.userInputKw || parseFloat(kilowattInput) || null}
+        company={company}
+        mountingType={company === "Reliance" && isCommercialSize ? mountingType : null}
       />
     </>
   )
@@ -2913,7 +2294,7 @@ export default function Products() {
         <CalculatorQuoteForm
           open={isFormOpen}
           onOpenChange={setIsFormOpen}
-          quoteData={null}
+          quoteData={selectedProduct?.type === "grid" || selectedProduct?.type === "large" || selectedProduct?.type === "commercial" ? null : selectedProduct}
           productName={
             selectedProduct?.systemSize === 0 || selectedProduct?.systemSizeKWp === 0
               ? `Large Scale ${selectedCompany} System`
@@ -2923,6 +2304,8 @@ export default function Products() {
           }
           powerDemandKw={selectedProduct?.systemSize === 0 || selectedProduct?.systemSizeKWp === 0 ? null : (selectedProduct?.systemSize || selectedProduct?.systemSizeKWp || null)}
           isLargeSystem={selectedProduct?.systemSize === 0 || selectedProduct?.systemSizeKWp === 0}
+          company={selectedCompany}
+          mountingType={selectedCompany === "Reliance" && (selectedProduct?.type === "large" || selectedProduct?.type === "commercial") ? "RCC Elevated" : null}
         />
       </div>
     </div>
