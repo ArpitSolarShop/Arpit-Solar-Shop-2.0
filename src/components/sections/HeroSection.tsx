@@ -11,6 +11,7 @@ import {
   IndianRupee,
   PiggyBank,
   Timer,
+  PhoneCall,
 } from "lucide-react";
 import CountUp from "react-countup";
 
@@ -126,17 +127,29 @@ const HeroSection = () => {
               clean, renewable energy.
             </p>
 
-            {/* CTA Button */}
-            <div className="flex justify-center lg:justify-start mb-12">
+            {/* CTA Buttons */}
+            <div className="flex justify-center lg:justify-start gap-4 mb-12">
+              {/* Get Quote Button */}
+              <Button
+                asChild
+                size="lg"
+                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold hover:bg-white/20 rounded-xl">
+                <Link to="/get-quote" className="flex items-center">
+                  Get Free Quote
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              </Button>
+
+              {/* Call Button */}
               <Button
                 asChild
                 size="lg"
                 className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold hover:bg-white/20 rounded-xl"
               >
-                <Link to="/get-quote" className="flex items-center">
-                  Get Free Quote
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
+                <a href="tel:+919044555572" className="flex items-center">
+                  Call Our Solar Expert
+                  <PhoneCall className="ml-2 w-5 h-5" />
+                </a>
               </Button>
             </div>
 
