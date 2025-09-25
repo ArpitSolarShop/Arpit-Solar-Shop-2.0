@@ -127,31 +127,33 @@ const HeroSection = () => {
               clean, renewable energy.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex justify-center lg:justify-start gap-4 mb-12">
-              {/* Get Quote Button */}
-              <Button
-                asChild
-                size="lg"
-                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold hover:bg-white/20 rounded-xl">
-                <Link to="/get-quote" className="flex items-center">
-                  Get Free Quote
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
+{/* CTA Buttons */}
+<div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 mb-12">
+  {/* Get Quote Button */}
+  <Button
+    asChild
+    size="lg"
+    className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold hover:bg-white/20 rounded-xl w-[80%] sm:w-auto mx-auto sm:mx-0"
+  >
+    <Link to="/get-quote" className="flex items-center justify-center">
+      Get Free Quote
+      <ArrowRight className="ml-2 w-5 h-5" />
+    </Link>
+  </Button>
 
-              {/* Call Button */}
-              <Button
-                asChild
-                size="lg"
-                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold hover:bg-white/20 rounded-xl"
-              >
-                <a href="tel:+919044555572" className="flex items-center">
-                  Call Our Solar Expert
-                  <PhoneCall className="ml-2 w-5 h-5" />
-                </a>
-              </Button>
-            </div>
+  {/* Call Button */}
+  <Button
+    asChild
+    size="lg"
+    className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold hover:bg-white/20 rounded-xl w-[80%] sm:w-auto mx-auto sm:mx-0"
+  >
+    <a href="tel:+919044555572" className="flex items-center justify-center">
+      Call Our Solar Expert
+      <PhoneCall className="ml-2 w-5 h-5" />
+    </a>
+  </Button>
+</div>
+
 
             {/* Trust Indicators */}
             <div className="grid grid-cols-3 gap-6">
