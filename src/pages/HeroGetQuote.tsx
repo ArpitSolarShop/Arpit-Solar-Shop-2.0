@@ -220,7 +220,7 @@ export const HeroGetQuote = () => {
             <Checkbox id="terms" className="mt-0.5" checked={agreed} onCheckedChange={(checked) => setAgreed(checked as boolean)} />
             <div className="grid gap-1.5 leading-none">
               <Label htmlFor="terms" className="text-sm text-gray-600 font-normal cursor-pointer">
-                I agree to SolarSquare's{" "}
+                I agree to Arpit Solar Shop's{" "}
                 <Link to="/terms-of-service" target="_blank" className="underline font-medium hover:text-primary">
                   terms of service
                 </Link>{" "}
