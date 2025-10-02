@@ -355,8 +355,8 @@ function GridTieSystemTable({
       (item) =>
         item.phase.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.systemSize.toString().includes(searchTerm) ||
-        item.noOfModules.toString().includes(searchTerm) || // Added noOfModules to search
-        item.pricePerKwp.toString().includes(searchTerm) // Added pricePerKwp to search
+        item.noOfModules.toString().includes(searchTerm) ||
+        item.pricePerKwp.toString().includes(searchTerm)
     )
     .sort((a, b) => {
       if (!sortField) return 0;
@@ -412,7 +412,16 @@ function GridTieSystemTable({
                 </Button>
               </TableHead>
               <TableHead className="font-semibold">No of Modules</TableHead>
-              <TableHead className="font-semibold">Phase</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => handleSort("phase")}
+                  className="p-0 h-auto font-semibold"
+                >
+                  Phase
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
               <TableHead>
                 <Button
                   variant="ghost"
@@ -437,36 +446,44 @@ function GridTieSystemTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAndSortedData.map((item) => (
-              <TableRow key={item.slNo} className="hover:bg-gray-50">
-                <TableCell className="font-medium">{item.slNo}</TableCell>
-                <TableCell>{item.systemSize}</TableCell>
-                <TableCell>{item.noOfModules}</TableCell>
-                <TableCell>
-                  <Badge variant={item.phase === "Single" ? "default" : "secondary"}>
-                    {item.phase}
-                  </Badge>
-                </TableCell>
-                <TableCell className="font-medium">
-                  ₹{item.pricePerKwp.toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </TableCell>
-                <TableCell className="font-bold text-green-600">
-                  ₹{item.totalPrice.toLocaleString("en-IN")}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    onClick={() => onRowClick(item)}
-                    size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    Get Quote
-                  </Button>
+            {filteredAndSortedData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-gray-500">
+                  No data available. Please try again later.
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredAndSortedData.map((item) => (
+                <TableRow key={item.slNo} className="hover:bg-gray-50">
+                  <TableCell className="font-medium">{item.slNo}</TableCell>
+                  <TableCell>{item.systemSize}</TableCell>
+                  <TableCell>{item.noOfModules}</TableCell>
+                  <TableCell>
+                    <Badge variant={item.phase === "Single" ? "default" : "secondary"}>
+                      {item.phase}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    ₹{item.pricePerKwp.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </TableCell>
+                  <TableCell className="font-bold text-green-600">
+                    ₹{item.totalPrice.toLocaleString("en-IN")}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => onRowClick(item)}
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      Get Quote
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
@@ -479,7 +496,7 @@ export default function TataSolarPricingPage() {
   const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<GridTieSystemData | null>(null);
-  const [isLargeSystem, setIsLargeSystem] = useState(false); // Explicit large system state
+  const [isLargeSystem, setIsLargeSystem] = useState(false);
   const [gridData, setGridData] = useState<GridTieSystemData[]>([]);
   const [config, setConfig] = useState({
     limit: 15,
@@ -487,18 +504,21 @@ export default function TataSolarPricingPage() {
     description: "",
     scope: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch data from Supabase
   useEffect(() => {
+    let isMounted = true
     const loadData = async () => {
       try {
+        setIsLoading(true)
         // Fetch grid tie systems data
         const { data: grid, error: gridError } = await supabase
           .from("tata_grid_tie_systems")
           .select("*")
           .order("sl_no", { ascending: true });
-        if (gridError) throw gridError;
-        if (grid) {
+        if (gridError) throw new Error(`Failed to fetch grid systems: ${gridError.message}`);
+        if (grid && isMounted) {
           setGridData(
             grid.map((r: any) => ({
               ...r,
@@ -513,8 +533,8 @@ export default function TataSolarPricingPage() {
 
         // Fetch configuration data
         const { data: cfg, error: cfgError } = await supabase.from("tata_config").select("*");
-        if (cfgError) throw cfgError;
-        if (cfg) {
+        if (cfgError) throw new Error(`Failed to fetch config: ${cfgError.message}`);
+        if (cfg && isMounted) {
           const configMap = Object.fromEntries(cfg.map((c: any) => [c.config_key, c.config_value]));
           setConfig({
             limit: parseFloat(configMap["system_size_limit"]) || 15,
@@ -523,21 +543,33 @@ export default function TataSolarPricingPage() {
             scope: configMap["work_scope"] || "",
           });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching data:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load pricing data. Please try again later.",
-          variant: "destructive",
-        });
+        if (isMounted) {
+          toast({
+            title: "Error",
+            description: error.message || "Failed to load pricing data. Please try again later.",
+            variant: "destructive",
+          });
+        }
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
     };
 
     loadData();
+    return () => {
+      isMounted = false
+    }
   }, [toast]);
 
   // Handle row click to open quote form
   const handleRowClick = (product: GridTieSystemData) => {
+    console.log("Selected product:", {
+      systemSize: product.systemSize,
+      phase: product.phase,
+      slNo: product.slNo,
+    })
     setSelectedProduct(product);
     setIsLargeSystem(false);
     setIsFormOpen(true);
@@ -545,7 +577,8 @@ export default function TataSolarPricingPage() {
 
   // Handle large system contact request
   const handleLargeSystemClick = () => {
-    setSelectedProduct(null); // Clear selected product for large systems
+    console.log("Large system selected, defaulting phase to Three")
+    setSelectedProduct(null);
     setIsLargeSystem(true);
     setIsFormOpen(true);
   };
@@ -568,10 +601,14 @@ export default function TataSolarPricingPage() {
         <Card className="bg-white">
           <CardHeader>
             <CardTitle>Grid Tie Systems</CardTitle>
-            <CardDescription>Complete solar systems with string inverters.</CardDescription>
+            <CardDescription>Complete solar systems with string inverters. Select phase carefully.</CardDescription>
           </CardHeader>
           <CardContent>
-            <GridTieSystemTable data={gridData} onRowClick={handleRowClick} />
+            {isLoading ? (
+              <div className="text-center text-gray-500">Loading pricing data...</div>
+            ) : (
+              <GridTieSystemTable data={gridData} onRowClick={handleRowClick} />
+            )}
           </CardContent>
         </Card>
 
@@ -594,12 +631,12 @@ export default function TataSolarPricingPage() {
             isLargeSystem
               ? `Large Scale System (> ${config.limit} kWp)`
               : selectedProduct
-              ? `${selectedProduct.systemSize} kWp Solar System`
+              ? `${selectedProduct.systemSize} kWp Solar System (${selectedProduct.phase}-Phase)`
               : "Tata Power Solar Product"
           }
           isLargeSystem={isLargeSystem}
           powerDemandKw={isLargeSystem ? null : selectedProduct?.systemSize || null}
-          phase={selectedProduct?.phase || "Three"} // Pass phase explicitly
+          phase={selectedProduct?.phase || "Three"}
         />
       </div>
     </div>

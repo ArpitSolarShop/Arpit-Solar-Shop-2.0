@@ -515,8 +515,6 @@
 
 
 
-
-
 "use client"
 
 import type React from "react"
@@ -539,7 +537,7 @@ interface TataQuoteFormProps {
   productName?: string
   isLargeSystem?: boolean
   powerDemandKw?: number | null
-  phase?: string // Added phase prop
+  phase?: string
 }
 
 const TataQuoteForm = ({
@@ -548,7 +546,7 @@ const TataQuoteForm = ({
   productName = "Tata Power Solar Product",
   isLargeSystem = false,
   powerDemandKw = null,
-  phase = "", // Default to empty string
+  phase = "Three",
 }: TataQuoteFormProps) => {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
@@ -564,21 +562,27 @@ const TataQuoteForm = ({
     project_location: "",
     referral_name: "",
     referral_phone: "",
-    phase: "", // Added phase to formData
+    phase: "Three",
   })
 
   // Pre-fill power_demand_kw and phase
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      power_demand_kw: powerDemandKw !== null && powerDemandKw !== undefined ? String(powerDemandKw) : "",
-      phase: phase || "", // Pre-fill phase from props
-    }))
+    let isMounted = true
+    if (isMounted) {
+      setFormData((prev) => ({
+        ...prev,
+        power_demand_kw: powerDemandKw !== null && powerDemandKw !== undefined ? String(powerDemandKw) : "",
+        phase: phase || "Three",
+      }))
+    }
+    return () => {
+      isMounted = false
+    }
   }, [powerDemandKw, phase, open])
 
   // Client-side validation
   const validateForm = () => {
-    const phoneRegex = /^[6-9]\d{9}$/ // Indian phone number (10 digits, starting with 6-9)
+    const phoneRegex = /^[6-9]\d{9}$/
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     
     if (!formData.name) return "Name is required"
@@ -591,6 +595,15 @@ const TataQuoteForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+
+    // Debug: Log form data being sent
+    console.log("Submitting form with data:", {
+      ...formData,
+      power_demand_kw: formData.power_demand_kw,
+      phase: formData.phase,
+      productName,
+      isLargeSystem,
+    })
 
     // Validate form
     const validationError = validateForm()
@@ -605,7 +618,7 @@ const TataQuoteForm = ({
     }
 
     try {
-      // Build payload matching the database schema
+      // Build payload for Supabase (omit phase)
       const insertData = {
         name: formData.name,
         phone: formData.phone,
@@ -618,7 +631,6 @@ const TataQuoteForm = ({
         project_location: formData.project_location || null,
         referral_name: formData.referral_name || null,
         referral_phone: formData.referral_phone || null,
-        phase: formData.phase || null, // Include phase
         product_name: productName,
         product_category: "Tata",
         source: "Quote Form" as const,
@@ -628,16 +640,31 @@ const TataQuoteForm = ({
 
       // Insert into Supabase
       const { error } = await supabase.from('solar_quote_requests').insert(insertData)
-      if (error) throw error
+      if (error) {
+        throw new Error(`Failed to save quote request: ${error.message}`)
+      }
 
-      // Send to secondary server only if Supabase insert succeeds
+      // Build payload for backend (include phase)
+      const backendData = {
+        ...insertData,
+        phase: formData.phase,
+      }
+
+      // Debug: Log backend payload
+      console.log("Sending to backend:", backendData)
+
+      // Send to secondary server
       try {
         const response = await fetch('https://solar-quote-server.onrender.com/generate-quote', {
+        //const response = await fetch('http://localhost:3000/generate-quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(insertData),
+          body: JSON.stringify(backendData),
         })
-        if (!response.ok) throw new Error('Failed to send quote to secondary server')
+        if (!response.ok) {
+          const errorText = await response.text()
+          throw new Error(`Secondary server error: ${errorText}`)
+        }
       } catch (err) {
         console.warn("Secondary server failed:", err)
         toast({
@@ -654,7 +681,7 @@ const TataQuoteForm = ({
           : "Our Tata Power Solar team will contact you within 24 hours to discuss your solar solution.",
       })
 
-      // Reset form and close dialog
+      // Reset form
       setFormData({
         name: "",
         phone: "",
@@ -667,14 +694,14 @@ const TataQuoteForm = ({
         project_location: "",
         referral_name: "",
         referral_phone: "",
-        phase: "",
+        phase: "Three",
       })
       onOpenChange(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting quote:", error)
       toast({
         title: "Error",
-        description: "Failed to submit quote request. Please try again.",
+        description: error.message || "Failed to submit quote request. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -701,7 +728,7 @@ const TataQuoteForm = ({
             <DialogDescription className="text-base text-gray-600">
               {isLargeSystem
                 ? "Get a customized quote for large-scale solar installations"
-                : "Get a personalized quote for India's most trusted solar solutions"}
+                : `Request a quote for a ${formData.phase}-Phase system`}
             </DialogDescription>
           </div>
 
@@ -721,7 +748,7 @@ const TataQuoteForm = ({
                 <span className="font-semibold text-gray-800">Selected Product:</span>
               </div>
               <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-sm">{productName}</Badge>
-              <p className="text-sm text-gray-700 mt-2">560 Wp Mono PERC Modules with String Inverter</p>
+              <p className="text-sm text-gray-700 mt-2">560 Wp Mono PERC Modules with String Inverter ({formData.phase}-Phase)</p>
             </div>
           )}
         </DialogHeader>
