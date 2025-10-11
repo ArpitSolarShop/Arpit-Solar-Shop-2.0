@@ -376,7 +376,7 @@ const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalcul
     const actualSystemSizeWp = numberOfPanels * PANEL_WATTAGE;
     const actualSystemSizeKwp = parseFloat((actualSystemSizeWp / 1000).toFixed(2));
     const basePrice = actualSystemSizeWp * pricePerWatt;
-    const gstRate = 0.138;
+    const gstRate = 0.089;
     const gstAmount = basePrice * gstRate;
     const totalPrice = basePrice + gstAmount;
     setResult({ userInputKw: kw, numberOfPanels, actualSystemSizeKwp, inverterSizeKw, pricePerWatt, basePrice, gstAmount, totalPrice, estimateBasis });
@@ -476,7 +476,7 @@ const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalcul
                     <span className="font-semibold text-gray-900">₹{result.basePrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
-                    <span className="text-gray-600">GST @ 13.8%:</span>
+                    <span className="text-gray-600">GST @ 8.9%:</span>
                     <span className="font-semibold text-gray-900">₹{result.gstAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                   </div>
                 </div>
