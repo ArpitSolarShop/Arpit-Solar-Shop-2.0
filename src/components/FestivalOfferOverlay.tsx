@@ -30,10 +30,13 @@ const FestivalOfferOverlay = () => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
       onClick={handleClose}
     >
-      <div className="relative w-full max-w-2xl" onClick={handleClose}>
+      <div
+        className="relative mx-auto w-full max-w-[90vw] sm:w-fit sm:max-w-none md:max-w-[70vw]"
+        onClick={handleClose}
+      >
         <button
           type="button"
-          className="absolute -right-3 -top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-semibold text-gray-800 shadow-lg"
+          className="absolute -right-3 -top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-semibold text-gray-800 shadow-lg sm:-right-4 sm:-top-4"
           onClick={(event) => {
             event.stopPropagation();
             handleClose();
@@ -45,7 +48,7 @@ const FestivalOfferOverlay = () => {
         <img
           src="/Festival.jpg"
           alt="Festival offer"
-          className="h-full w-full rounded-lg object-cover shadow-2xl"
+          className="mx-auto block max-h-[90vh] w-full rounded-lg object-cover shadow-2xl sm:w-auto sm:max-h-[85vh] md:max-h-[80vh] md:object-contain"
         />
       </div>
     </div>
