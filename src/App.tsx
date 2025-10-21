@@ -20,7 +20,6 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import ProductManager from "./pages/ProductManager";
 import FloatingChatButton from "@/components/FloatingChatButton";
-import FestivalOfferOverlay from "@/components/FestivalOfferOverlay";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +28,6 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <FestivalOfferOverlay />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

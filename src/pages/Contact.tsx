@@ -38,13 +38,13 @@ export default function Contact() {
               <div className="flex items-start gap-3">
                 <Shield className="h-5 w-5 text-yellow-500 mt-1" />
                 <p>
-                  <span className="font-semibold">Authorized Channel Partner:</span> Reliance New Energy
+                  <span className="font-semibold">Authorized Channel Partner:</span> Reliance New Energy, Shakti Solar Rooftop
                 </p>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-yellow-500 mt-1" />
                 <p>
-                  <span className="font-semibold">Branches:</span> Ballia | Gorakhpur
+                  <span className="font-semibold">Branches:</span> Varanasi | Mau | Ballia 
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
