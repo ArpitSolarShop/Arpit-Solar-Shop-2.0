@@ -18,6 +18,7 @@ import Residential from "./pages/Residential";
 import CommercialIndustrial from "./pages/CommercialIndustrial";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import HybridSolar from "./pages/HybridSolar";
 import ProductManager from "./pages/ProductManager";
 import FloatingChatButton from "@/components/FloatingChatButton";
 
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/tata-solar" element={<TataSolar />} />
           <Route path="/solutions/residential" element={<Residential />} />
           <Route path="/solutions/commercial-industrial" element={<CommercialIndustrial />} />
+          <Route path="/hybrid-solar" element={<HybridSolar />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/products" element={<ProductManager />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

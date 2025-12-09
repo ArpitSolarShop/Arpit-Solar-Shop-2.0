@@ -131,6 +131,27 @@ const Navbar = () => {
             description: "India's #1 Solar Rooftop Company",
             recommended: "Trusted choice for Residential & Commercial",
           },
+          {
+            name: "Waaree Energies",
+            href: "/waaree-energies",
+            image: "/Waree.webp",
+            description: "India's largest solar panel manufacturer",
+            recommended: "Top choice for quality and reliability"
+          },
+          {
+            name: "Adani Solar",
+            href: "/adani-solar",
+            image: "/AdaniSolar.png",
+            description: "High-efficiency solar modules",
+            recommended: "Ideal for large-scale installations"
+          },
+          {
+            name: "Hybrid Solar Systems",
+            href: "/hybrid-solar",
+            image: "/Hybrid.png",
+            description: "Smart solar solutions with battery backup",
+            recommended: "Perfect for areas with power fluctuations"
+          },
         ],
       },
       { name: "Services", icon: Hammer, href: "/services" },
