@@ -227,6 +227,7 @@ export default function HybridSolarPricing() {
         productName={selectedSystem ? `${selectedSystem.system_capacity} Hybrid System` : "Hybrid Solar System"}
         systemCapacity={selectedSystem?.system_capacity || ""}
         hasBattery={selectedSystem?.intu_battery > 0}
+        powerDemandKw={selectedSystem?.system_capacity ? parseFloat(selectedSystem.system_capacity.replace(/[^0-9.]/g, '')) : null}
       />
     </div>
   )

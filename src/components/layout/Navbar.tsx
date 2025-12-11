@@ -132,18 +132,11 @@ const Navbar = () => {
             recommended: "Trusted choice for Residential & Commercial",
           },
           {
-            name: "Waaree Energies",
-            href: "/waaree-energies",
-            image: "/Waree.webp",
-            description: "India's largest solar panel manufacturer",
-            recommended: "Top choice for quality and reliability"
-          },
-          {
-            name: "Adani Solar",
-            href: "/adani-solar",
-            image: "/AdaniSolar.png",
-            description: "High-efficiency solar modules",
-            recommended: "Ideal for large-scale installations"
+            name: "Waree | Adani",
+            href: "/integrated",
+            image: "/Integrated.png",
+            description: "All-in-one integrated solar solutions",
+            recommended: "Integrated"
           },
           {
             name: "Hybrid Solar Systems",
@@ -152,6 +145,7 @@ const Navbar = () => {
             description: "Smart solar solutions with battery backup",
             recommended: "Perfect for areas with power fluctuations"
           },
+          
         ],
       },
       { name: "Services", icon: Hammer, href: "/services" },

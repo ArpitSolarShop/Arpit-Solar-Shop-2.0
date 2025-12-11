@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import HybridSolar from "./pages/HybridSolar";
 import ProductManager from "./pages/ProductManager";
+import Integrated from "./pages/Integrated";
 import FloatingChatButton from "@/components/FloatingChatButton";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/solutions/residential" element={<Residential />} />
           <Route path="/solutions/commercial-industrial" element={<CommercialIndustrial />} />
           <Route path="/hybrid-solar" element={<HybridSolar />} />
+          <Route path="/integrated" element={<Integrated />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/products" element={<ProductManager />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
