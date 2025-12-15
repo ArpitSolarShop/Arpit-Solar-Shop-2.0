@@ -1,250 +1,262 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Sun, Zap, Activity, ShieldCheck, Home, Radio, Anchor, ArrowRightLeft, Settings, ChevronDown, Wrench } from 'lucide-react';
+import React, { useEffect, useMemo } from "react";
+import {
+  Sun,
+  Factory,
+  ShieldCheck,
+  Zap,
+  TrendingUp,
+  CheckCircle2,
+  Leaf,
+  Wrench,
+  PhoneCall,
+} from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import IntegratedPriceData from "@/assets/integrated-products";
-// --- CONSTANTS & OPTIONS ---
 
-const PANEL_TYPES = {
-  WAAREE_TOPCON: {
-    id: 'waaree_topcon',
-    brand: 'Waaree',
-    name: 'Waaree TopCon Bi-Facial',
-    wattage: '575 Wp',
-    desc: 'N-Type TopCon Bi-Facial Module (Glass-to-Glass)',
-    colorStart: '#1d4ed8', // Deep Blue
-    colorEnd: '#60a5fa',   // Light Blue
-    gridColor: 'white',
-    efficiency: '22.5%'
-  },
-  WAAREE_MONOPERC: {
-    id: 'waaree_monoperc',
-    brand: 'Waaree',
-    name: 'Waaree Mono PERC',
-    wattage: '540 Wp',
-    desc: 'P-Type Mono PERC Module (High Efficiency)',
-    colorStart: '#0f172a', // Dark Slate
-    colorEnd: '#334155',   // Lighter Slate
-    gridColor: 'rgba(255,255,255,0.4)',
-    efficiency: '21.0%'
-  },
-  ADANI_TOPCON: {
-    id: 'adani_topcon',
-    brand: 'Adani',
-    name: 'Adani Encore TopCon',
-    wattage: '570 Wp',
-    desc: 'Adani Solar N-Type TopCon Bifacial (Encore Series)',
-    colorStart: '#0369a1', // Sky 700
-    colorEnd: '#38bdf8',   // Sky 400
-    gridColor: '#e0f2fe',
-    efficiency: '22.8%'
-  },
-  ADANI_MONOPERC: {
-    id: 'adani_monoperc',
-    brand: 'Adani',
-    name: 'Adani Eternal Mono',
-    wattage: '535 Wp',
-    desc: 'Adani Solar Mono PERC (Eternal Series)',
-    colorStart: '#111827', // Gray 900
-    colorEnd: '#374151',   // Gray 700
-    gridColor: 'rgba(255,255,255,0.3)',
-    efficiency: '21.2%'
-  }
-};
-
-const INVERTER_TYPES = {
-  THREE_KW: { id: '3kw', name: '3kW Single Phase', model: 'Standard String', capacity: '3.0 kW' },
-  FIVE_KW: { id: '5kw', name: '5kW Single Phase', model: 'Standard String', capacity: '5.0 kW' },
-};
-
-// NOTE: Pricing is now served from Supabase `integrated_products`. See `src/assets/integrated-products.tsx` for the live table component.
-
-const SolarDiagram = () => {
-  // --- STATE ---
-  const [activeId, setActiveId] = useState(null);
-  const [showFlow, setShowFlow] = useState(true);
-  
-  // Configuration State
-  const [panelType, setPanelType] = useState('WAAREE_TOPCON');
-  const [inverterType, setInverterType] = useState('THREE_KW');
-
-  // --- FIX: Inject Tailwind if missing ---
+export default function Integrated() {
   useEffect(() => {
-    // Using bracket notation window['tailwind'] avoids the TypeScript error:
-    // "Property 'tailwind' does not exist on type 'Window & typeof globalThis'."
-    if (typeof window !== 'undefined' && !window['tailwind']) {
-      const script = document.createElement('script');
+    if (typeof window !== "undefined" && !window["tailwind"]) {
+      const script = document.createElement("script");
       script.src = "https://cdn.tailwindcss.com";
       script.async = true;
       document.head.appendChild(script);
     }
   }, []);
 
-  // Get current config objects
-  const currentPanel = PANEL_TYPES[panelType];
-  const currentInverter = INVERTER_TYPES[inverterType];
+  const brands = useMemo(
+    () => [
+      {
+        key: "waaree",
+        name: "Waaree Solar",
+        tagline: "India’s largest solar module manufacturer",
+        highlights: [
+          "TopCon & Mono PERC technologies",
+          "Advanced N-Type & P-Type cell architecture",
+          "High efficiency modules with lower degradation",
+          "ALMM & DCR compliant manufacturing",
+          "High-volume, consistent quality output",
+          "Pan-India service & support network",
+        ],
+        gradient: "from-[#000000] to-[#0DB02B]",
+        softBg: "bg-[#B6E3D4]/40",
+      },
+      {
+        key: "adani",
+        name: "Adani Solar",
+        tagline: "Fully integrated solar manufacturing powerhouse",
+        highlights: [
+          "TopCon & Mono PERC technologies",
+          "Vertically integrated manufacturing (cell to module)",
+          "Encore & Eternal series – N-Type & P-Type",
+          "Higher bifacial gain & superior temperature performance",
+          "Utility-scale & rooftop proven reliability",
+          "Strong EPC & O&M ecosystem",
+        ],
+        gradient: "from-[#0B74B0] via-[#75479C] to-[#BD3861]",
+        softBg: "bg-white",
+      },
+    ],
+    []
+  );
 
-  // Dynamic Bill of Materials Data
-  const systemData = useMemo(() => [
-    { id: 'solar', sn: '1', component: 'Solar PV Modules', spec: currentPanel.name, desc: currentPanel.desc, qty: '6 NOS', make: `${currentPanel.brand} Solar`, icon: <Sun className="w-4 h-4 text-orange-500"/> },
-    { id: 'inverter', sn: '2', component: 'PCU / INVERTER', spec: currentInverter.name, desc: `On-Grid String Inverter (${currentInverter.model})`, qty: '1 NOS', make: 'Waaree / Adani Approved', icon: <Zap className="w-4 h-4 text-yellow-500"/> },
-    { id: 'dcdb', sn: '3', component: 'DC Distribution Box', spec: '1-in 1-out', desc: 'CRCA IP65, DP MCB for Solar', qty: '1 NOS', make: 'Approved Vendor', icon: <Activity className="w-4 h-4 text-red-500"/> },
-    { id: 'acdb', sn: '4', component: 'AC Distribution Box', spec: '1 Phase', desc: 'CRCA IP65, Meter, SPD, MCB, Changeover', qty: '1 NOS', make: 'Approved Vendor', icon: <Home className="w-4 h-4 text-blue-500"/> },
-    { id: 'ac_cable', sn: '5', component: 'AC Cable', spec: '4 Core', desc: 'Copper, 4Sq mm. Armoured', qty: '10 mtr', make: 'Polycab / Havells', icon: <ArrowRightLeft className="w-4 h-4 text-slate-500"/> },
-    { id: 'dc_cable', sn: '6', component: 'DC Cables', spec: '1 Core 4sqmm', desc: '1C x 4 sqmm 1.1kV, UV Protected', qty: 'As per Site', make: 'Polycab / Siechem', icon: <ArrowRightLeft className="w-4 h-4 text-red-500"/> },
-    { id: 'structure', sn: '7', component: 'Mounting Structure', spec: 'GI 80 Micron', desc: 'Pre-galvanized, 150 kmph wind load', qty: '1 Set', make: 'Custom Fabricated', icon: <Anchor className="w-4 h-4 text-slate-500"/> },
-    { id: 'earthing', sn: '8', component: 'Earthing', spec: 'Maintenance Free', desc: 'Chemical compound, 3 copper rods', qty: '3 sets', make: 'Approved Vendor', icon: <Radio className="w-4 h-4 text-green-600"/> },
-    { id: 'la', sn: '9', component: 'Lightning Arrestor', spec: 'Conventional', desc: 'Copper Type 1.25 Dia.', qty: '1 set', make: 'Approved Vendor', icon: <Zap className="w-4 h-4 text-orange-600"/> },
-    { id: 'accessories', sn: '10', component: 'System Accessories', spec: 'Installation Kit', desc: 'MC4 Connectors, Cable Ties, Conduits, Danger Boards', qty: '1 Lot', make: 'Standard', icon: <Wrench className="w-4 h-4 text-slate-600"/> },
-  ], [currentPanel, currentInverter]);
-
-  // Helpers for SVG styles
-  const getOpacity = (id) => (activeId && activeId !== id ? 0.3 : 1);
-  const getStrokeWidth = (id) => (activeId === id ? 3 : 1.5);
-  const getFilter = (id) => (activeId === id ? 'url(#glow)' : 'url(#dropShadow)');
-
-  // use top-level constant PRICE_DATA instead
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
       <Navbar />
-      {/* Header */}
-      <header className="max-w-6xl mx-auto mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
-            Solar System Configurator
-          </h1>
-          <p className="text-slate-500 text-sm">Customize components and view connections</p>
-        </div>
-        
-        {/* CONFIGURATION PANEL */}
-        <div className="bg-white p-3 rounded-xl shadow-sm border border-blue-100 flex gap-4 items-center flex-wrap justify-center">
-          <div className="flex items-center gap-2 text-blue-700 font-semibold text-sm">
-            <Settings className="w-4 h-4" />
-            <span>Customize:</span>
-          </div>
-          
-          {/* Panel Dropdown */}
-          <div className="relative group">
-            <select 
-              value={panelType}
-              onChange={(e) => setPanelType(e.target.value)}
-              className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-56 p-2.5 pr-8 cursor-pointer hover:bg-slate-100 transition-colors"
-            >
-              <optgroup label="Waaree Solar">
-                <option value="WAAREE_TOPCON">Waaree TopCon (575W)</option>
-                <option value="WAAREE_MONOPERC">Waaree Mono PERC (540W)</option>
-              </optgroup>
-              <optgroup label="Adani Solar">
-                <option value="ADANI_TOPCON">Adani Encore TopCon (570W)</option>
-                <option value="ADANI_MONOPERC">Adani Eternal Mono (535W)</option>
-              </optgroup>
-            </select>
-            <ChevronDown className="absolute right-2 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
-          </div>
+      {/* HERO – light & airy */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-slate-100">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-yellow-200/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-sky-200/30 rounded-full blur-3xl" />
 
-          {/* Inverter Dropdown */}
-          <div className="relative group">
-             <select 
-              value={inverterType}
-              onChange={(e) => setInverterType(e.target.value)}
-              className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-40 p-2.5 pr-8 cursor-pointer hover:bg-slate-100 transition-colors"
-            >
-              <option value="THREE_KW">3kW Inverter</option>
-              <option value="FIVE_KW">5kW Inverter</option>
-            </select>
-            <ChevronDown className="absolute right-2 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
-          </div>
-        </div>
-      </header>
-
-      {/* Top hero image removed — unified brand section acts as the page header now */}
-
-      {/* Unified hero header — full-height (~95vh) and responsive */}
-      <div className="w-full mb-8">
-        <header className="min-h-[95vh] flex items-center bg-gradient-to-b from-blue-50 to-white">
-          <div className="max-w-6xl mx-auto w-full p-6 md:p-12 flex flex-col lg:flex-row items-center gap-8">
-            {/* Left: main copy */}
-            <div className="lg:w-7/12 text-center lg:text-left">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-blue-900 leading-tight">Waaree & Adani Integrated Solutions</h2>
-              <p className="mt-4 text-lg md:text-xl text-slate-700 max-w-3xl">Bringing together Waaree’s manufacturing scale and Adani’s vertically integrated supply chain to deliver reliable, high-efficiency solar systems tailored for India’s needs.</p>
-
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-3xl mx-auto lg:mx-0 text-sm text-slate-700">
-                <div className="flex items-start gap-3">
-                  <span className="text-blue-600 font-semibold">•</span>
-                  <span><strong>End-to-end integration:</strong> From polysilicon to modules and system supply.</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-blue-600 font-semibold">•</span>
-                  <span><strong>Performance & warranty:</strong> Long-term performance guarantees and proven reliability.</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-blue-600 font-semibold">•</span>
-                  <span><strong>Local supply strength:</strong> DCR/ALMM-ready modules and rapid logistics.</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-blue-600 font-semibold">•</span>
-                  <span><strong>Scalable solutions:</strong> From rooftop to commercial-scale deployments.</span>
-                </div>
-              </div>
-
-              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <a href="#priceTable" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md text-sm font-semibold">See Prices & Get Quote</a>
-                <a href="/contact" className="inline-block bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-lg text-sm">Contact Sales</a>
+        <div className="relative max-w-7xl mx-auto px-6 py-24">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white text-[#0B74B0] text-sm mb-6">
+                <Sun className="w-4 h-4" /> Integrated Solar Solutions
+              </span>
+              <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight text-slate-900">
+                Waaree & Adani
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#0B74B0] via-[#75479C] to-[#BD3861]">
+                  Integrated Solar Systems
+                </span>
+              </h1>
+              <p className="mt-6 text-lg text-slate-600 max-w-2xl">
+                <strong>Integrated Solar</strong> means Waaree and Adani supply only the
+                <strong> solar panels</strong>. We engineer the complete system by
+                integrating inverters, BOS, protection, and mounting structures from
+                trusted partners — delivering a <strong>safe, efficient, grid-ready</strong>
+                solar power solution using <strong>TopCon</strong> and
+                <strong> Mono PERC</strong> technologies.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <a
+                  href="#solutions"
+                  className="px-6 py-3 bg-[#0DB02B] text-white hover:bg-[#0aa026] border border-black rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                >
+                  Explore Solutions
+                </a>
+                <a
+                  href="#contact"
+                  className="px-6 py-3 border border-slate-300 rounded-lg text-slate-700 transition-all duration-300 hover:bg-slate-100"
+                >
+                  Talk to an Expert
+                </a>
               </div>
             </div>
 
-            {/* Right: compact card with logos/specs */}
-            <div className="lg:w-5/12 w-full flex justify-center lg:justify-end">
-              <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border border-slate-100">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <img src="/AdaniSolar.png" alt="Adani" className="h-10 object-contain" />
-                    <img src="/Waree.webp" alt="Waaree" className="h-10 object-contain" />
-                  </div>
-                </div>
-                <div className="mt-3 text-sm text-slate-600 text-center lg:text-left">Integrated: choose panel & inverter brand, size, mounting type and all system components</div>
-
-                <div className="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-700">
-                  <div>
-                    <div className="font-semibold">Typical System</div>
-                    <div className="text-slate-600">3.3 kW • 6 Modules</div>
-                  </div>
-                  <div>
-                    <div className="font-semibold">Inverter</div>
-                    <div className="text-slate-600">3 kW / 5 kW</div>
-                  </div>
-                  <div>
-                    <div className="font-semibold">Warranty</div>
-                    <div className="text-slate-600">25-30 yrs Performance</div>
-                  </div>
-                  <div>
-                    <div className="font-semibold">Support</div>
-                    <div className="text-slate-600">Pan-India Service</div>
-                  </div>
-                </div>
-
-                <div className="mt-4 text-center">
-                  <a href="#priceTable" className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Get Quote</a>
-                </div>
+            {/* Stats card */}
+            <div className="bg-white/80 backdrop-blur p-8 rounded-2xl border shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
+              <div className="grid grid-cols-2 gap-6">
+                <Stat icon={<Factory />} label="EPC Experience" value="Trusted System Integrator" />
+                <Stat icon={<ShieldCheck />} label="Panel Warranty" value="25–30 Years" />
+                <Stat icon={<TrendingUp />} label="Performance Focus" value="High Yield" />
+                <Stat icon={<Leaf />} label="Sustainability" value="Clean Energy" />
               </div>
             </div>
           </div>
-        </header>
+        </div>
+      </section>
+
+      {/* ARPIT SOLAR – SYSTEM INTEGRATOR */}
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="bg-white rounded-3xl border shadow-sm p-10 md:p-14 transition-all duration-500 hover:shadow-xl">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <span className="inline-block px-4 py-1 rounded-full bg-[#EAF7F0] text-[#0DB02B] text-sm font-semibold mb-4">
+                System Integrator
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Arpit Solar – The Brand That Integrates Everything
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed">
+                <strong>Arpit Solar</strong> is the primary brand responsible for designing,
+                engineering, and delivering the complete solar power system. While
+                <strong> Waaree</strong> and <strong> Adani</strong> manufacture high-quality
+                solar panels, Arpit Solar integrates all other critical components —
+                including inverters, DCDB, ACDB, earthing, lightning protection,
+                mounting structures, cabling, and safety systems — into one reliable,
+                performance-optimized solution.
+              </p>
+              <p className="mt-4 text-slate-600">
+                This integration ensures <strong>single-point responsibility</strong>,
+                better system compatibility, higher generation, and long-term service
+                assurance for residential, commercial, and industrial customers.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-6">
+              <IntegratorPoint title="System Design" desc="Load analysis, shadow study, and optimal technology selection." />
+              <IntegratorPoint title="Component Integration" desc="Inverters, BOS, protection & structure from trusted brands." />
+              <IntegratorPoint title="Installation & Safety" desc="Grid-compliant installation with strict safety standards." />
+              <IntegratorPoint title="Service & Support" desc="Long-term monitoring, warranty coordination & after-sales." />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BRAND SECTIONS */}
+      <section id="solutions" className="max-w-7xl mx-auto px-6 py-20">
+        <div className="max-w-4xl mx-auto mb-16 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">What Integrated Solar Means</h2>
+          <p className="text-slate-600 text-lg">
+            Waaree and Adani manufacture world-class solar panels. We integrate these
+            modules with carefully selected inverters, electrical protection,
+            mounting structures, and BOS components to create a fully engineered,
+            reliable, and future-ready solar power system.
+          </p>
+        </div>
+
+        <h3 className="text-3xl md:text-4xl font-bold text-center mb-14">Dedicated Panel Solutions by Brand</h3>
+
+        <div className="grid lg:grid-cols-2 gap-10">
+          {brands.map((b) => (
+            <div
+              key={b.key}
+              className={`rounded-2xl border bg-white shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 ${b.softBg}`}
+            >
+              <div className={`h-2 rounded-t-2xl bg-gradient-to-r ${b.gradient}`} />
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-2">{b.name}</h3>
+                <p className="text-slate-600 mb-6">{b.tagline}</p>
+                <ul className="space-y-3">
+                  {b.highlights.map((h) => (
+                    <li key={h} className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5" />
+                      <span className="text-slate-700">{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Price Table from assets */}
+      <div id="priceTable" className="max-w-7xl mx-auto px-6 py-8">
+        <IntegratedPriceData />
       </div>
 
-      {/* Price table (applies to both Waaree & Adani) - Supabase driven component */}
-      <div id="priceTable"><IntegratedPriceData /></div>
+      {/* WHY US */}
+      <section className="bg-slate-100 border-t border-b">
+        <div className="max-w-7xl mx-auto px-6 py-20">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-14">Why Choose an Integrated Approach?</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Feature icon={<Zap />} title="Higher Generation" desc="Optimized engineering ensures maximum daily and lifetime energy output." />
+            <Feature icon={<ShieldCheck />} title="Safety & Compliance" desc="Designed with correct DC/AC protection, earthing, and grid standards." />
+            <Feature icon={<Wrench />} title="Single Responsibility" desc="One accountable system integrator for installation, service, and support." />
+          </div>
+        </div>
+      </section>
 
-     
+      {/* CTA */}
+      <section id="contact" className="bg-gradient-to-r from-[#0056A3] to-[#34A853]">
+        <div className="max-w-7xl mx-auto px-6 py-20 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">Ready to Go Solar with Confidence?</h2>
+          <p className="text-slate-800 max-w-2xl mx-auto mb-8">Get expert guidance on choosing Waaree or Adani panel technologies and a perfectly integrated system for your roof, load, and budget.</p>
+          <a
+            href="tel:+919044555572"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-slate-900 rounded-xl font-semibold transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+          >
+            <PhoneCall className="w-5 h-5" /> Request a Call Back
+          </a>
+        </div>
+      </section>
 
-      
-     
- <Footer />
+      <Footer />
     </div>
   );
-};
+}
 
-export default SolarDiagram;
+function Stat({ icon, label, value }) {
+  return (
+    <div className="rounded-xl p-5 text-center transition-all duration-300 hover:bg-slate-50">
+      <div className="mx-auto mb-2 w-8 h-8 text-[#0B74B0]">{icon}</div>
+      <div className="text-2xl font-bold text-slate-900">{value}</div>
+      <div className="text-sm text-slate-500">{label}</div>
+    </div>
+  );
+}
+
+function Feature({ icon, title, desc }) {
+  return (
+    <div className="bg-white rounded-xl p-8 text-center shadow-sm transition-all duration-500 hover:shadow-lg hover:-translate-y-1">
+      <div className="mx-auto mb-4 w-10 h-10 text-[#0DB02B]">{icon}</div>
+      <h4 className="font-semibold text-lg mb-2">{title}</h4>
+      <p className="text-slate-600 text-sm">{desc}</p>
+    </div>
+  );
+}
+
+function IntegratorPoint({ title, desc }) {
+  return (
+    <div className="bg-slate-50 rounded-xl p-6 border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+      <h4 className="font-semibold text-slate-900 mb-1">{title}</h4>
+      <p className="text-sm text-slate-600">{desc}</p>
+    </div>
+  );
+}
+
 
 
 

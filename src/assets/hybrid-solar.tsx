@@ -50,14 +50,14 @@ export default function HybridSolarPricing() {
       
       // Fetch data from Supabase
       const { data, error } = await supabase
-        .from('hybrid_solar_pricing')
+        .from('hybrid_solar_pricing' as any)
         .select('*')
         .order('id', { ascending: true })
 
       if (error) throw error
       
       if (data && data.length > 0) {
-        setPricingData(data)
+        setPricingData(data as unknown as HybridSystemData[])
       } else {
         // Fallback to mock data if no data found
         console.warn('No data found in hybrid_solar_pricing table, using mock data')
@@ -210,13 +210,7 @@ export default function HybridSolarPricing() {
           >
             Get a Free Consultation
           </Button>
-          <Button 
-            variant="outline" 
-            className="bg-transparent border-white text-white hover:bg-white/10 font-medium py-3 px-6 text-base"
-            size="lg"
-          >
-            Call Now: +91 1234567890
-          </Button>
+          <a href="tel:+919044555572" className="inline-flex items-center justify-center bg-transparent border border-white text-white hover:bg-white/10 font-medium py-3 px-6 text-base rounded-lg" aria-label="Call Now">Call Now: +91 9044555572</a>
         </div>
       </div>
 
@@ -224,8 +218,8 @@ export default function HybridSolarPricing() {
       <HybridQuoteForm
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
+        product={selectedSystem ? { id: selectedSystem.id, system_capacity: selectedSystem.system_capacity, variant: selectedSystem.variant, price: selectedSystem.final_kit_price } : null}
         productName={selectedSystem ? `${selectedSystem.system_capacity} Hybrid System` : "Hybrid Solar System"}
-        systemCapacity={selectedSystem?.system_capacity || ""}
         hasBattery={selectedSystem?.intu_battery > 0}
         powerDemandKw={selectedSystem?.system_capacity ? parseFloat(selectedSystem.system_capacity.replace(/[^0-9.]/g, '')) : null}
       />

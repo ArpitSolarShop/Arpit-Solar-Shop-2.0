@@ -95,7 +95,9 @@ export default function IntegratedPriceData() {
                 <td className="p-2">{row.inverter_capacity_kw} kW</td>
                 <td className="p-2">{row.module_watt} W</td>
                 <td className="p-2">{row.no_of_modules} Nos</td>
-                <td className="p-2"><Button size="sm" onClick={() => handleRowClick(row)} className="bg-blue-600 hover:bg-blue-700 text-white">Get Quote</Button></td>
+                <td className="p-2 flex items-center gap-2">
+                  <Button size="sm" onClick={() => handleRowClick(row)} className="bg-blue-600 hover:bg-blue-700 text-white">Get Quote</Button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -105,7 +107,7 @@ export default function IntegratedPriceData() {
       {error && <div className="text-red-600 mt-2">{error}</div>}
       {loading && <div className="text-slate-500 mt-2">Loading...</div>}
 
-      <IntegratedQuoteForm open={isFormOpen} onOpenChange={setIsFormOpen} productName={selectedProduct ? `${selectedProduct.brand} ${selectedProduct.system_kw} kW` : undefined} powerDemandKw={selectedProduct ? selectedProduct.system_kw : null} />
+      <IntegratedQuoteForm open={isFormOpen} onOpenChange={setIsFormOpen} product={selectedProduct} productName={selectedProduct ? `${selectedProduct.brand} ${selectedProduct.system_kw} kW` : undefined} powerDemandKw={selectedProduct ? selectedProduct.system_kw : null} />
     </div>
   )
 }

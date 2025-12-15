@@ -16,6 +16,7 @@ import { CheckCircle, AlertCircle } from 'lucide-react'
 interface IntegratedQuoteFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  product?: { id: number; brand: string; system_kw: number; price: number } | null
   productName?: string
   isLargeSystem?: boolean
   powerDemandKw?: number | null
@@ -24,6 +25,7 @@ interface IntegratedQuoteFormProps {
 export default function IntegratedQuoteForm({
   open,
   onOpenChange,
+  product = null,
   productName = 'Integrated Product',
   isLargeSystem = false,
   powerDemandKw = null,
@@ -45,16 +47,36 @@ export default function IntegratedQuoteForm({
   })
 
   useEffect(() => {
-    if (powerDemandKw !== null && powerDemandKw !== undefined) {
+    if (product && product.system_kw !== undefined) {
+      setFormData((prev) => ({ ...prev, power_demand_kw: String(product.system_kw) }))
+    } else if (powerDemandKw !== null && powerDemandKw !== undefined) {
       setFormData((prev) => ({ ...prev, power_demand_kw: String(powerDemandKw) }))
     } else {
       setFormData((prev) => ({ ...prev, power_demand_kw: '' }))
     }
-  }, [powerDemandKw, open])
+  }, [product, powerDemandKw, open])
+
+  const validateForm = () => {
+    const phoneRegex = /^[6-9]\d{9}$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!formData.name) return 'Name is required'
+    if (!formData.phone || !phoneRegex.test(formData.phone)) return 'Valid phone number is required (10 digits, starting with 6-9)'
+    if (formData.email && !emailRegex.test(formData.email)) return 'Invalid email format'
+    if (!formData.project_location) return 'Project location is required'
+    return null
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+
+    // Client-side validation
+    const validationError = validateForm()
+    if (validationError) {
+      toast({ title: 'Error', description: validationError, variant: 'destructive' })
+      setLoading(false)
+      return
+    }
 
     try {
       const insertData = {
@@ -69,15 +91,49 @@ export default function IntegratedQuoteForm({
         project_location: formData.project_location || null,
         referral_name: formData.referral_name || null,
         referral_phone: formData.referral_phone || null,
-        product_name: productName,
-        product_category: 'Integrated',
-        source: 'Quote Form' as const,
+        product_name: product ? `${product.brand} ${product.system_kw} kW - ₹${product.price?.toLocaleString('en-IN')}` : productName,
+        product_category: product?.brand ?? 'Integrated',
+        source: 'Integrated Quote Form' as const,
         customer_type: formData.entity_type === 'Individual' ? 'residential' : 'commercial',
         referral_source: formData.referral_name ? 'referral' : null,
+        estimated_system_size_kw: product?.system_kw ?? (formData.power_demand_kw ? parseFloat(formData.power_demand_kw) : null),
+        additional_details: product ? { product_id: product.id, product_brand: product.brand, product_price: product.price } : null,
       }
 
+      // Attempt insert with extended product fields first
+      console.log('Attempting to insert quote payload:', insertData)
       const { error } = await supabase.from('solar_quote_requests' as any).insert(insertData)
-      if (error) throw error
+      if (error) {
+        console.error('Supabase insert error (extended payload):', error)
+        // Try a fallback payload without potentially unknown DB columns
+        const fallback = {
+          name: insertData.name,
+          phone: insertData.phone,
+          email: insertData.email,
+          entity_type: insertData.entity_type,
+          solution_classification: insertData.solution_classification,
+          estimated_area_sqft: insertData.estimated_area_sqft,
+          monthly_bill: insertData.monthly_bill,
+          power_demand_kw: insertData.power_demand_kw,
+          project_location: insertData.project_location,
+          referral_name: insertData.referral_name,
+          referral_phone: insertData.referral_phone,
+          product_name: insertData.product_name,
+          product_category: insertData.product_category,
+          source: insertData.source,
+          customer_type: insertData.customer_type,
+          referral_source: insertData.referral_source,
+          estimated_system_size_kw: insertData.estimated_system_size_kw ?? null,
+          additional_details: insertData.additional_details ?? null,
+        }
+
+        console.log('Attempting fallback insert payload:', fallback)
+        const { error: fallbackErr } = await supabase.from('solar_quote_requests' as any).insert(fallback)
+        if (fallbackErr) {
+          console.error('Supabase insert error (fallback):', fallbackErr)
+          throw new Error(fallbackErr.message || 'Failed to save quote request')
+        }
+      }
 
       try {
         await fetch('https://solar-quote-server.onrender.com/generate-quote', {
@@ -98,9 +154,9 @@ export default function IntegratedQuoteForm({
 
       setFormData({ name: '', phone: '', email: '', entity_type: '', solution_classification: '', estimated_area_sqft: '', monthly_bill: '', power_demand_kw: '', project_location: '', referral_name: '', referral_phone: '' })
       onOpenChange(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting quote:', error)
-      toast({ title: 'Error', description: 'Failed to submit quote request. Please try again.', variant: 'destructive' })
+      toast({ title: 'Error', description: error.message || 'Failed to submit quote request. Please try again.', variant: 'destructive' })
     } finally {
       setLoading(false)
     }
@@ -122,6 +178,17 @@ export default function IntegratedQuoteForm({
             <DialogTitle className="text-2xl font-bold text-gray-900">{isLargeSystem ? 'Large Scale Solar Quote' : 'Integrated Product Quote'}</DialogTitle>
             <DialogDescription className="text-base text-gray-600">{isLargeSystem ? 'Get a customized quote for large-scale solar installations' : 'Get a personalized quote for our integrated solar solutions'}</DialogDescription>
           </div>
+
+          {product && (
+            <div className="flex items-center justify-center mb-4">
+              <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-700 flex items-center gap-4">
+                <div><strong>{product.brand}</strong></div>
+                <div>{product.system_kw} kW</div>
+                <div className="text-slate-600">₹{product.price?.toLocaleString('en-IN')}</div>
+                <Badge>{'Integrated'}</Badge>
+              </div>
+            </div>
+          )}
         </DialogHeader>
 
         <Card className="border-0 shadow-none">

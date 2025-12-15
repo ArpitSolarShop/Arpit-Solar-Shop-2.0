@@ -17,8 +17,8 @@ import { CheckCircle, AlertCircle, Battery, Zap } from "lucide-react"
 interface HybridQuoteFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  product?: { id: number; system_capacity: string; variant: string; price: number } | null
   productName?: string
-  systemCapacity?: string
   hasBattery?: boolean
   powerDemandKw?: number | null
 }
@@ -26,8 +26,8 @@ interface HybridQuoteFormProps {
 const HybridQuoteForm = ({
   open,
   onOpenChange,
+  product = null,
   productName = "Hybrid Solar System",
-  systemCapacity = "",
   hasBattery = false,
   powerDemandKw = null,
 }: HybridQuoteFormProps) => {
@@ -51,17 +51,16 @@ const HybridQuoteForm = ({
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
+      const pk = product?.system_capacity ? product.system_capacity.replace(/[^0-9.]/g, '') : null
       setFormData((prev) => ({
         ...prev,
-        power_demand_kw: powerDemandKw !== null && powerDemandKw !== undefined 
-          ? String(powerDemandKw) 
-          : (systemCapacity ? systemCapacity.replace(/[^0-9.]/g, '') : ""),
+        power_demand_kw: product?.system_capacity ? String(pk) : (powerDemandKw !== null && powerDemandKw !== undefined ? String(powerDemandKw) : ("")),
       }))
     }
     return () => {
       isMounted = false
     }
-  }, [powerDemandKw, systemCapacity, open])
+  }, [product, powerDemandKw, open])
 
   // Client-side validation
   const validateForm = () => {
@@ -84,7 +83,7 @@ const HybridQuoteForm = ({
       ...formData,
       power_demand_kw: formData.power_demand_kw,
       productName,
-      systemCapacity,
+      product_system_capacity: product?.system_capacity ?? null,
       hasBattery,
     })
 
@@ -114,22 +113,48 @@ const HybridQuoteForm = ({
         project_location: formData.project_location || null,
         referral_name: formData.referral_name || null,
         referral_phone: formData.referral_phone || null,
-        product_name: productName,
-        product_category: "Hybrid",
-        source: "Hybrid Quote Form" as const,
-        customer_type: formData.entity_type === "Individual" ? "residential" : "commercial",
-        referral_source: formData.referral_name ? "referral" : null,
-        system_capacity: systemCapacity || null,
+        product_name: product ? `${product.system_capacity} Hybrid System - ${new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(product.price)}` : productName,
+        product_category: product?.variant ?? 'Hybrid',
+        source: 'Hybrid Quote Form' as const,
+        customer_type: formData.entity_type === 'Individual' ? 'residential' : 'commercial',
+        referral_source: formData.referral_name ? 'referral' : null,
+        estimated_system_size_kw: product?.system_capacity ? parseFloat(product.system_capacity.replace(/[^0-9.]/g, '')) : (formData.power_demand_kw ? parseFloat(formData.power_demand_kw) : null),
+        additional_details: product ? { product_id: product.id, variant: product.variant, price: product.price } : null,
       }
 
-      // Insert into Supabase
+      // Insert into Supabase (try extended payload first, then fallback)
+      console.log('Attempting to insert hybrid quote payload:', insertData)
       const { error } = await supabase.from('solar_quote_requests').insert(insertData)
       if (error) {
-        throw new Error(`Failed to save quote request: ${error.message}`)
-      }
+        console.error('Supabase insert error (extended payload):', error)
+        const fallback = {
+          name: insertData.name,
+          phone: insertData.phone,
+          email: insertData.email,
+          entity_type: insertData.entity_type,
+          solution_classification: insertData.solution_classification,
+          estimated_area_sqft: insertData.estimated_area_sqft,
+          monthly_bill: insertData.monthly_bill,
+          power_demand_kw: insertData.power_demand_kw,
+          project_location: insertData.project_location,
+          referral_name: insertData.referral_name,
+          referral_phone: insertData.referral_phone,
+          product_name: insertData.product_name,
+          product_category: insertData.product_category,
+          source: insertData.source,
+          customer_type: insertData.customer_type,
+          referral_source: insertData.referral_source,
+          estimated_system_size_kw: insertData.estimated_system_size_kw ?? null,
+          additional_details: insertData.additional_details ?? null,
+        }
 
-      // Debug: Log backend payload
-      console.log("Sending to backend:", insertData)
+        console.log('Attempting fallback insert payload (hybrid):', fallback)
+        const { error: fallbackErr } = await supabase.from('solar_quote_requests').insert(fallback)
+        if (fallbackErr) {
+          console.error('Supabase insert error (fallback):', fallbackErr)
+          throw new Error(fallbackErr.message || 'Failed to save quote request')
+        }
+      }
 
       // Send to secondary server
       try {
@@ -204,7 +229,7 @@ const HybridQuoteForm = ({
             </DialogDescription>
           </div>
 
-          {productName !== "Hybrid Solar System" && systemCapacity && (
+          {productName !== "Hybrid Solar System" && (product?.system_capacity || productName !== "Hybrid Solar System") && (
             <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="flex items-center gap-2 mb-2">
                 <Zap className="h-4 w-4 text-blue-600" />
@@ -212,7 +237,7 @@ const HybridQuoteForm = ({
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-sm">
-                  {systemCapacity} {productName}
+                  {product?.system_capacity || "Custom"} {productName}
                 </Badge>
                 {hasBattery && (
                   <Badge className="bg-green-100 text-green-800 text-sm flex items-center gap-1">
@@ -270,7 +295,7 @@ const HybridQuoteForm = ({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="power_demand_kw" className="text-sm font-medium">Power Demand (kW)</Label>
-                  <Input id="power_demand_kw" type="number" value={formData.power_demand_kw} onChange={(e) => handleInputChange("power_demand_kw", e.target.value)} readOnly={powerDemandKw !== null || systemCapacity !== ""} placeholder="e.g. 3" />
+                  <Input id="power_demand_kw" type="number" value={formData.power_demand_kw} onChange={(e) => handleInputChange("power_demand_kw", e.target.value)} readOnly={powerDemandKw !== null || Boolean(product?.system_capacity)} placeholder="e.g. 3" />
                 </div>
               </div>
               <div className="space-y-2">
