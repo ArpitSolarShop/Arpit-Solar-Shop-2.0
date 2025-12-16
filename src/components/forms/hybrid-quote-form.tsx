@@ -176,6 +176,47 @@ const HybridQuoteForm = ({
         })
       }
 
+      // Optional CRM - Kit19 (non-blocking)
+      try {
+        const crmPayload = {
+          PersonName: insertData.name || '',
+          CompanyName: '',
+          MobileNo: insertData.phone || '',
+          MobileNo1: '',
+          MobileNo2: '',
+          EmailID: insertData.email || '',
+          EmailID1: '',
+          EmailID2: '',
+          City: insertData.project_location || '',
+          State: '',
+          Country: 'India',
+          CountryCode: '+91',
+          CountryCode1: '',
+          CountryCode2: '',
+          PinCode: '',
+          ResidentialAddress: '',
+          OfficeAddress: '',
+          SourceName: insertData.source || 'Website',
+          MediumName: (typeof window !== 'undefined' ? (document.title || window.location.pathname) : 'Website'),
+          CampaignName: insertData.product_name || insertData.product_category || 'Quote Form',
+          InitialRemarks: insertData.product_name ? `Product: ${insertData.product_name}` : '',
+        }
+
+        const resp = await fetch('https://sipapi.kit19.com/Enquiry/Add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'kit19-Auth-Key': '4e7bb26557334f91a21e56a4ea9c8752' },
+          body: JSON.stringify(crmPayload),
+        })
+
+        if (!resp.ok) {
+          console.warn('CRM (Kit19) returned non-OK response', await resp.text())
+        } else {
+          console.log('CRM (Kit19) accepted payload', crmPayload)
+        }
+      } catch (err) {
+        console.warn('CRM (Kit19) failed:', err)
+      }
+
       toast({
         title: "Quote Request Submitted!",
         description: "Our hybrid solar experts will contact you within 24 hours to discuss your hybrid solar solution.",

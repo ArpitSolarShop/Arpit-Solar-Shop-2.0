@@ -99,7 +99,7 @@ const RelianceQuoteForm = ({
         referral_phone: formData.referral_phone || null,
         product_name: productName,
         product_category: "Reliance",
-        source: "Quote Form" as const,
+        source: "Reliance Quote Form" as const,
         customer_type: formData.entity_type === "Individual" ? "residential" : "commercial",
         referral_source: formData.referral_name ? "referral" : null,
         mounting_type: mountingType || null,
@@ -122,6 +122,47 @@ const RelianceQuoteForm = ({
         });
       } catch (err) {
         console.warn("Secondary server failed:", err);
+      }
+
+      // Optional CRM - Kit19 (non-blocking)
+      try {
+        const crmPayload = {
+          PersonName: insertData.name || '',
+          CompanyName: '',
+          MobileNo: insertData.phone || '',
+          MobileNo1: '',
+          MobileNo2: '',
+          EmailID: insertData.email || '',
+          EmailID1: '',
+          EmailID2: '',
+          City: insertData.project_location || '',
+          State: '',
+          Country: 'India',
+          CountryCode: '+91',
+          CountryCode1: '',
+          CountryCode2: '',
+          PinCode: '',
+          ResidentialAddress: '',
+          OfficeAddress: '',
+          SourceName: insertData.source || 'Website',
+          MediumName: (typeof window !== 'undefined' ? (document.title || window.location.pathname) : 'Website'),
+          CampaignName: insertData.product_name || insertData.product_category || 'Quote Form',
+          InitialRemarks: insertData.product_name ? `Product: ${insertData.product_name}` : '',
+        }
+
+        const resp = await fetch('https://sipapi.kit19.com/Enquiry/Add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'kit19-Auth-Key': '4e7bb26557334f91a21e56a4ea9c8752' },
+          body: JSON.stringify(crmPayload),
+        })
+
+        if (!resp.ok) {
+          console.warn('CRM (Kit19) returned non-OK response', await resp.text())
+        } else {
+          console.log('CRM (Kit19) accepted payload', crmPayload)
+        }
+      } catch (err) {
+        console.warn('CRM (Kit19) failed:', err)
       }
 
 
