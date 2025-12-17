@@ -17,10 +17,58 @@ import { CheckCircle, AlertCircle, Battery, Zap } from "lucide-react"
 interface HybridQuoteFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  product?: { id: number; system_capacity: string; variant: string; price: number } | null
+  product?: { 
+    id: number; 
+    system_capacity: string; 
+    variant: 'WITH_BATTERY' | 'WOBB'; 
+    price: number;
+    battery_kwh?: number | null;
+    inverter_kwp?: number;
+    module_watt?: number;
+    module_count?: number;
+    category?: 'DCR' | 'NON_DCR' | null;
+    phase?: string | null;
+  } | null
   productName?: string
   hasBattery?: boolean
   powerDemandKw?: number | null
+}
+
+type HybridQuotePayload = {
+  name: string
+  phone: string
+  email: string | null
+  project_location: string
+  product_category: string
+  source: string
+  customer_type: string
+  referral_source: string | null
+  power_demand_kw: number | null
+  estimated_system_size_kw: number | null
+  product_name: string
+  additional_details: {
+    category: 'DCR' | 'NON_DCR'
+    variant: 'WITH_BATTERY' | 'WOBB'
+    system_capacity?: string
+    price?: number
+    battery_kwh?: number | null
+    inverter_kwp?: number
+    module_watt?: number
+    module_count?: number
+    phase?: string | null
+  }
+  entity_type: string | null
+  solution_classification: string | null
+  estimated_area_sqft: number | null
+  monthly_bill: number | null
+  referral_name: string | null
+  referral_phone: string | null
+}
+
+const normalizeCapacityValue = (value: string | null | undefined) => {
+  if (!value) return null
+  const numeric = parseFloat(value.replace(/[^0-9.]/g, ""))
+  return Number.isFinite(numeric) ? numeric : null
 }
 
 const HybridQuoteForm = ({
@@ -100,68 +148,92 @@ const HybridQuoteForm = ({
     }
 
     try {
-      // Build payload for Supabase
-      const insertData = {
+      // Prepare the payload for Supabase + secondary server
+      const derivedCapacity = product
+        ? normalizeCapacityValue(product.system_capacity)
+        : normalizeCapacityValue(formData.power_demand_kw)
+
+      const customerType =
+        formData.entity_type === "Individual"
+          ? "residential"
+          : formData.entity_type === "Enterprise"
+            ? "commercial"
+            : "residential"
+
+      const payload: HybridQuotePayload = {
         name: formData.name,
         phone: formData.phone,
-        email: formData.email || null,
-        entity_type: (formData.entity_type as "Individual" | "Enterprise") || null,
-        solution_classification: (formData.solution_classification as "Residential" | "Commercial") || null,
-        estimated_area_sqft: formData.estimated_area_sqft ? parseFloat(formData.estimated_area_sqft) : null,
+        email: formData.email ? formData.email : null,
+        project_location: formData.project_location,
+        product_category: "Hybrid",
+        source: "Hybrid Quote Form",
+        customer_type: customerType,
+        referral_source: formData.referral_name ? "referral" : null,
+        power_demand_kw: derivedCapacity,
+        estimated_system_size_kw: derivedCapacity,
+        product_name: product
+          ? `${product.system_capacity} ${
+              product.variant === "WITH_BATTERY" ? "Hybrid with Battery" : "Hybrid without Battery"
+            }`
+          : productName,
+        additional_details: {
+          category: product?.category ?? "DCR",
+          variant: product?.variant ?? (hasBattery ? "WITH_BATTERY" : "WOBB"),
+          ...(product
+            ? {
+                system_capacity: product.system_capacity,
+                price: product.price,
+                battery_kwh: product.battery_kwh ?? null,
+                inverter_kwp: product.inverter_kwp,
+                module_watt: product.module_watt,
+                module_count: product.module_count,
+                phase: product.phase ?? (product.system_capacity?.includes("3Ph") ? "3Ph" : "1Ph"),
+              }
+            : {}),
+        },
+        entity_type: formData.entity_type || null,
+        solution_classification: formData.solution_classification || null,
+        estimated_area_sqft: formData.estimated_area_sqft
+          ? parseFloat(formData.estimated_area_sqft)
+          : null,
         monthly_bill: formData.monthly_bill ? parseFloat(formData.monthly_bill) : null,
-        power_demand_kw: formData.power_demand_kw ? parseFloat(formData.power_demand_kw) : null,
-        project_location: formData.project_location || null,
         referral_name: formData.referral_name || null,
         referral_phone: formData.referral_phone || null,
-        product_name: product ? `${product.system_capacity} Hybrid System - ${new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(product.price)}` : productName,
-        product_category: product?.variant ?? 'Hybrid',
-        source: 'Hybrid Quote Form' as const,
-        customer_type: formData.entity_type === 'Individual' ? 'residential' : 'commercial',
-        referral_source: formData.referral_name ? 'referral' : null,
-        estimated_system_size_kw: product?.system_capacity ? parseFloat(product.system_capacity.replace(/[^0-9.]/g, '')) : (formData.power_demand_kw ? parseFloat(formData.power_demand_kw) : null),
-        additional_details: product ? { product_id: product.id, variant: product.variant, price: product.price } : null,
       }
 
-      // Insert into Supabase (try extended payload first, then fallback)
-      console.log('Attempting to insert hybrid quote payload:', insertData)
-      const { error } = await supabase.from('solar_quote_requests').insert(insertData)
-      if (error) {
-        console.error('Supabase insert error (extended payload):', error)
-        const fallback = {
-          name: insertData.name,
-          phone: insertData.phone,
-          email: insertData.email,
-          entity_type: insertData.entity_type,
-          solution_classification: insertData.solution_classification,
-          estimated_area_sqft: insertData.estimated_area_sqft,
-          monthly_bill: insertData.monthly_bill,
-          power_demand_kw: insertData.power_demand_kw,
-          project_location: insertData.project_location,
-          referral_name: insertData.referral_name,
-          referral_phone: insertData.referral_phone,
-          product_name: insertData.product_name,
-          product_category: insertData.product_category,
-          source: insertData.source,
-          customer_type: insertData.customer_type,
-          referral_source: insertData.referral_source,
-          estimated_system_size_kw: insertData.estimated_system_size_kw ?? null,
-          additional_details: insertData.additional_details ?? null,
+      const { error: supabaseError } = await supabase
+        .from("solar_quote_requests")
+        .insert(payload)
+
+      if (supabaseError) {
+        console.error("Supabase insert error:", supabaseError)
+        const fallbackData = {
+          ...payload,
+          system_category: payload.additional_details.category,
+          system_variant: payload.additional_details.variant,
+          full_payload: payload,
+        } satisfies HybridQuotePayload & {
+          system_category: "DCR" | "NON_DCR"
+          system_variant: "WITH_BATTERY" | "WOBB"
+          full_payload: HybridQuotePayload
         }
 
-        console.log('Attempting fallback insert payload (hybrid):', fallback)
-        const { error: fallbackErr } = await supabase.from('solar_quote_requests').insert(fallback)
+        const { error: fallbackErr } = await supabase
+          .from("solar_quote_requests")
+          .insert(fallbackData)
+
         if (fallbackErr) {
-          console.error('Supabase insert error (fallback):', fallbackErr)
-          throw new Error(fallbackErr.message || 'Failed to save quote request')
+          throw new Error(fallbackErr.message || "Failed to save quote request")
         }
       }
 
       // Send to secondary server
       try {
+        // const response = await fetch("http://localhost:3000/generate-quote", {
         const response = await fetch('https://solar-quote-server.onrender.com/generate-quote', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(insertData),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         })
         if (!response.ok) {
           const errorText = await response.text()
@@ -171,7 +243,8 @@ const HybridQuoteForm = ({
         console.warn("Secondary server failed:", err)
         toast({
           title: "Warning",
-          description: "Quote saved, but failed to send to secondary server. Our team will still contact you.",
+          description:
+            "Quote saved, but failed to send to secondary server. Our team will still contact you.",
           variant: "default",
         })
       }
@@ -179,42 +252,46 @@ const HybridQuoteForm = ({
       // Optional CRM - Kit19 (non-blocking)
       try {
         const crmPayload = {
-          PersonName: insertData.name || '',
-          CompanyName: '',
-          MobileNo: insertData.phone || '',
-          MobileNo1: '',
-          MobileNo2: '',
-          EmailID: insertData.email || '',
-          EmailID1: '',
-          EmailID2: '',
-          City: insertData.project_location || '',
-          State: '',
-          Country: 'India',
-          CountryCode: '+91',
-          CountryCode1: '',
-          CountryCode2: '',
-          PinCode: '',
-          ResidentialAddress: '',
-          OfficeAddress: '',
-          SourceName: insertData.source || 'Website',
-          MediumName: (typeof window !== 'undefined' ? (document.title || window.location.pathname) : 'Website'),
-          CampaignName: insertData.product_name || insertData.product_category || 'Quote Form',
-          InitialRemarks: insertData.product_name ? `Product: ${insertData.product_name}` : '',
+          PersonName: payload.name || "",
+          CompanyName: "",
+          MobileNo: payload.phone || "",
+          MobileNo1: "",
+          MobileNo2: "",
+          EmailID: payload.email || "",
+          EmailID1: "",
+          EmailID2: "",
+          City: payload.project_location || "",
+          State: "",
+          Country: "India",
+          CountryCode: "+91",
+          CountryCode1: "",
+          CountryCode2: "",
+          PinCode: "",
+          ResidentialAddress: "",
+          OfficeAddress: "",
+          SourceName: payload.source || "Website",
+          MediumName:
+            typeof window !== "undefined" ? document.title || window.location.pathname : "Website",
+          CampaignName: payload.product_name || payload.product_category || "Quote Form",
+          InitialRemarks: payload.product_name ? `Product: ${payload.product_name}` : "",
         }
 
-        const resp = await fetch('https://sipapi.kit19.com/Enquiry/Add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'kit19-Auth-Key': '4e7bb26557334f91a21e56a4ea9c8752' },
+        const resp = await fetch("https://sipapi.kit19.com/Enquiry/Add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "kit19-Auth-Key": "4e7bb26557334f91a21e56a4ea9c8752",
+          },
           body: JSON.stringify(crmPayload),
         })
 
         if (!resp.ok) {
-          console.warn('CRM (Kit19) returned non-OK response', await resp.text())
+          console.warn("CRM (Kit19) returned non-OK response", await resp.text())
         } else {
-          console.log('CRM (Kit19) accepted payload', crmPayload)
+          console.log("CRM (Kit19) accepted payload", crmPayload)
         }
       } catch (err) {
-        console.warn('CRM (Kit19) failed:', err)
+        console.warn("CRM (Kit19) failed:", err)
       }
 
       toast({

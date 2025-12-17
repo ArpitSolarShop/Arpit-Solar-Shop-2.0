@@ -9,19 +9,26 @@ import HybridQuoteForm from "@/components/forms/hybrid-quote-form"
 
 type HybridSystemData = {
   id: number
-  system_capacity: string
-  variant: string
-  margin_rate: number
-  durasol_inverter: number
-  intu_battery: number
-  module: number
-  structure: number
-  bos: number
-  acdb_dcd: number
-  net_meter: number
-  margin_amount: number
-  base_total_cost: number
-  final_kit_price: number
+  category: 'DCR' | 'NON_DCR'
+  variant: 'WITH_BATTERY' | 'WOBB'
+  capacity_kw: number
+  phase: string
+  price_inr: number
+  inverter_kwp: number
+  battery_kwh: number | null
+  module_watt: number
+  module_count: number
+  structure_type: string | null
+  acdb_qty: number | null
+  dcdb_qty: number | null
+  earthing_rod_qty: number | null
+  earthing_chemical_qty: number | null
+  lightning_arrester_qty: number | null
+  ac_wire_mtr: number | null
+  dc_wire_mtr: number | null
+  earthing_wire_mtr: number | null
+  created_at: string | null
+  updated_at: string | null
 }
 
 const formatCurrency = (amount: number) => {
@@ -46,28 +53,29 @@ export default function HybridSolarPricing() {
 
   const fetchPricing = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       
-      // Fetch data from Supabase
+      // Fetch data from Supabase with proper typing
       const { data, error } = await supabase
-        .from('hybrid_solar_pricing' as any)
+        .from('hybrid_solar_pricing')
         .select('*')
-        .order('id', { ascending: true })
+        .order('category', { ascending: true });
 
-      if (error) throw error
+      if (error) throw error;
       
       if (data && data.length > 0) {
-        setPricingData(data as unknown as HybridSystemData[])
+        // Sort to ensure DCR comes first, then by capacity
+        const sortedData = [...data].sort((a, b) => {
+          if (a.category !== b.category) {
+            return a.category === 'DCR' ? -1 : 1;
+          }
+          return (a.capacity_kw || 0) - (b.capacity_kw || 0);
+        });
+        
+        setPricingData(sortedData as HybridSystemData[]);
       } else {
-        // Fallback to mock data if no data found
-        console.warn('No data found in hybrid_solar_pricing table, using mock data')
-        const mockData = [
-          { id: 1, system_capacity: '2 kW', variant: 'Standard', margin_rate: 10, durasol_inverter: 45000, intu_battery: 0, module: 80000, structure: 20000, bos: 15000, acdb_dcd: 5000, net_meter: 10000, margin_amount: 12000, base_total_cost: 185000, final_kit_price: 197000 },
-          { id: 2, system_capacity: '2 kW', variant: 'With Battery', margin_rate: 10, durasol_inverter: 45000, intu_battery: 36000, module: 80000, structure: 20000, bos: 15000, acdb_dcd: 5000, net_meter: 10000, margin_amount: 13500, base_total_cost: 221500, final_kit_price: 235000 },
-          { id: 3, system_capacity: '3 kW', variant: 'Standard', margin_rate: 10, durasol_inverter: 55000, intu_battery: 0, module: 120000, structure: 25000, bos: 18000, acdb_dcd: 7000, net_meter: 12000, margin_amount: 15000, base_total_cost: 235000, final_kit_price: 250000 },
-          { id: 4, system_capacity: '3 kW', variant: 'With Battery', margin_rate: 10, durasol_inverter: 55000, intu_battery: 36000, module: 120000, structure: 25000, bos: 18000, acdb_dcd: 7000, net_meter: 12000, margin_amount: 16500, base_total_cost: 271500, final_kit_price: 288000 },
-        ]
-        setPricingData(mockData)
+        console.warn('No data found in hybrid_solar_pricing table');
+        setPricingData([]);
       }
       
       setLoading(false)
@@ -140,7 +148,12 @@ export default function HybridSolarPricing() {
                   onClick={() => handleRowClick(system)}
                 >
                   <td className="px-6 py-5 whitespace-nowrap">
-                    <div className="text-lg font-semibold text-gray-900">{system.system_capacity}</div>
+                    <div className="text-lg font-semibold text-gray-900">
+                      {system.capacity_kw} kW {system.phase}
+                      <div className="text-sm font-normal text-gray-500">
+                        {system.category === 'DCR' ? 'DCR' : 'Non-DCR'}
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-5 whitespace-nowrap">
                     <div className="flex items-center space-x-2">
@@ -154,24 +167,30 @@ export default function HybridSolarPricing() {
                   <td className="px-6 py-5 whitespace-nowrap">
                     <div className="space-y-2">
                       <div className="font-medium">
-                        {system.intu_battery > 0 ? 'Full Hybrid Backup' : 'Grid-Tie (Daytime Only)'}
+                        {system.variant === 'WITH_BATTERY' ? 'Full Hybrid Backup' : 'Grid-Tie (Daytime Only)'}
                       </div>
-                      {system.intu_battery > 0 ? (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          <Battery className="h-3 w-3 mr-1 text-yellow-500" />
-                          INCLUDES INTU BATTERY
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                          No Battery Backup
-                        </span>
-                      )}
+                      <div className="space-y-1">
+                        <div className="text-sm">
+                          Inverter: {system.inverter_kwp} kWp
+                        </div>
+                        {system.variant === 'WITH_BATTERY' && system.battery_kwh && (
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <Battery className="h-3 w-3 mr-1 text-yellow-500" />
+                            {system.battery_kwh} kWh Battery
+                          </span>
+                        )}
+                        {system.variant === 'WOBB' && (
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            No Battery Backup
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-5 whitespace-nowrap text-right">
                     <div className="flex flex-col items-end">
                       <div className="text-lg font-bold text-gray-900 mb-2">
-                        {formatCurrency(system.final_kit_price)}
+                        {formatCurrency(system.price_inr)}
                       </div>
                       <Button 
                         onClick={(e) => {
@@ -218,10 +237,21 @@ export default function HybridSolarPricing() {
       <HybridQuoteForm
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
-        product={selectedSystem ? { id: selectedSystem.id, system_capacity: selectedSystem.system_capacity, variant: selectedSystem.variant, price: selectedSystem.final_kit_price } : null}
-        productName={selectedSystem ? `${selectedSystem.system_capacity} Hybrid System` : "Hybrid Solar System"}
-        hasBattery={selectedSystem?.intu_battery > 0}
-        powerDemandKw={selectedSystem?.system_capacity ? parseFloat(selectedSystem.system_capacity.replace(/[^0-9.]/g, '')) : null}
+        product={selectedSystem ? { 
+          id: selectedSystem.id, 
+          system_capacity: `${selectedSystem.capacity_kw} kW ${selectedSystem.phase}`, 
+          variant: selectedSystem.variant, 
+          price: selectedSystem.price_inr,
+          battery_kwh: selectedSystem.battery_kwh,
+          inverter_kwp: selectedSystem.inverter_kwp,
+          module_watt: selectedSystem.module_watt,
+          module_count: selectedSystem.module_count,
+          category: selectedSystem.category,
+          phase: selectedSystem.phase
+        } : null}
+        productName={selectedSystem ? `${selectedSystem.capacity_kw} kW ${selectedSystem.phase} ${selectedSystem.category} Hybrid System` : "Hybrid Solar System"}
+        hasBattery={selectedSystem?.variant === 'WITH_BATTERY'}
+        powerDemandKw={selectedSystem?.capacity_kw || null}
       />
     </div>
   )
