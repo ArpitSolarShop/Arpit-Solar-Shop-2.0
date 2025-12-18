@@ -150,8 +150,8 @@ export default function IntegratedQuoteForm({
           phase: formData.phase || product?.phase || null,
         }
         console.log('Sending payload to secondary quote server:', secondaryPayload)
-        // await fetch('https://solar-quote-server.onrender.com/generate-quote', {
-        const response = await fetch('http://localhost:3000/generate-quote', {
+        await fetch('https://solar-quote-server.onrender.com/generate-quote', {
+        // const response = await fetch('http://localhost:3000/generate-quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(secondaryPayload),
