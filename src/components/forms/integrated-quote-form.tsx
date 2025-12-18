@@ -16,7 +16,7 @@ import { CheckCircle, AlertCircle } from 'lucide-react'
 interface IntegratedQuoteFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  product?: { id: number; brand: string; system_kw: number; price: number } | null
+  product?: { id: number; brand: string; system_kw: number; price: number; phase?: string } | null
   productName?: string
   isLargeSystem?: boolean
   powerDemandKw?: number | null
@@ -40,7 +40,9 @@ export default function IntegratedQuoteForm({
     solution_classification: '',
     estimated_area_sqft: '',
     monthly_bill: '',
+    estimated_system_size_kw: '',
     power_demand_kw: '',
+    phase: '',
     project_location: '',
     referral_name: '',
     referral_phone: '',
@@ -48,11 +50,12 @@ export default function IntegratedQuoteForm({
 
   useEffect(() => {
     if (product && product.system_kw !== undefined) {
-      setFormData((prev) => ({ ...prev, power_demand_kw: String(product.system_kw) }))
+      // Prefer using estimated system size for integrated products and auto-fill phase
+      setFormData((prev) => ({ ...prev, estimated_system_size_kw: String(product.system_kw), power_demand_kw: '', phase: product.phase ?? prev.phase }))
     } else if (powerDemandKw !== null && powerDemandKw !== undefined) {
-      setFormData((prev) => ({ ...prev, power_demand_kw: String(powerDemandKw) }))
+      setFormData((prev) => ({ ...prev, power_demand_kw: String(powerDemandKw), estimated_system_size_kw: '' }))
     } else {
-      setFormData((prev) => ({ ...prev, power_demand_kw: '' }))
+      setFormData((prev) => ({ ...prev, power_demand_kw: '', estimated_system_size_kw: '' }))
     }
   }, [product, powerDemandKw, open])
 
@@ -62,7 +65,11 @@ export default function IntegratedQuoteForm({
     if (!formData.name) return 'Name is required'
     if (!formData.phone || !phoneRegex.test(formData.phone)) return 'Valid phone number is required (10 digits, starting with 6-9)'
     if (formData.email && !emailRegex.test(formData.email)) return 'Invalid email format'
+    if (!formData.phase) return 'Phase is required (Single or Three)'
+    // Require at least one of estimated system size or power demand (product.system_kw counts too)
+    if (!product?.system_kw && !formData.estimated_system_size_kw && !formData.power_demand_kw) return 'Please provide an estimated system size (kW) or power demand (kW)'
     if (!formData.project_location) return 'Project location is required'
+    if (formData.referral_name && (!formData.referral_phone || !phoneRegex.test(formData.referral_phone))) return 'Referral phone is required and must be a valid 10-digit number when referral name is provided'
     return null
   }
 
@@ -87,16 +94,17 @@ export default function IntegratedQuoteForm({
         solution_classification: formData.solution_classification || null,
         estimated_area_sqft: formData.estimated_area_sqft ? parseFloat(formData.estimated_area_sqft) : null,
         monthly_bill: formData.monthly_bill ? parseFloat(formData.monthly_bill) : null,
+        // Preferred: estimated_system_size_kw. Fallback: power_demand_kw.
+        estimated_system_size_kw: product?.system_kw ?? (formData.estimated_system_size_kw ? parseFloat(formData.estimated_system_size_kw) : null),
         power_demand_kw: formData.power_demand_kw ? parseFloat(formData.power_demand_kw) : null,
         project_location: formData.project_location || null,
         referral_name: formData.referral_name || null,
         referral_phone: formData.referral_phone || null,
+        brand: product?.brand ?? null,
         product_name: product ? `${product.brand} ${product.system_kw} kW - ₹${product.price?.toLocaleString('en-IN')}` : productName,
-        product_category: product?.brand ?? 'Integrated',
-        source: 'Integrated Quote Form' as const,
+        product_category: 'Integrated',
         customer_type: formData.entity_type === 'Individual' ? 'residential' : 'commercial',
         referral_source: formData.referral_name ? 'referral' : null,
-        estimated_system_size_kw: product?.system_kw ?? (formData.power_demand_kw ? parseFloat(formData.power_demand_kw) : null),
         additional_details: product ? { product_id: product.id, product_brand: product.brand, product_price: product.price } : null,
       }
 
@@ -114,16 +122,16 @@ export default function IntegratedQuoteForm({
           solution_classification: insertData.solution_classification,
           estimated_area_sqft: insertData.estimated_area_sqft,
           monthly_bill: insertData.monthly_bill,
+          estimated_system_size_kw: insertData.estimated_system_size_kw ?? null,
           power_demand_kw: insertData.power_demand_kw,
           project_location: insertData.project_location,
           referral_name: insertData.referral_name,
           referral_phone: insertData.referral_phone,
+          brand: insertData.brand,
           product_name: insertData.product_name,
           product_category: insertData.product_category,
-          source: insertData.source,
           customer_type: insertData.customer_type,
           referral_source: insertData.referral_source,
-          estimated_system_size_kw: insertData.estimated_system_size_kw ?? null,
           additional_details: insertData.additional_details ?? null,
         }
 
@@ -136,10 +144,17 @@ export default function IntegratedQuoteForm({
       }
 
       try {
-        await fetch('https://solar-quote-server.onrender.com/generate-quote', {
+        const secondaryPayload = {
+          ...insertData,
+          // Include phase only for the external quote generation - do not store in DB
+          phase: formData.phase || product?.phase || null,
+        }
+        console.log('Sending payload to secondary quote server:', secondaryPayload)
+        // await fetch('https://solar-quote-server.onrender.com/generate-quote', {
+        const response = await fetch('http://localhost:3000/generate-quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(insertData),
+          body: JSON.stringify(secondaryPayload),
         })
       } catch (err) {
         console.warn('Secondary server failed:', err)
@@ -147,6 +162,8 @@ export default function IntegratedQuoteForm({
 
       // Optional CRM - Kit19 (non-blocking)
       try {
+        // Try to split Project Location into City, State if provided as "City, State"
+        const [city, state] = (insertData.project_location || '').split(',').map((s: string) => s.trim())
         const crmPayload = {
           PersonName: insertData.name || '',
           CompanyName: '',
@@ -156,8 +173,8 @@ export default function IntegratedQuoteForm({
           EmailID: insertData.email || '',
           EmailID1: '',
           EmailID2: '',
-          City: insertData.project_location || '',
-          State: '',
+          City: city || insertData.project_location || '',
+          State: state || '',
           Country: 'India',
           CountryCode: '+91',
           CountryCode1: '',
@@ -165,22 +182,33 @@ export default function IntegratedQuoteForm({
           PinCode: '',
           ResidentialAddress: '',
           OfficeAddress: '',
-          SourceName: insertData.source || 'Website',
+          SourceName: 'Website',
           MediumName: (typeof window !== 'undefined' ? (document.title || window.location.pathname) : 'Website'),
           CampaignName: insertData.product_name || insertData.product_category || 'Quote Form',
-          InitialRemarks: insertData.product_name ? `Product: ${insertData.product_name}` : '',
+          InitialRemarks: `${insertData.product_name ? `Product: ${insertData.product_name}. ` : ''}${formData.phase ? `Phase: ${formData.phase}. ` : ''}${insertData.referral_name ? `Referral: ${insertData.referral_name} (${insertData.referral_phone}). ` : ''}`.trim(),
         }
 
+        console.log('Sending CRM payload to Kit19:', crmPayload)
         const resp = await fetch('https://sipapi.kit19.com/Enquiry/Add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'kit19-Auth-Key': '4e7bb26557334f91a21e56a4ea9c8752' },
           body: JSON.stringify(crmPayload),
         })
 
-        if (!resp.ok) {
-          console.warn('CRM (Kit19) returned non-OK response', await resp.text())
-        } else {
-          console.log('CRM (Kit19) accepted payload', crmPayload)
+        const respText = await resp.text()
+        try {
+          const respJson = JSON.parse(respText)
+          if (resp.ok && respJson.Status === 0) {
+            console.log('CRM (Kit19) accepted payload', respJson)
+          } else {
+            console.warn('CRM (Kit19) returned non-OK response or Status != 0', resp.status, respJson)
+          }
+        } catch (e) {
+          if (!resp.ok) {
+            console.warn('CRM (Kit19) returned non-OK response', respText)
+          } else {
+            console.log('CRM (Kit19) response (non-JSON):', respText)
+          }
         }
       } catch (err) {
         console.warn('CRM (Kit19) failed:', err)
@@ -193,7 +221,7 @@ export default function IntegratedQuoteForm({
           : 'Our team will contact you within 24 hours to discuss your solar solution.',
       })
 
-      setFormData({ name: '', phone: '', email: '', entity_type: '', solution_classification: '', estimated_area_sqft: '', monthly_bill: '', power_demand_kw: '', project_location: '', referral_name: '', referral_phone: '' })
+      setFormData({ name: '', phone: '', email: '', entity_type: '', solution_classification: '', estimated_area_sqft: '', monthly_bill: '', estimated_system_size_kw: '', power_demand_kw: '', phase: '', project_location: '', referral_name: '', referral_phone: '' })
       onOpenChange(false)
     } catch (error: any) {
       console.error('Error submitting quote:', error)
@@ -271,7 +299,21 @@ export default function IntegratedQuoteForm({
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="power_demand_kw" className="text-sm font-medium">Power Demand (kW)</Label>
+                  <Label htmlFor="phase" className="text-sm font-medium">Phase *</Label>
+                  <Select value={formData.phase} onValueChange={(value) => handleInputChange('phase', value)} disabled={!!product}><SelectTrigger><SelectValue placeholder="Select phase" /></SelectTrigger>
+                    <SelectContent><SelectItem value="Single">Single</SelectItem><SelectItem value="Three">Three</SelectItem></SelectContent>
+                  </Select>
+                  {product && <p className="text-xs text-slate-500">Auto-selected from the chosen product.</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="estimated_system_size_kw" className="text-sm font-medium">Estimated System Size (kW) <span className="text-xs text-slate-500">(Preferred)</span></Label>
+                  <Input id="estimated_system_size_kw" type="number" value={formData.estimated_system_size_kw} onChange={(e) => handleInputChange('estimated_system_size_kw', e.target.value)} readOnly={!!(product && product.system_kw !== undefined)} placeholder="e.g. 5.8" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="power_demand_kw" className="text-sm font-medium">Power Demand (kW) <span className="text-xs text-slate-500">(Fallback)</span></Label>
                   <Input id="power_demand_kw" type="number" value={formData.power_demand_kw} onChange={(e) => handleInputChange('power_demand_kw', e.target.value)} readOnly={powerDemandKw !== null} placeholder="e.g. 5" />
                 </div>
               </div>
@@ -280,7 +322,7 @@ export default function IntegratedQuoteForm({
                 <Input id="project_location" type="text" required value={formData.project_location} onChange={(e) => handleInputChange('project_location', e.target.value)} placeholder="City, State" />
               </div>
               <div className="pt-4">
-                <Button type="submit" disabled={loading || !formData.name || !formData.phone || !formData.project_location} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-12 text-base">
+                <Button type="submit" disabled={loading || !formData.name || !formData.phone || !formData.project_location || !formData.phase || (!product?.system_kw && !formData.estimated_system_size_kw && !formData.power_demand_kw)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-12 text-base">
                   {loading ? 'Submitting...' : isLargeSystem ? 'Contact Sales Team' : 'Get My Quote'}
                 </Button>
                 <p className="text-xs text-gray-500 text-center mt-3">By submitting this form, you agree to be contacted by our representatives</p>
