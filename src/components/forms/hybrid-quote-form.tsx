@@ -364,7 +364,7 @@ const HybridQuoteForm = ({
                 )}
               </div>
               <p className="text-sm text-gray-700 mt-2">
-                DURASOL Hybrid Solar Inverter with {hasBattery ? "INTU Battery" : "Grid-Tie"} Configuration
+                SERVOTECH Hybrid Solar Inverter with {hasBattery ? "INTU /SERVOTECH Battery" : "Grid-Tie"} Configuration
               </p>
             </div>
           )}

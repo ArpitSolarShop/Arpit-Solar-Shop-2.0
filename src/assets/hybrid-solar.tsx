@@ -159,7 +159,7 @@ export default function HybridSolarPricing() {
                     <div className="flex items-center space-x-2">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         <Zap className="h-3 w-3 mr-1" />
-                        DURASOL HYBRID SOLAR INVERTER
+                        SERVOTECH HYBRID SOLAR INVERTER
                       </span>
                       <span className="text-xs text-gray-500">Smart Grid Technology</span>
                     </div>
