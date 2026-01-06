@@ -171,7 +171,7 @@ export default function HybridSolarPricing() {
                       </div>
                       <div className="space-y-1">
                         <div className="text-sm">
-                          Inverter: {system.inverter_kwp} kWp
+                          Inverter: {system.inverter_kwp} kva
                         </div>
                         {system.variant === 'WITH_BATTERY' && system.battery_kwh && (
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
