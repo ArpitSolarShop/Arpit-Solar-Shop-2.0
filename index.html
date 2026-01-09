@@ -1,42 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="canonical" href="https://www.arpitsolar.com/" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <link rel="canonical" href="https://www.arpitsolar.com/" />
 
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <title>Arpit Solar Shop</title>
-    <meta name="description" content="Arpit Solar Shop – Solar EPC solutions since 2013. Residential, Commercial, and Industrial solar systems with premium modules and expert engineering." />
-    <meta name="author" content="Arpit Solar Shop" />
+  <!-- ✅ ORGANIZATION SCHEMA -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Arpit Solar Shop",
+      "url": "https://www.arpitsolar.com/",
+      "logo": "https://www.arpitsolar.com/logo.png",
+      "description": "Arpit Solar Shop is a trusted Solar EPC company since 2013, delivering residential, commercial, and industrial solar solutions across Eastern Uttar Pradesh like Varanasi.",
+      "foundingDate": "2013",
+      "sameAs": [
+        "https://www.facebook.com/arpitsolar",
+        "https://www.instagram.com/arpitsolar"
+      ]
+    }
+    </script>
 
-    <meta property="og:title" content="Arpit Solar Shop" />
-    <meta property="og:description" content="Trusted Solar EPC in Varanasi – On-Grid, Off-Grid, and Hybrid systems. 25MW+ installed with industry-leading partners." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.arpitsolar.com/" />
-    <meta property="og:image" content="https://www.arpitsolar.com/logo.png" />
+  <!-- ✅ LOCAL BUSINESS SCHEMA -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "@id": "https://www.arpitsolar.com/#localbusiness",
+      "name": "Arpit Solar Shop",
+      "image": "https://www.arpitsolar.com/logo.png",
+      "url": "https://www.arpitsolar.com/",
+      "telephone": "+91-9044555572",
+      "priceRange": "₹₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Varanasi",
+        "addressRegion": "Uttar Pradesh",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "25.3176",
+        "longitude": "82.9739"
+      },
+      "contactPoint": {
+  "@type": "ContactPoint",
+  "telephone": "+91-9044555572",
+  "contactType": "customer service",
+  "areaServed": "IN",
+  "availableLanguage": ["en", "hi"]
+},
+      "areaServed": [
+        "Varanasi",
+        "Chandauli",
+        "Mirzapur",
+        "Bhadohi",
+        "Ghazipur",
+        "Jaunpur",
+        "Sonbhadra",
+        "Mau"
+      ],
+      "serviceType": [
+        "Residential Solar Installation",
+        "Commercial Solar EPC",
+        "Industrial Solar Power Systems",
+        "Hybrid Solar Solutions"
+      ]
+    }
+    </script>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@arpitsolar" />
-    <meta name="twitter:image" content="https://www.arpitsolar.com/logo.png" />
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <title>Arpit Solar Shop</title>
+  <meta name="description"
+    content="Arpit Solar Shop – Solar EPC solutions since 2013. Residential, Commercial, and Industrial solar systems with premium modules and expert engineering." />
+  <meta name="author" content="Arpit Solar Shop" />
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JN281MN770"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <meta property="og:title" content="Arpit Solar Shop" />
+  <meta property="og:description"
+    content="Trusted Solar EPC in Varanasi – On-Grid, Off-Grid, and Hybrid systems. 25MW+ installed with industry-leading partners." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.arpitsolar.com/" />
+  <meta property="og:image" content="https://www.arpitsolar.com/logo.png" />
 
-  gtag('config', 'G-JN281MN770');
-</script>
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@arpitsolar" />
+  <meta name="twitter:image" content="https://www.arpitsolar.com/logo.png" />
 
-    
-  </head>
+  <!-- Google Analytics LAST -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JN281MN770"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-JN281MN770');
+  </script>
+</head>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
