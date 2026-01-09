@@ -46,7 +46,7 @@ const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 
   ${staticPages.map(page => `
   <url>
-    <loc>${BASE_URL}${page.path === "/" ? "" : page.path}</loc>
+    <loc>${BASE_URL}${page.path}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>${page.freq}</changefreq>
     <priority>${page.priority}</priority>
