@@ -25,6 +25,11 @@
     "paths": {
       "@/*": ["./src/*"]
     }
+    ,
+    
+    // ✅ ADD THESE TWO LINES:
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": ["src"]
 }

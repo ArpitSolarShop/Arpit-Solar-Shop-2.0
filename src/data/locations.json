@@ -1,0 +1,862 @@
+[
+  {
+    "slug": "varanasi",
+    "name": "Varanasi",
+    "type": "Town",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221010",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+   {
+    "slug": "Mau",
+    "name": "Mau",
+    "type": "Town",
+    "city": "Mau",
+    "state": "Uttar Pradesh",
+    "pincode": "221010",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "varanasi-cantt-varanasi",
+    "name": "Varanasi Cantt",
+    "type": "Town",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221002",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhu-varanasi",
+    "name": "BHU",
+    "type": "Town",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221005",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "lanka-varanasi",
+    "name": "Lanka",
+    "type": "Town",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221005",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sarnath-varanasi",
+    "name": "Sarnath",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221007",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ramnagar-varanasi",
+    "name": "Ramnagar",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221008",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "shivpur-varanasi",
+    "name": "Shivpur",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221003",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "cholapur-varanasi",
+    "name": "Cholapur",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221101",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "babatpur-varanasi",
+    "name": "Babatpur",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221006",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "rajatalab-varanasi",
+    "name": "Rajatalab",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221311",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sewapuri-varanasi",
+    "name": "Sewapuri",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221403",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "lohta-varanasi",
+    "name": "Lohta",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221107",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chaubeypur-varanasi",
+    "name": "Chaubeypur",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221104",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "mughalsarai-chandauli",
+    "name": "Mughalsarai",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232101",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chandauli-chandauli",
+    "name": "Chandauli",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232104",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "saiyad-raja-chandauli",
+    "name": "Saiyad Raja",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232110",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chakia-chandauli",
+    "name": "Chakia",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232103",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "dhanapur-chandauli",
+    "name": "Dhanapur",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232105",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sakaldiha-chandauli",
+    "name": "Sakaldiha",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232109",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sahupuri-chandauli",
+    "name": "Sahupuri",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "221009",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "mirzapur-city-mirzapur",
+    "name": "Mirzapur City",
+    "type": "Town",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "vindhyachal-mirzapur",
+    "name": "Vindhyachal",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231307",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chunar-mirzapur",
+    "name": "Chunar",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231304",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ahraura-mirzapur",
+    "name": "Ahraura",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231301",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kachhwa-mirzapur",
+    "name": "Kachhwa",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231501",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "jigna-mirzapur",
+    "name": "Jigna",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231313",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "narayanpur-mirzapur",
+    "name": "Narayanpur",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231305",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhadohi-bhadohi",
+    "name": "Bhadohi",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221401",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "gyanpur-bhadohi",
+    "name": "Gyanpur",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221304",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "gopiganj-bhadohi",
+    "name": "Gopiganj",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221303",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "aurai-bhadohi",
+    "name": "Aurai",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221301",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "suriyawan-bhadohi",
+    "name": "Suriyawan",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221404",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "khamaria-bhadohi",
+    "name": "Khamaria",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221306",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "mariahu-jaunpur",
+    "name": "Mariahu",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222161",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kerakat-jaunpur",
+    "name": "Kerakat",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222142",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "machhlishahr-jaunpur",
+    "name": "Machhlishahr",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222143",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "zafarabad-jaunpur",
+    "name": "Zafarabad",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222180",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "jalalpur-jaunpur",
+    "name": "Jalalpur",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222136",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "saidpur-ghazipur",
+    "name": "Saidpur",
+    "type": "Village",
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "pincode": "233304",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "aurihar-ghazipur",
+    "name": "Aurihar",
+    "type": "Village",
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "pincode": "233221",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "nandganj-ghazipur",
+    "name": "Nandganj",
+    "type": "Village",
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "pincode": "233302",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ashapur-varanasi",
+    "name": "Ashapur",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221007",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "paraov-varanasi",
+    "name": "Paraov",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221009",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "mangari-varanasi",
+    "name": "Mangari",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221202",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "mirzamurad-varanasi",
+    "name": "Mirzamurad",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221307",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kapsethi-varanasi",
+    "name": "Kapsethi",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221403",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "manduadih-varanasi",
+    "name": "Mandua Dih",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221010",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "dlw-varanasi",
+    "name": "DLW",
+    "type": "Town",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221004",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chiraigaon-varanasi",
+    "name": "Chiraigaon",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221112",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "rohaniya-varanasi",
+    "name": "Rohaniya",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221108",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "harahua-varanasi",
+    "name": "Harahua",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221105",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "pindra-varanasi",
+    "name": "Pindra",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221206",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "phoolpur-varanasi",
+    "name": "Phoolpur",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221204",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sindhora-varanasi",
+    "name": "Sindhora",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221208",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kathiraon-varanasi",
+    "name": "Kathiraon",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221207",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "rameshwar-varanasi",
+    "name": "Rameshwar",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221405",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "jakhini-varanasi",
+    "name": "Jakhini",
+    "type": "Village",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221305",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ddu-nagar-chandauli",
+    "name": "DDU Nagar",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232101",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "baburi-chandauli",
+    "name": "Baburi",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232102",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "niyamtabad-chandauli",
+    "name": "Niyamtabad",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232101",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "balua-chandauli",
+    "name": "Balua",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232109",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kandwa-chandauli",
+    "name": "Kandwa",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "221106",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "dheena-chandauli",
+    "name": "Dheena",
+    "type": "Village",
+    "city": "Chandauli",
+    "state": "Uttar Pradesh",
+    "pincode": "232108",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "majhawan-mirzapur",
+    "name": "Majhawan",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231501",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "jamalpur-mirzapur",
+    "name": "Jamalpur",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231302",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sikhar-mirzapur",
+    "name": "Sikhar",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231306",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chilh-mirzapur",
+    "name": "Chilh",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231312",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "marihan-mirzapur",
+    "name": "Marihan",
+    "type": "Village",
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "pincode": "231001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "madhosingh-bhadohi",
+    "name": "Madhosingh",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221301",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ghosia-bhadohi",
+    "name": "Ghosia",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221301",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "nai-bazar-bhadohi",
+    "name": "Nai Bazar",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221409",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chauri-bhadohi",
+    "name": "Chauri",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221402",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "deegh-bhadohi",
+    "name": "Deegh",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221309",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "koiruna-bhadohi",
+    "name": "Koiruna",
+    "type": "Village",
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "pincode": "221309",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chandwak-jaunpur",
+    "name": "Chandwak",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222129",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "dobhi-jaunpur",
+    "name": "Dobhi",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222149",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "muftiganj-jaunpur",
+    "name": "Muftiganj",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222170",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "rampur-jaunpur",
+    "name": "Rampur",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222203",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "barasathi-jaunpur",
+    "name": "Barasathi",
+    "type": "Village",
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "pincode": "222162",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sadat-ghazipur",
+    "name": "Sadat",
+    "type": "Village",
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "pincode": "233307",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "devkali-ghazipur",
+    "name": "Devkali",
+    "type": "Village",
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "pincode": "233306",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "khanpur-ghazipur",
+    "name": "Khanpur",
+    "type": "Village",
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "pincode": "233221",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhitari-ghazipur",
+    "name": "Bhitari",
+    "type": "Village",
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "pincode": "233304",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "robertsganj-sonbhadra",
+    "name": "Robertsganj",
+    "type": "Village",
+    "city": "Sonbhadra",
+    "state": "Uttar Pradesh",
+    "pincode": "231216",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ghorawal-sonbhadra",
+    "name": "Ghorawal",
+    "type": "Village",
+    "city": "Sonbhadra",
+    "state": "Uttar Pradesh",
+    "pincode": "231210",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  }
+]
