@@ -48,16 +48,23 @@ export default function IntegratedQuoteForm({
     referral_phone: '',
   })
 
+  // Pre-fill power_demand_kw and other fields when provided (similar to Tata form)
   useEffect(() => {
-    if (product && product.system_kw !== undefined) {
-      // Prefer using estimated system size for integrated products and auto-fill phase
-      setFormData((prev) => ({ ...prev, estimated_system_size_kw: String(product.system_kw), power_demand_kw: '', phase: product.phase ?? prev.phase }))
-    } else if (powerDemandKw !== null && powerDemandKw !== undefined) {
-      setFormData((prev) => ({ ...prev, power_demand_kw: String(powerDemandKw), estimated_system_size_kw: '' }))
-    } else {
-      setFormData((prev) => ({ ...prev, power_demand_kw: '', estimated_system_size_kw: '' }))
+    let isMounted = true
+    if (isMounted && open) {
+      setFormData((prev) => ({
+        ...prev,
+        // Always auto-fill power_demand_kw when powerDemandKw is provided (like Tata form)
+        power_demand_kw: powerDemandKw !== null && powerDemandKw !== undefined ? String(powerDemandKw) : prev.power_demand_kw,
+        // If product is selected, also fill estimated_system_size_kw and phase
+        estimated_system_size_kw: product && product.system_kw !== undefined ? String(product.system_kw) : prev.estimated_system_size_kw,
+        phase: product?.phase ?? prev.phase,
+      }))
     }
-  }, [product, powerDemandKw, open])
+    return () => {
+      isMounted = false
+    }
+  }, [powerDemandKw, product, open])
 
   const validateForm = () => {
     const phoneRegex = /^[6-9]\d{9}$/

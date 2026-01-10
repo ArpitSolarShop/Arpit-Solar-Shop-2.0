@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,7 +15,20 @@ type IntegratedRow = {
   module_watt: number
   module_type: string | null
   no_of_modules: number
+  acdb_nos?: number
+  dcdb_nos?: number
+  earthing_rod_nos?: number
+  earthing_chemical_nos?: number
+  ac_wire_brand?: string
+  ac_wire_length_mtr?: number
+  dc_wire_brand?: string
+  dc_wire_length_mtr?: number
+  earthing_wire_brand?: string
+  earthing_wire_length_mtr?: number
+  lighting_arrestor_qty?: number
 }
+
+type ModuleTypeFilter = 'all' | 'Mono Bifacial' | 'TopCon'
 
 export default function IntegratedPriceData() {
   const [rows, setRows] = useState<IntegratedRow[]>([])
@@ -23,6 +36,7 @@ export default function IntegratedPriceData() {
   const [error, setError] = useState<string | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<IntegratedRow | null>(null)
+  const [moduleTypeFilter, setModuleTypeFilter] = useState<ModuleTypeFilter>('all')
 
   useEffect(() => {
     let mounted = true
@@ -49,8 +63,19 @@ export default function IntegratedPriceData() {
             price: Number(r.price),
             inverter_capacity_kw: Number(r.inverter_capacity_kw),
             module_watt: Number(r.module_watt),
-            module_type: r.module_type,
+            module_type: r.module_type || 'TopCon',
             no_of_modules: Number(r.no_of_modules),
+            acdb_nos: r.acdb_nos ? Number(r.acdb_nos) : 1,
+            dcdb_nos: r.dcdb_nos ? Number(r.dcdb_nos) : 1,
+            earthing_rod_nos: r.earthing_rod_nos ? Number(r.earthing_rod_nos) : 3,
+            earthing_chemical_nos: r.earthing_chemical_nos ? Number(r.earthing_chemical_nos) : 3,
+            ac_wire_brand: r.ac_wire_brand || 'Polycab',
+            ac_wire_length_mtr: r.ac_wire_length_mtr ? Number(r.ac_wire_length_mtr) : 10,
+            dc_wire_brand: r.dc_wire_brand || 'Polycab',
+            dc_wire_length_mtr: r.dc_wire_length_mtr ? Number(r.dc_wire_length_mtr) : 20,
+            earthing_wire_brand: r.earthing_wire_brand || 'AL Wire',
+            earthing_wire_length_mtr: r.earthing_wire_length_mtr ? Number(r.earthing_wire_length_mtr) : 90,
+            lighting_arrestor_qty: r.lighting_arrestor_qty ? Number(r.lighting_arrestor_qty) : 1,
           })))
         }
       } catch (err: any) {
@@ -64,50 +89,188 @@ export default function IntegratedPriceData() {
     return () => { mounted = false }
   }, [])
 
+  // Filter rows based on selected module type
+  const filteredRows = useMemo(() => {
+    if (moduleTypeFilter === 'all') {
+      return rows
+    }
+    return rows.filter(row => row.module_type === moduleTypeFilter)
+  }, [rows, moduleTypeFilter])
+
+  // Get unique module types for statistics
+  const moduleTypeStats = useMemo(() => {
+    const stats = {
+      all: rows.length,
+      'Mono Bifacial': rows.filter(r => r.module_type === 'Mono Bifacial').length,
+      'TopCon': rows.filter(r => r.module_type === 'TopCon').length,
+    }
+    return stats
+  }, [rows])
+
   const handleRowClick = (row: IntegratedRow) => {
     setSelectedProduct(row)
     setIsFormOpen(true)
   }
 
+  const getModuleTypeBadgeColor = (moduleType: string | null) => {
+    if (moduleType === 'TopCon') return 'bg-blue-100 text-blue-800 border-blue-300'
+    if (moduleType === 'Mono Bifacial') return 'bg-green-100 text-green-800 border-green-300'
+    return 'bg-slate-100 text-slate-800 border-slate-300'
+  }
+
   return (
     <div className="max-w-full mx-auto my-8 px-4">
-      <div className="overflow-x-auto border rounded-lg bg-white">
-        <table className="min-w-[1100px] w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-slate-100 text-slate-600 text-xs uppercase">
-              <th className="p-2 border">Brand</th>
-              <th className="p-2 border">System (kW)</th>
-              <th className="p-2 border">Phase</th>
-              <th className="p-2 border">Price (₹)</th>
-              <th className="p-2 border">Inverter (kW)</th>
-              <th className="p-2 border">Module (W)</th>
-              <th className="p-2 border">No. of Modules</th>
-              <th className="p-2 border">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="border-b last:border-0 hover:bg-slate-50">
-                <td className="p-2">{row.brand}</td>
-                <td className="p-2">{row.system_kw} kW</td>
-                <td className="p-2"><Badge>{row.phase}</Badge></td>
-                <td className="p-2">₹{row.price.toLocaleString('en-IN')}</td>
-                <td className="p-2">{row.inverter_capacity_kw} kW</td>
-                <td className="p-2">{row.module_watt} W</td>
-                <td className="p-2">{row.no_of_modules} Nos</td>
-                <td className="p-2 flex items-center gap-2">
-                  <Button size="sm" onClick={() => handleRowClick(row)} className="bg-blue-600 hover:bg-blue-700 text-white">Get Quote</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Header with Filter Toggles */}
+      <div className="mb-6 space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">Integrated Solar Products</h2>
+            <p className="text-sm text-slate-600 mt-1">Browse our comprehensive range of integrated solar solutions</p>
+          </div>
+        </div>
+        
+        {/* Module Type Filter Buttons */}
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-sm font-medium text-slate-700 mr-2">Filter by Module Type:</span>
+          <Button
+            variant={moduleTypeFilter === 'all' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setModuleTypeFilter('all')}
+            className={moduleTypeFilter === 'all' 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'bg-white hover:bg-slate-50 border-slate-300'
+            }
+          >
+            All ({moduleTypeStats.all})
+          </Button>
+          <Button
+            variant={moduleTypeFilter === 'Mono Bifacial' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setModuleTypeFilter('Mono Bifacial')}
+            className={moduleTypeFilter === 'Mono Bifacial' 
+              ? 'bg-green-600 hover:bg-green-700 text-white' 
+              : 'bg-white hover:bg-slate-50 border-slate-300'
+            }
+          >
+            Mono Bifacial ({moduleTypeStats['Mono Bifacial']})
+          </Button>
+          <Button
+            variant={moduleTypeFilter === 'TopCon' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setModuleTypeFilter('TopCon')}
+            className={moduleTypeFilter === 'TopCon' 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'bg-white hover:bg-slate-50 border-slate-300'
+            }
+          >
+            TopCon ({moduleTypeStats.TopCon})
+          </Button>
+        </div>
       </div>
 
-      {error && <div className="text-red-600 mt-2">{error}</div>}
-      {loading && <div className="text-slate-500 mt-2">Loading...</div>}
+      {/* Products Table */}
+      <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
+        {loading && (
+          <div className="text-center py-8 text-slate-500">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p className="mt-2">Loading products...</p>
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-red-600 p-4 bg-red-50 border-l-4 border-red-500">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
-      <IntegratedQuoteForm open={isFormOpen} onOpenChange={setIsFormOpen} product={selectedProduct} productName={selectedProduct ? `${selectedProduct.brand} ${selectedProduct.system_kw} kW` : undefined} powerDemandKw={selectedProduct ? selectedProduct.system_kw : null} />
+        {!loading && !error && (
+          <>
+            {filteredRows.length === 0 ? (
+              <div className="text-center py-12 text-slate-500">
+                <p className="text-lg">No products found for the selected filter.</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setModuleTypeFilter('all')}
+                  className="mt-4"
+                >
+                  Show All Products
+                </Button>
+              </div>
+            ) : (
+              <table className="min-w-[1200px] w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-100 text-slate-600 text-xs uppercase border-b-2 border-slate-200">
+                    <th className="p-3 border-r">Module Type</th>
+                    <th className="p-3 border-r">Brand</th>
+                    <th className="p-3 border-r">System (kW)</th>
+                    <th className="p-3 border-r">Phase</th>
+                    <th className="p-3 border-r">Price (₹)</th>
+                    <th className="p-3 border-r">Inverter (kW)</th>
+                    <th className="p-3 border-r">Module (W)</th>
+                    <th className="p-3 border-r">No. of Modules</th>
+                    <th className="p-3">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRows.map((row) => (
+                    <tr 
+                      key={row.id} 
+                      className="border-b border-slate-200 hover:bg-blue-50 transition-colors"
+                    >
+                      <td className="p-3 border-r">
+                        <Badge className={`${getModuleTypeBadgeColor(row.module_type)} border font-medium`}>
+                          {row.module_type || 'N/A'}
+                        </Badge>
+                      </td>
+                      <td className="p-3 border-r font-medium text-slate-900">{row.brand}</td>
+                      <td className="p-3 border-r text-slate-700">{row.system_kw} kW</td>
+                      <td className="p-3 border-r">
+                        <Badge variant="outline" className="border-slate-300">
+                          {row.phase}
+                        </Badge>
+                      </td>
+                      <td className="p-3 border-r font-semibold text-blue-700">
+                        ₹{row.price.toLocaleString('en-IN')}
+                      </td>
+                      <td className="p-3 border-r text-slate-700">{row.inverter_capacity_kw} kW</td>
+                      <td className="p-3 border-r text-slate-700">{row.module_watt} W</td>
+                      <td className="p-3 border-r text-slate-700">{row.no_of_modules} Nos</td>
+                      <td className="p-3">
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleRowClick(row)} 
+                          className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow transition-all"
+                        >
+                          Get Quote
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Show active filter info */}
+      {!loading && !error && filteredRows.length > 0 && (
+        <div className="mt-4 text-sm text-slate-600">
+          Showing <strong>{filteredRows.length}</strong> product{filteredRows.length !== 1 ? 's' : ''} 
+          {moduleTypeFilter !== 'all' && (
+            <> for <strong>{moduleTypeFilter}</strong> module type</>
+          )}
+        </div>
+      )}
+
+      <IntegratedQuoteForm 
+        open={isFormOpen} 
+        onOpenChange={setIsFormOpen} 
+        product={selectedProduct} 
+        productName={selectedProduct ? `${selectedProduct.brand} ${selectedProduct.system_kw} kW (${selectedProduct.module_type || 'N/A'})` : undefined} 
+        powerDemandKw={selectedProduct ? selectedProduct.system_kw : null} 
+      />
     </div>
   )
 }
