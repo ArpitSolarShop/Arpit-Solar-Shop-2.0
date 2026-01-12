@@ -26,7 +26,7 @@ interface HybridQuoteFormProps {
     inverter_kwp?: number;
     module_watt?: number;
     module_count?: number;
-    category?: 'DCR' | 'NON_DCR' | null;
+    category?: 'DCR' | 'NON_DCR' | 'NDCR' | null;
     phase?: string | null;
   } | null
   productName?: string
@@ -47,7 +47,7 @@ type HybridQuotePayload = {
   estimated_system_size_kw: number | null
   product_name: string
   additional_details: {
-    category: 'DCR' | 'NON_DCR'
+    category: 'DCR' | 'NON_DCR' | 'NDCR'
     variant: 'WITH_BATTERY' | 'WOBB'
     system_capacity?: string
     price?: number
@@ -213,7 +213,7 @@ const HybridQuoteForm = ({
           system_variant: payload.additional_details.variant,
           full_payload: payload,
         } satisfies HybridQuotePayload & {
-          system_category: "DCR" | "NON_DCR"
+          system_category: "DCR" | "NON_DCR" | "NDCR"
           system_variant: "WITH_BATTERY" | "WOBB"
           full_payload: HybridQuotePayload
         }

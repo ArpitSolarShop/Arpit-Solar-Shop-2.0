@@ -9,7 +9,7 @@ import HybridQuoteForm from "@/components/forms/hybrid-quote-form"
 
 type HybridSystemData = {
   id: number
-  category: 'DCR' | 'NON_DCR'
+  category: 'DCR' | 'NON_DCR' | 'NDCR'
   variant: 'WITH_BATTERY' | 'WOBB'
   capacity_kw: number
   phase: string
@@ -65,11 +65,18 @@ export default function HybridSolarPricing() {
         const mappedData = data.map((r: any) => {
           // Normalize category to ensure consistent values
           const normalizedCategory = (r.category || '').toUpperCase().trim()
-          const category = (normalizedCategory === 'NON_DCR' || normalizedCategory === 'NON-DCR') ? 'NON_DCR' : 'DCR'
+          let category: 'DCR' | 'NON_DCR' | 'NDCR' = 'DCR'
+          if (normalizedCategory === 'NON_DCR' || normalizedCategory === 'NON-DCR') {
+            category = 'NON_DCR'
+          } else if (normalizedCategory === 'NDCR') {
+            category = 'NDCR'
+          } else {
+            category = 'DCR'
+          }
           
           return {
           id: r.id,
-          category: category as 'DCR' | 'NON_DCR',
+          category: category,
           variant: r.variant as 'WITH_BATTERY' | 'WOBB',
           capacity_kw: Number(r.capacity_kw),
           phase: r.phase || '1Ph',
@@ -103,6 +110,7 @@ export default function HybridSolarPricing() {
           categoryCounts: {
             DCR: mappedData.filter(r => r.category === 'DCR').length,
             NON_DCR: mappedData.filter(r => r.category === 'NON_DCR').length,
+            NDCR: mappedData.filter(r => r.category === 'NDCR').length,
           }
         })
         
@@ -170,6 +178,7 @@ export default function HybridSolarPricing() {
 
   const getCategoryBadgeColor = (cat: string) => {
     if (cat === 'DCR') return 'bg-purple-100 text-purple-800 border-purple-300'
+    if (cat === 'NDCR') return 'bg-teal-100 text-teal-800 border-teal-300'
     return 'bg-orange-100 text-orange-800 border-orange-300'
   }
 
