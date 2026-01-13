@@ -1,4 +1,5 @@
-// "use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -158,7 +159,7 @@ export default function IntegratedQuoteForm({
         }
         console.log('Sending payload to secondary quote server:', secondaryPayload)
         await fetch('https://solar-quote-server.onrender.com/generate-quote', {
-        // const response = await fetch('http://localhost:3000/generate-quote', {
+          // const response = await fetch('http://localhost:3000/generate-quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(secondaryPayload),

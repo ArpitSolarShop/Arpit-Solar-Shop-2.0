@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
+
 import React, { useEffect, useState, useMemo } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import IntegratedQuoteForm from '../components/forms/integrated-quote-form'
+import IntegratedQuoteForm from '@/components/forms/integrated-quote-form'
 import { supabase } from '@/integrations/supabase/client'
 
 type IntegratedRow = {
@@ -128,7 +131,7 @@ export default function IntegratedPriceData() {
             <p className="text-sm text-slate-600 mt-1">Browse our comprehensive range of integrated solar solutions</p>
           </div>
         </div>
-        
+
         {/* Module Type Filter Buttons */}
         <div className="flex flex-wrap gap-2 items-center">
           <span className="text-sm font-medium text-slate-700 mr-2">Filter by Module Type:</span>
@@ -136,8 +139,8 @@ export default function IntegratedPriceData() {
             variant={moduleTypeFilter === 'all' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setModuleTypeFilter('all')}
-            className={moduleTypeFilter === 'all' 
-              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+            className={moduleTypeFilter === 'all'
+              ? 'bg-blue-600 hover:bg-blue-700 text-white'
               : 'bg-white hover:bg-slate-50 border-slate-300'
             }
           >
@@ -147,8 +150,8 @@ export default function IntegratedPriceData() {
             variant={moduleTypeFilter === 'Mono Bifacial' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setModuleTypeFilter('Mono Bifacial')}
-            className={moduleTypeFilter === 'Mono Bifacial' 
-              ? 'bg-green-600 hover:bg-green-700 text-white' 
+            className={moduleTypeFilter === 'Mono Bifacial'
+              ? 'bg-green-600 hover:bg-green-700 text-white'
               : 'bg-white hover:bg-slate-50 border-slate-300'
             }
           >
@@ -158,8 +161,8 @@ export default function IntegratedPriceData() {
             variant={moduleTypeFilter === 'TopCon' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setModuleTypeFilter('TopCon')}
-            className={moduleTypeFilter === 'TopCon' 
-              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+            className={moduleTypeFilter === 'TopCon'
+              ? 'bg-blue-600 hover:bg-blue-700 text-white'
               : 'bg-white hover:bg-slate-50 border-slate-300'
             }
           >
@@ -176,7 +179,7 @@ export default function IntegratedPriceData() {
             <p className="mt-2">Loading products...</p>
           </div>
         )}
-        
+
         {error && (
           <div className="text-red-600 p-4 bg-red-50 border-l-4 border-red-500">
             <strong>Error:</strong> {error}
@@ -214,12 +217,12 @@ export default function IntegratedPriceData() {
                 </thead>
                 <tbody>
                   {filteredRows.map((row) => (
-                    <tr 
-                      key={row.id} 
+                    <tr
+                      key={row.id}
                       className="border-b border-slate-200 hover:bg-blue-50 transition-colors"
                     >
                       <td className="p-3 border-r">
-                        <Badge className={`${getModuleTypeBadgeColor(row.module_type)} border font-medium`}>
+                        <Badge className={`${getModuleTypeBadgeColor(row.module_type)} border font - medium`}>
                           {row.module_type || 'N/A'}
                         </Badge>
                       </td>
@@ -237,9 +240,9 @@ export default function IntegratedPriceData() {
                       <td className="p-3 border-r text-slate-700">{row.module_watt} W</td>
                       <td className="p-3 border-r text-slate-700">{row.no_of_modules} Nos</td>
                       <td className="p-3">
-                        <Button 
-                          size="sm" 
-                          onClick={() => handleRowClick(row)} 
+                        <Button
+                          size="sm"
+                          onClick={() => handleRowClick(row)}
                           className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow transition-all"
                         >
                           Get Quote
@@ -257,19 +260,19 @@ export default function IntegratedPriceData() {
       {/* Show active filter info */}
       {!loading && !error && filteredRows.length > 0 && (
         <div className="mt-4 text-sm text-slate-600">
-          Showing <strong>{filteredRows.length}</strong> product{filteredRows.length !== 1 ? 's' : ''} 
+          Showing <strong>{filteredRows.length}</strong> product{filteredRows.length !== 1 ? 's' : ''}
           {moduleTypeFilter !== 'all' && (
             <> for <strong>{moduleTypeFilter}</strong> module type</>
           )}
         </div>
       )}
 
-      <IntegratedQuoteForm 
-        open={isFormOpen} 
-        onOpenChange={setIsFormOpen} 
-        product={selectedProduct} 
-        productName={selectedProduct ? `${selectedProduct.brand} ${selectedProduct.system_kw} kW (${selectedProduct.module_type || 'N/A'})` : undefined} 
-        powerDemandKw={selectedProduct ? selectedProduct.system_kw : null} 
+      <IntegratedQuoteForm
+        open={isFormOpen}
+        onOpenChange={setIsFormOpen}
+        product={selectedProduct}
+        productName={selectedProduct ? `${selectedProduct.brand} ${selectedProduct.system_kw} kW(${selectedProduct.module_type || 'N/A'})` : undefined}
+        powerDemandKw={selectedProduct ? selectedProduct.system_kw : null}
       />
     </div>
   )

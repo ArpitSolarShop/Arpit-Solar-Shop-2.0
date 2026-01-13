@@ -56,13 +56,13 @@ const Certifications = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
           <img
-            src={relianceCert}
+            src={relianceCert.src}
             alt="Reliance Solar Certificate"
             className="rounded-xl shadow-lg w-full max-w-md object-contain"
             loading="lazy"
           />
           <img
-            src={shaktiCert}
+            src={shaktiCert.src}
             alt="Shakti Solar Certificate"
             className="rounded-xl shadow-lg w-full max-w-md object-contain"
             loading="lazy"

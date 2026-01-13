@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -162,7 +163,7 @@ export default function ShaktiSolar() {
   useEffect(() => {
     const loadData = async () => {
       // Grid tie systems
-      const { data: grid, error: gridErr } = await supabase.from<any>('shakti_grid_tie_systems').select('*').order('sl_no', { ascending: true })
+      const { data: grid, error: gridErr } = await supabase.from('shakti_grid_tie_systems').select('*').order('sl_no', { ascending: true })
       if (!gridErr && grid) {
         setGridData(grid.map((r: any) => ({
           slNo: r.sl_no,
@@ -175,7 +176,7 @@ export default function ShaktiSolar() {
         })))
       }
       // Config
-      const { data: cfg, error: cfgErr } = await supabase.from<any>('shakti_config').select('*')
+      const { data: cfg, error: cfgErr } = await supabase.from('shakti_config').select('*')
       if (!cfgErr && cfg) {
         const config = Object.fromEntries(cfg.map((c: any) => [c.config_key, c.config_value]))
         if (config['system_size_limit']) setSystemSizeLimit(parseFloat(config['system_size_limit']))

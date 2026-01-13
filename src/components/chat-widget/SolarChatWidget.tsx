@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { useState, useEffect, useRef, useReducer, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,99 +11,99 @@ import { supabase } from "@/integrations/supabase/client";
 
 // --- TYPES ---
 interface ChatMessage {
-  id: string;
-  content: string;
-  isUser: boolean;
-  timestamp: Date;
+    id: string;
+    content: string;
+    isUser: boolean;
+    timestamp: Date;
 }
 
 interface UserData {
-  name?: string;
-  phone?: string;
-  email?: string;
-  entityType?: 'home' | 'business';
-  location?: string;
-  roofArea?: 'small' | 'medium' | 'large' | 'xl';
-  monthlyBill?: 'low' | 'mid' | 'high' | 'vip';
-  referralSource?: 'online' | 'referral' | 'news' | 'other';
-  referralName?: string;
-  referralPhone?: string;
+    name?: string;
+    phone?: string;
+    email?: string;
+    entityType?: 'home' | 'business';
+    location?: string;
+    roofArea?: 'small' | 'medium' | 'large' | 'xl';
+    monthlyBill?: 'low' | 'mid' | 'high' | 'vip';
+    referralSource?: 'online' | 'referral' | 'news' | 'other';
+    referralName?: string;
+    referralPhone?: string;
 }
 
 // --- CONSTANTS ---
 const STEPS = [
- {
-   id: 'name',
-   question: "Wonderful! To whom am I speaking? I'll use your name to personalize the savings report.",
-   type: 'text',
-   placeholder: 'Enter your full name (e.g., Priya Sharma)',
-   validation: (value: string) => {
-     if (!value.trim()) return 'Please enter your name';
-     const testNames = ['test', 'mickey', 'donald', 'abc', 'xyz', '123'];
-     if (testNames.some(name => value.toLowerCase().includes(name))) {
-       return '😉 Hehe! While I love test names, I\'ll need your real name for the official savings report. Could you please share it?';
-     }
-     return null;
-   }
- },
- {
-   id: 'contact',
-   question: "Thank you! How should we send your free solar savings report? We can send it instantly via WhatsApp.",
-   type: 'contact',
- },
- {
-   id: 'entityType',
-   question: "Is this solar installation for your home or for a business/commercial property?",
-   type: 'buttons',
-   options: [
-     { value: 'home', label: '🏠 Home (Individual)' },
-     { value: 'business', label: '🏢 Business (Commercial)' }
-   ]
- },
- {
-   id: 'location',
-   question: "📍 Where is your property located? (e.g., 'Varanasi, Uttar Pradesh'). This helps us check local solar policies and sunshine hours.",
-   type: 'text',
-   placeholder: 'Enter City, State',
- },
- {
-   id: 'roofArea',
-   question: "📏 What's the approximate rooftop area you have for panels? A rough estimate is fine.",
-   type: 'buttons',
-   options: [
-     { value: 'small', label: 'Under 500 sq ft' },
-     { value: 'medium', label: '500–1,000 sq ft' },
-     { value: 'large', label: '1,000–2,000 sq ft' },
-     { value: 'xl', label: 'Over 2,000 sq ft' }
-   ],
- },
- {
-   id: 'monthlyBill',
-   question: "💡 And what's your average monthly electricity bill? This is key to calculating your savings!",
-   type: 'buttons',
-   options: [
-     { value: 'low', label: 'Less than ₹2,000' },
-     { value: 'mid', label: '₹2,001 - ₹5,000' },
-     { value: 'high', label: '₹5,001 - ₹10,000' },
-     { value: 'vip', label: 'More than ₹10,000' }
-   ],
- },
- {
-   id: 'referralSource',
-   question: "👋 We're almost done! How did you hear about us?",
-   type: 'buttons',
-   options: [
-     { value: 'online', label: 'Online (Google/Facebook)' },
-     { value: 'referral', label: 'Friend/Family Referral' },
-     { value: 'news', label: 'News/Advertisement' },
-     { value: 'other', label: 'Other' }
-   ],
- },
- {
-   id: 'referralContact',
-   question: "Great! Could you please share their name and contact number?",
-   type: 'referral_contact',
- }
+    {
+        id: 'name',
+        question: "Wonderful! To whom am I speaking? I'll use your name to personalize the savings report.",
+        type: 'text',
+        placeholder: 'Enter your full name (e.g., Priya Sharma)',
+        validation: (value: string) => {
+            if (!value.trim()) return 'Please enter your name';
+            const testNames = ['test', 'mickey', 'donald', 'abc', 'xyz', '123'];
+            if (testNames.some(name => value.toLowerCase().includes(name))) {
+                return '😉 Hehe! While I love test names, I\'ll need your real name for the official savings report. Could you please share it?';
+            }
+            return null;
+        }
+    },
+    {
+        id: 'contact',
+        question: "Thank you! How should we send your free solar savings report? We can send it instantly via WhatsApp.",
+        type: 'contact',
+    },
+    {
+        id: 'entityType',
+        question: "Is this solar installation for your home or for a business/commercial property?",
+        type: 'buttons',
+        options: [
+            { value: 'home', label: '🏠 Home (Individual)' },
+            { value: 'business', label: '🏢 Business (Commercial)' }
+        ]
+    },
+    {
+        id: 'location',
+        question: "📍 Where is your property located? (e.g., 'Varanasi, Uttar Pradesh'). This helps us check local solar policies and sunshine hours.",
+        type: 'text',
+        placeholder: 'Enter City, State',
+    },
+    {
+        id: 'roofArea',
+        question: "📏 What's the approximate rooftop area you have for panels? A rough estimate is fine.",
+        type: 'buttons',
+        options: [
+            { value: 'small', label: 'Under 500 sq ft' },
+            { value: 'medium', label: '500–1,000 sq ft' },
+            { value: 'large', label: '1,000–2,000 sq ft' },
+            { value: 'xl', label: 'Over 2,000 sq ft' }
+        ],
+    },
+    {
+        id: 'monthlyBill',
+        question: "💡 And what's your average monthly electricity bill? This is key to calculating your savings!",
+        type: 'buttons',
+        options: [
+            { value: 'low', label: 'Less than ₹2,000' },
+            { value: 'mid', label: '₹2,001 - ₹5,000' },
+            { value: 'high', label: '₹5,001 - ₹10,000' },
+            { value: 'vip', label: 'More than ₹10,000' }
+        ],
+    },
+    {
+        id: 'referralSource',
+        question: "👋 We're almost done! How did you hear about us?",
+        type: 'buttons',
+        options: [
+            { value: 'online', label: 'Online (Google/Facebook)' },
+            { value: 'referral', label: 'Friend/Family Referral' },
+            { value: 'news', label: 'News/Advertisement' },
+            { value: 'other', label: 'Other' }
+        ],
+    },
+    {
+        id: 'referralContact',
+        question: "Great! Could you please share their name and contact number?",
+        type: 'referral_contact',
+    }
 ];
 
 // --- STATE MANAGEMENT (useReducer) ---
@@ -203,14 +205,14 @@ export default function SolarChatWidget({ isOpen, onClose }: SolarChatWidgetProp
     }, [isOpen, status]);
 
     useEffect(() => {
-      if (status === 'chatting' && messages.length === 2 && currentStep === 0) {
-        const timer = setTimeout(() => {
-          dispatch({ type: 'ADVANCE_STEP' });
-        }, 2200);
-        return () => clearTimeout(timer);
-      }
+        if (status === 'chatting' && messages.length === 2 && currentStep === 0) {
+            const timer = setTimeout(() => {
+                dispatch({ type: 'ADVANCE_STEP' });
+            }, 2200);
+            return () => clearTimeout(timer);
+        }
     }, [status, messages.length, currentStep]);
-    
+
     useEffect(() => {
         if (status !== 'chatting' || currentStep === 0 || currentStep > STEPS.length) return;
         const askQuestion = () => {
@@ -231,19 +233,19 @@ export default function SolarChatWidget({ isOpen, onClose }: SolarChatWidgetProp
 
     // --- Effect to auto-reset the chat after completion ---
     useEffect(() => {
-      if (status === 'completed') {
-        const timer = setTimeout(() => {
-          dispatch({ type: 'RESET' });
-        }, 5000); // 5 seconds
+        if (status === 'completed') {
+            const timer = setTimeout(() => {
+                dispatch({ type: 'RESET' });
+            }, 5000); // 5 seconds
 
-        return () => clearTimeout(timer); // Cleanup timer on unmount
-      }
+            return () => clearTimeout(timer); // Cleanup timer on unmount
+        }
     }, [status]);
     // ----------------------------------------------------
 
     const submitSolarLead = useCallback(async () => {
         dispatch({ type: 'SUBMIT_LEAD' });
-        dispatch({ type: 'ADD_MESSAGE', payload: { content: "Processing your request...", isUser: false }});
+        dispatch({ type: 'ADD_MESSAGE', payload: { content: "Processing your request...", isUser: false } });
 
         try {
             const insertData = {
@@ -258,14 +260,14 @@ export default function SolarChatWidget({ isOpen, onClose }: SolarChatWidgetProp
                 source: "AI Chatbot",
                 customer_type: userData.entityType === 'home' ? 'residential' : 'commercial',
                 referral_source: userData.referralSource || null,
-                estimated_area_sqft: 
-                    userData.roofArea === 'small' ? 400 : 
-                    userData.roofArea === 'medium' ? 750 : 
-                    userData.roofArea === 'large' ? 1500 : 2500,
-                monthly_bill: 
-                    userData.monthlyBill === 'low' ? 1500 : 
-                    userData.monthlyBill === 'mid' ? 3500 : 
-                    userData.monthlyBill === 'high' ? 7500 : 12000,
+                estimated_area_sqft:
+                    userData.roofArea === 'small' ? 400 :
+                        userData.roofArea === 'medium' ? 750 :
+                            userData.roofArea === 'large' ? 1500 : 2500,
+                monthly_bill:
+                    userData.monthlyBill === 'low' ? 1500 :
+                        userData.monthlyBill === 'mid' ? 3500 :
+                            userData.monthlyBill === 'high' ? 7500 : 12000,
             };
 
             const { error } = await supabase.from('solar_quote_requests').insert(insertData);
@@ -317,10 +319,10 @@ export default function SolarChatWidget({ isOpen, onClose }: SolarChatWidgetProp
 
         } catch (error) {
             console.error("Error submitting quote:", error);
-            toast({ 
-                title: "Database Error", 
-                description: `Could not save to database. Details: ${(error as any).message}`, 
-                variant: "destructive" 
+            toast({
+                title: "Database Error",
+                description: `Could not save to database. Details: ${(error as any).message}`,
+                variant: "destructive"
             });
             dispatch({ type: 'SUBMIT_ERROR' });
         }
@@ -328,13 +330,13 @@ export default function SolarChatWidget({ isOpen, onClose }: SolarChatWidgetProp
 
     const handleAnswer = (data: Partial<UserData>, userMessage: string) => {
         dispatch({ type: 'UPDATE_USER_DATA', payload: data });
-        dispatch({ type: 'ADD_MESSAGE', payload: { content: userMessage, isUser: true }});
-        const step = STEPS[currentStep -1];
+        dispatch({ type: 'ADD_MESSAGE', payload: { content: userMessage, isUser: true } });
+        const step = STEPS[currentStep - 1];
         if (step.id === 'referralSource' && data.referralSource !== 'referral') {
-             dispatch({ type: 'ADVANCE_STEP' });
-             setTimeout(() => dispatch({ type: 'ADVANCE_STEP' }), 10);
+            dispatch({ type: 'ADVANCE_STEP' });
+            setTimeout(() => dispatch({ type: 'ADVANCE_STEP' }), 10);
         } else {
-             dispatch({ type: 'ADVANCE_STEP' });
+            dispatch({ type: 'ADVANCE_STEP' });
         }
     };
 
@@ -347,8 +349,8 @@ export default function SolarChatWidget({ isOpen, onClose }: SolarChatWidgetProp
     if (!isOpen) return null;
 
     const currentStepData = status === 'chatting' && currentStep > 0 && currentStep <= STEPS.length
-      ? STEPS[currentStep - 1]
-      : null;
+        ? STEPS[currentStep - 1]
+        : null;
 
     return (
         <div className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[92vw] bg-white shadow-2xl rounded-lg overflow-hidden flex flex-col border border-black/10">
@@ -399,7 +401,7 @@ const ProgressBar = ({ current, total }: { current: number, total: number }) => 
 const MessageList = ({ messages, isTyping }: { messages: ChatMessage[], isTyping: boolean }) => (
     <AnimatePresence>
         {messages.map((message) => (
-             <motion.div key={message.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+            <motion.div key={message.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex items-start space-x-2 ${message.isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm shrink-0 ${message.isUser ? 'bg-blue-500' : 'bg-gradient-to-r from-solar-orange to-solar-gold'}`}>
                         {message.isUser ? <User className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
@@ -411,16 +413,16 @@ const MessageList = ({ messages, isTyping }: { messages: ChatMessage[], isTyping
             </motion.div>
         ))}
         {isTyping && (
-             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-start space-x-2">
-                 <div className="w-8 h-8 bg-gradient-to-r from-solar-orange to-solar-gold rounded-full flex items-center justify-center text-white text-sm"><UserCheck className="w-4 h-4" /></div>
-                 <div className="bg-gray-200 rounded-lg rounded-tl-none p-3">
-                     <div className="flex space-x-1">
-                         <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                         <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.1s]"></div>
-                         <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                     </div>
-                 </div>
-             </motion.div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-start space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-solar-orange to-solar-gold rounded-full flex items-center justify-center text-white text-sm"><UserCheck className="w-4 h-4" /></div>
+                <div className="bg-gray-200 rounded-lg rounded-tl-none p-3">
+                    <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.1s]"></div>
+                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    </div>
+                </div>
+            </motion.div>
         )}
     </AnimatePresence>
 );
@@ -463,7 +465,7 @@ const ChatInput = ({ step, onAnswer }: { step: any, onAnswer: (data: Partial<Use
         const userMessage = `📱 ${phone}${email ? `\n📧 ${email}` : ''}`;
         onAnswer({ phone, email }, userMessage);
     };
-    
+
     const handleReferralContactSubmit = () => {
         if (!refName.trim()) {
             toast({ title: "Name Required", description: "Please enter the referral name", variant: "destructive" });
@@ -472,7 +474,7 @@ const ChatInput = ({ step, onAnswer }: { step: any, onAnswer: (data: Partial<Use
         const userMessage = `👤 ${refName}${refPhone ? `\n📱 ${refPhone}` : ''}`;
         onAnswer({ referralName: refName, referralPhone: refPhone }, userMessage);
     }
-    
+
     const handleSkipReferral = () => {
         onAnswer({ referralName: undefined, referralPhone: undefined }, "Skipped referral contact");
     }
@@ -503,7 +505,7 @@ const ChatInput = ({ step, onAnswer }: { step: any, onAnswer: (data: Partial<Use
                     <Button onClick={handleContactSubmit} className="w-full bg-gradient-to-r from-solar-orange to-solar-gold text-white">Continue</Button>
                 </div>
             )}
-             {step.type === 'referral_contact' && (
+            {step.type === 'referral_contact' && (
                 <div className="space-y-3">
                     <Label>Referral Name *</Label>
                     <Input type="text" value={refName} onChange={e => setRefName(e.target.value)} placeholder="Enter their full name" />

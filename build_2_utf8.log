@@ -1,0 +1,91 @@
+﻿
+> arpit-solar-shop-next-app@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.1.6
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+node.exe : Failed to 
+compile.
+At line:1 char:1
++ & "C:\Program Files\
+nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Failed to    
+ compile.:String)     
+[], RemoteExcepti    
+on
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+
+./src/app/(website)/ci
+ty/[city]/page.tsx
+Error:   [31mx[0m 
+You are attempting to 
+export 
+"generateMetadata" 
+from a component 
+marked with "use 
+client", which is 
+disallowed. Either 
+remove the export, or 
+the "use client" 
+directive. Read more: 
+https://
+  [31m|[0m nextjs.or
+g/docs/app/api-referen
+ce/directives/use-clie
+nt
+  [31m|[0m 
+  [31m|[0m 
+    ,-[[36;1;4mC:\Use
+rs\arpit\OneDrive\Desk
+top\Arpit Solar Shop 
+Web App\arpit-solar-sh
+op-next-app\src\app\(w
+ebsite)\city\[city]\pa
+ge.tsx[0m:57:1]
+ [2m54[0m |   // I 
+should fix this to 
+use `city` param 
+properly in metadata.
+ [2m55[0m | }
+ [2m56[0m | 
+ [2m57[0m | export 
+async function 
+generateMetadata(
+    : [35;1m         
+             
+^^^^^^^^^^^^^^^^[0m
+ [2m58[0m |   { 
+params }: { params: 
+Promise<{ city: 
+string }> }
+ [2m59[0m | ): 
+Promise<Metadata> {
+ [2m60[0m |   // In 
+Next.js 15, params is 
+a promise. In 14 it's 
+an object. 
+    `----
+
+Import trace for 
+requested module:
+./src/app/(website)/ci
+ty/[city]/page.tsx
+
+
+> Build failed 
+because of webpack 
+errors

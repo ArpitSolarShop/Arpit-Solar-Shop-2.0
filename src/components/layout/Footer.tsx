@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { useState } from "react"; // Import useState for managing modal state
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"; // Import Dialog components
 import { MapPin, Phone, Mail, Facebook, Linkedin, Instagram } from "lucide-react";
@@ -62,9 +65,9 @@ const policyData = {
 const Footer = () => {
     const currentYear = new Date().getFullYear();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalContentKey, setModalContentKey] = useState(null);
+    const [modalContentKey, setModalContentKey] = useState<string | null>(null);
 
-    const handlePolicyClick = (key) => {
+    const handlePolicyClick = (key: string) => {
         setModalContentKey(key);
         setIsModalOpen(true);
     };
@@ -78,7 +81,7 @@ const Footer = () => {
 
                         {/* Company Info with Button-Like Logo */}
                         <div className="space-y-4">
-                            <Link to="/" className="inline-block">
+                            <Link href="/" className="inline-block">
                                 <div className="bg-white rounded-md shadow-md transition-shadow duration-200 hover:shadow-lg">
                                     <img
                                         src="/logo.png"
@@ -103,9 +106,9 @@ const Footer = () => {
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">Solutions</h3>
                             <ul className="space-y-2">
-                                {[ { name: "Residential", href: "/solutions/residential" }, { name: "Commercial/Industrial", href: "/solutions/commercial-industrial" }, ].map((link) => (
+                                {[{ name: "Residential", href: "/solutions/residential" }, { name: "Commercial/Industrial", href: "/solutions/commercial-industrial" },].map((link) => (
                                     <li key={link.name}>
-                                        <Link to={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
+                                        <Link href={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -115,9 +118,9 @@ const Footer = () => {
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">Products</h3>
                             <ul className="space-y-2">
-                                {[ { name: "Reliance Solar", href: "/reliance" }, { name: "Shakti Solar", href: "/shakti-solar" }, { name: "Tata Solar", href: "/tata-solar" }].map((link) => (
+                                {[{ name: "Reliance Solar", href: "/reliance" }, { name: "Shakti Solar", href: "/shakti-solar" }, { name: "Tata Solar", href: "/tata-solar" }].map((link) => (
                                     <li key={link.name}>
-                                        <Link to={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
+                                        <Link href={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -127,9 +130,9 @@ const Footer = () => {
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">Company</h3>
                             <ul className="space-y-2">
-                                {[ { name: "About Us", href: "/about/us" }, { name: "Services", href: "/services" }, { name: "Sustainability", href: "/about/sustainability" }, { name: "Contact Us", href: "/contact" }, ].map((link) => (
+                                {[{ name: "About Us", href: "/about-us" }, { name: "Services", href: "/services" }, { name: "Contact Us", href: "/contact" },].map((link) => (
                                     <li key={link.name}>
-                                        <Link to={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
+                                        <Link href={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -157,10 +160,10 @@ const Footer = () => {
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogContent className="sm:max-w-2xl bg-white text-black p-0">
                     <DialogHeader className="p-6 pb-4">
-                        <DialogTitle className="text-2xl">{modalContentKey && policyData[modalContentKey].title}</DialogTitle>
+                        <DialogTitle className="text-2xl">{modalContentKey && (policyData as any)[modalContentKey].title}</DialogTitle>
                     </DialogHeader>
                     <div className="px-6 pb-6 max-h-[70vh] overflow-y-auto">
-                        {modalContentKey && policyData[modalContentKey].content}
+                        {modalContentKey && (policyData as any)[modalContentKey].content}
                     </div>
                 </DialogContent>
             </Dialog>

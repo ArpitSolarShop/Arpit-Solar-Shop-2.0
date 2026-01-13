@@ -277,6 +277,7 @@
 
 
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -402,14 +403,14 @@ const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalcul
             <div>
               <Label htmlFor="kilowatt-input" className="text-base sm:text-lg font-medium text-gray-800">Your Power Requirement (kW)</Label>
               <div className="flex items-center mt-2">
-                <Input 
-                  id="kilowatt-input" 
-                  type="number" 
-                  value={kilowattInput} 
-                  onChange={(e) => setKilowattInput(e.target.value)} 
-                  placeholder={loading ? "Loading data..." : "e.g., 25"} 
-                  className="text-base sm:text-lg w-full" 
-                  disabled={loading} 
+                <Input
+                  id="kilowatt-input"
+                  type="number"
+                  value={kilowattInput}
+                  onChange={(e) => setKilowattInput(e.target.value)}
+                  placeholder={loading ? "Loading data..." : "e.g., 25"}
+                  className="text-base sm:text-lg w-full"
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -431,19 +432,19 @@ const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalcul
             )}
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <Button 
-                onClick={handleCalculate} 
-                size="lg" 
-                className="w-full bg-black hover:bg-gray-800 text-white text-base sm:text-lg py-2 sm:py-3" 
+              <Button
+                onClick={handleCalculate}
+                size="lg"
+                className="w-full bg-black hover:bg-gray-800 text-white text-base sm:text-lg py-2 sm:py-3"
                 disabled={loading}
               >
                 {loading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading Prices...</>) : (<><BarChart className="mr-2 h-4 w-4" /> Calculate</>)}
               </Button>
-              <Button 
-                onClick={handleReset} 
-                size="lg" 
-                variant="outline" 
-                className="w-full text-base sm:text-lg py-2 sm:py-3" 
+              <Button
+                onClick={handleReset}
+                size="lg"
+                variant="outline"
+                className="w-full text-base sm:text-lg py-2 sm:py-3"
                 disabled={loading}
               >
                 <RefreshCcw className="mr-2 h-4 w-4" /> Reset

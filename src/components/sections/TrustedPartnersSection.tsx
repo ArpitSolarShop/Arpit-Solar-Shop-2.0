@@ -1,3 +1,5 @@
+"use client"
+
 // Define the TrustedPartnersSection component
 const TrustedPartnersSection: React.FC = () => {
   return (

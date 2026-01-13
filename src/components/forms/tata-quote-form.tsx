@@ -81,7 +81,7 @@
 //         referral_phone: formData.referral_phone || null,
 //         product_name: productName,
 //         product_category: "Tata", // Set product category to Tata
-        source: "Tata Quote Form" as const,
+// source: "Tata Quote Form" as const,
 //         customer_type: formData.entity_type === "Individual" ? "residential" : "commercial",
 //         referral_source: formData.referral_name ? "referral" : null,
 //       };
@@ -510,11 +510,7 @@
 
 
 
-
-
-
-
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -584,7 +580,7 @@ const TataQuoteForm = ({
   const validateForm = () => {
     const phoneRegex = /^[6-9]\d{9}$/
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    
+
     if (!formData.name) return "Name is required"
     if (!formData.phone || !phoneRegex.test(formData.phone)) return "Valid phone number is required (10 digits, starting with 6-9)"
     if (formData.email && !emailRegex.test(formData.email)) return "Invalid email format"
@@ -656,7 +652,7 @@ const TataQuoteForm = ({
       // Send to secondary server
       try {
         const response = await fetch('https://solar-quote-server.onrender.com/generate-quote', {
-        //const response = await fetch('http://localhost:3000/generate-quote', {
+          //const response = await fetch('http://localhost:3000/generate-quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(backendData),

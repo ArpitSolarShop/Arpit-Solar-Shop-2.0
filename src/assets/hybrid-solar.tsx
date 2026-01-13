@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
@@ -51,7 +52,7 @@ export default function HybridSolarPricing() {
   const fetchPricing = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch data from Supabase with proper typing
       const { data, error } = await supabase
         .from('hybrid_solar_pricing')
@@ -59,7 +60,7 @@ export default function HybridSolarPricing() {
         .order('capacity_kw', { ascending: true });
 
       if (error) throw error;
-      
+
       if (data && data.length > 0) {
         // Map and ensure all fields are properly typed
         const mappedData = data.map((r: any) => {
@@ -73,33 +74,33 @@ export default function HybridSolarPricing() {
           } else {
             category = 'DCR'
           }
-          
+
           return {
-          id: r.id,
-          category: category,
-          variant: r.variant as 'WITH_BATTERY' | 'WOBB',
-          capacity_kw: Number(r.capacity_kw),
-          phase: r.phase || '1Ph',
-          price_inr: Number(r.price_inr),
-          inverter_kwp: Number(r.inverter_kwp),
-          battery_kwh: r.battery_kwh ? Number(r.battery_kwh) : null,
-          module_watt: Number(r.module_watt),
-          module_count: Number(r.module_count),
-          structure_type: r.structure_type || '3x6',
-          technology: (r.technology || 'TOPCON') as 'TOPCON' | 'MONO_BIFACIAL' | 'TOPCON_NDCR',
-          acdb_qty: r.acdb_qty ? Number(r.acdb_qty) : 1,
-          dcdb_qty: r.dcdb_qty ? Number(r.dcdb_qty) : 1,
-          earthing_rod_qty: r.earthing_rod_qty ? Number(r.earthing_rod_qty) : 3,
-          earthing_chemical_qty: r.earthing_chemical_qty ? Number(r.earthing_chemical_qty) : 3,
-          lightning_arrester_qty: r.lightning_arrester_qty ? Number(r.lightning_arrester_qty) : 1,
-          ac_wire_mtr: r.ac_wire_mtr ? Number(r.ac_wire_mtr) : 10,
-          dc_wire_mtr: r.dc_wire_mtr ? Number(r.dc_wire_mtr) : 20,
-          earthing_wire_mtr: r.earthing_wire_mtr ? Number(r.earthing_wire_mtr) : 90,
-          created_at: r.created_at,
-          updated_at: r.updated_at,
+            id: r.id,
+            category: category,
+            variant: r.variant as 'WITH_BATTERY' | 'WOBB',
+            capacity_kw: Number(r.capacity_kw),
+            phase: r.phase || '1Ph',
+            price_inr: Number(r.price_inr),
+            inverter_kwp: Number(r.inverter_kwp),
+            battery_kwh: r.battery_kwh ? Number(r.battery_kwh) : null,
+            module_watt: Number(r.module_watt),
+            module_count: Number(r.module_count),
+            structure_type: r.structure_type || '3x6',
+            technology: (r.technology || 'TOPCON') as 'TOPCON' | 'MONO_BIFACIAL' | 'TOPCON_NDCR',
+            acdb_qty: r.acdb_qty ? Number(r.acdb_qty) : 1,
+            dcdb_qty: r.dcdb_qty ? Number(r.dcdb_qty) : 1,
+            earthing_rod_qty: r.earthing_rod_qty ? Number(r.earthing_rod_qty) : 3,
+            earthing_chemical_qty: r.earthing_chemical_qty ? Number(r.earthing_chemical_qty) : 3,
+            lightning_arrester_qty: r.lightning_arrester_qty ? Number(r.lightning_arrester_qty) : 1,
+            ac_wire_mtr: r.ac_wire_mtr ? Number(r.ac_wire_mtr) : 10,
+            dc_wire_mtr: r.dc_wire_mtr ? Number(r.dc_wire_mtr) : 20,
+            earthing_wire_mtr: r.earthing_wire_mtr ? Number(r.earthing_wire_mtr) : 90,
+            created_at: r.created_at,
+            updated_at: r.updated_at,
           }
         });
-        
+
         // Debug: Log unique categories and technologies to verify data
         const uniqueCategories = [...new Set(mappedData.map(r => r.category))]
         const uniqueTechnologies = [...new Set(mappedData.map(r => r.technology))]
@@ -113,13 +114,13 @@ export default function HybridSolarPricing() {
             NDCR: mappedData.filter(r => r.category === 'NDCR').length,
           }
         })
-        
+
         setPricingData(mappedData);
       } else {
         console.warn('No data found in hybrid_solar_pricing table');
         setPricingData([]);
       }
-      
+
       setLoading(false)
     } catch (err) {
       console.error('Error fetching pricing:', err)
@@ -134,10 +135,10 @@ export default function HybridSolarPricing() {
       // Normalize values for comparison
       const rowTech = (row.technology || '').toUpperCase().trim()
       const rowVariant = (row.variant || '').toUpperCase().trim()
-      
+
       const matchesTechnology = technologyFilter === 'all' || rowTech === technologyFilter.toUpperCase()
       const matchesVariant = variantFilter === 'all' || rowVariant === variantFilter.toUpperCase()
-      
+
       return matchesTechnology && matchesVariant
     })
   }, [pricingData, technologyFilter, variantFilter])
@@ -207,7 +208,7 @@ export default function HybridSolarPricing() {
           <h2 className="text-2xl font-bold text-slate-900">Hybrid Solar System Pricing</h2>
           <p className="text-sm text-slate-600 mt-1">Choose from our range of hybrid solar systems with battery backup</p>
         </div>
-        
+
         {/* Filter Buttons */}
         <div className="space-y-4">
           {/* Technology Filter */}
@@ -217,8 +218,8 @@ export default function HybridSolarPricing() {
               variant={technologyFilter === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTechnologyFilter('all')}
-              className={technologyFilter === 'all' 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              className={technologyFilter === 'all'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
@@ -228,8 +229,8 @@ export default function HybridSolarPricing() {
               variant={technologyFilter === 'TOPCON' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTechnologyFilter('TOPCON')}
-              className={technologyFilter === 'TOPCON' 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              className={technologyFilter === 'TOPCON'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
@@ -239,8 +240,8 @@ export default function HybridSolarPricing() {
               variant={technologyFilter === 'TOPCON_NDCR' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTechnologyFilter('TOPCON_NDCR')}
-              className={technologyFilter === 'TOPCON_NDCR' 
-                ? 'bg-cyan-600 hover:bg-cyan-700 text-white' 
+              className={technologyFilter === 'TOPCON_NDCR'
+                ? 'bg-cyan-600 hover:bg-cyan-700 text-white'
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
@@ -250,8 +251,8 @@ export default function HybridSolarPricing() {
               variant={technologyFilter === 'MONO_BIFACIAL' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTechnologyFilter('MONO_BIFACIAL')}
-              className={technologyFilter === 'MONO_BIFACIAL' 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
+              className={technologyFilter === 'MONO_BIFACIAL'
+                ? 'bg-green-600 hover:bg-green-700 text-white'
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
@@ -266,8 +267,8 @@ export default function HybridSolarPricing() {
               variant={variantFilter === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setVariantFilter('all')}
-              className={variantFilter === 'all' 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
+              className={variantFilter === 'all'
+                ? 'bg-green-600 hover:bg-green-700 text-white'
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
@@ -277,8 +278,8 @@ export default function HybridSolarPricing() {
               variant={variantFilter === 'WITH_BATTERY' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setVariantFilter('WITH_BATTERY')}
-              className={variantFilter === 'WITH_BATTERY' 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
+              className={variantFilter === 'WITH_BATTERY'
+                ? 'bg-green-600 hover:bg-green-700 text-white'
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
@@ -288,8 +289,8 @@ export default function HybridSolarPricing() {
               variant={variantFilter === 'WOBB' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setVariantFilter('WOBB')}
-              className={variantFilter === 'WOBB' 
-                ? 'bg-slate-600 hover:bg-slate-700 text-white' 
+              className={variantFilter === 'WOBB'
+                ? 'bg-slate-600 hover:bg-slate-700 text-white'
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
@@ -335,8 +336,8 @@ export default function HybridSolarPricing() {
             </thead>
             <tbody>
               {filteredRows.map((system) => (
-                <tr 
-                  key={system.id} 
+                <tr
+                  key={system.id}
                   className="border-b border-slate-200 hover:bg-blue-50 transition-colors"
                 >
                   <td className="p-3 border-r">
@@ -377,9 +378,9 @@ export default function HybridSolarPricing() {
                     ₹{system.price_inr.toLocaleString('en-IN')}
                   </td>
                   <td className="p-3">
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleRowClick(system)} 
+                    <Button
+                      size="sm"
+                      onClick={() => handleRowClick(system)}
                       className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow transition-all"
                     >
                       Get Quote
@@ -397,7 +398,7 @@ export default function HybridSolarPricing() {
         <div className="mt-4 text-sm text-slate-600">
           Showing <strong>{filteredRows.length}</strong> product{filteredRows.length !== 1 ? 's' : ''}
           {(technologyFilter !== 'all' || variantFilter !== 'all') && (
-            <> with filters: 
+            <> with filters:
               {technologyFilter !== 'all' && <strong className="ml-1">{technologyFilter}</strong>}
               {variantFilter !== 'all' && <strong className="ml-1">{variantFilter === 'WITH_BATTERY' ? 'With Battery' : 'Without Battery'}</strong>}
             </>
@@ -411,7 +412,7 @@ export default function HybridSolarPricing() {
           Our solar experts will analyze your energy needs and recommend the perfect hybrid solar solution for your home or business.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button 
+          <Button
             onClick={handleCustomSystemClick}
             className="bg-white text-blue-700 hover:bg-blue-50 font-medium py-3 px-6 text-base"
             size="lg"
@@ -426,10 +427,10 @@ export default function HybridSolarPricing() {
       <HybridQuoteForm
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
-        product={selectedSystem ? { 
-          id: selectedSystem.id, 
-          system_capacity: `${selectedSystem.capacity_kw} kW ${selectedSystem.phase}`, 
-          variant: selectedSystem.variant, 
+        product={selectedSystem ? {
+          id: selectedSystem.id,
+          system_capacity: `${selectedSystem.capacity_kw} kW ${selectedSystem.phase}`,
+          variant: selectedSystem.variant,
           price: selectedSystem.price_inr,
           battery_kwh: selectedSystem.battery_kwh,
           inverter_kwp: selectedSystem.inverter_kwp,

@@ -74,25 +74,25 @@ const CalculatorQuoteForm = ({ open, onOpenChange, quoteData, mountingType }: Ca
         customer_type: isCommercial ? "commercial" : "residential",
         mounting_type: mountingType || null,
         metadata: {
-            estimated_price: quoteData.totalPrice,
-            panel_config: `${quoteData.numberOfPanels} x 710Wp`,
-            inverter_size_kw: quoteData.inverterSizeKw,
-            price_per_watt: quoteData.pricePerWatt,
-            original_input_kw: quoteData.userInputKw,
-            base_price: quoteData.basePrice,
-            gst_amount: quoteData.gstAmount,
+          estimated_price: quoteData.totalPrice,
+          panel_config: `${quoteData.numberOfPanels} x 710Wp`,
+          inverter_size_kw: quoteData.inverterSizeKw,
+          price_per_watt: quoteData.pricePerWatt,
+          original_input_kw: quoteData.userInputKw,
+          base_price: quoteData.basePrice,
+          gst_amount: quoteData.gstAmount,
         }
       };
 
       await supabase.from('solar_quote_requests').insert(insertData)
-      
+
       try {
         await fetch('https://solar-quote-server.onrender.com/generate-quote', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(insertData),
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(insertData),
         });
-      } catch(err) {
+      } catch (err) {
         console.warn("Local server failed:", err)
       }
 
@@ -146,7 +146,7 @@ const CalculatorQuoteForm = ({ open, onOpenChange, quoteData, mountingType }: Ca
         name: "", phone: "", email: "", entity_type: "",
         solution_classification: "", project_location: "",
       })
-      onOpenChange(false)    
+      onOpenChange(false)
     } catch (error) {
       console.error("Error submitting quote:", error)
       toast({
@@ -165,7 +165,7 @@ const CalculatorQuoteForm = ({ open, onOpenChange, quoteData, mountingType }: Ca
 
   const isCommercial = (quoteData?.userInputKw ?? 0) > 10;
   const formTitle = isCommercial ? "Custom Commercial Solar Quote" : "Custom Residential Solar Quote";
-  
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
@@ -181,14 +181,14 @@ const CalculatorQuoteForm = ({ open, onOpenChange, quoteData, mountingType }: Ca
           </div>
           {quoteData && (
             <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm">
-               <span className="font-semibold text-gray-800 mb-3 block">Your Custom System Configuration:</span>
-               <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-                    <div className="flex items-center gap-2"><Sun className="h-4 w-4 text-yellow-500"/> System Size: <b className="ml-auto">{quoteData.actualSystemSizeKwp} kWp</b></div>
-                    <div className="flex items-center gap-2"><Zap className="h-4 w-4 text-blue-500"/> Inverter: <b className="ml-auto">{quoteData.inverterSizeKw} kW</b></div>
-                    <div className="flex items-center gap-2 text-gray-600"> Panels: <b className="ml-auto text-gray-800">{quoteData.numberOfPanels} x 710Wp</b></div>
-                    {mountingType && <div className="flex items-center gap-2 text-gray-600">Mounting: <b className="ml-auto text-gray-800">{mountingType}</b></div>}
-               </div>
-               <div className="flex items-center gap-2 mt-3 pt-3 border-t font-bold text-lg"><IndianRupee className="h-5 w-5 text-green-600"/> Estimated Price: <b className="ml-auto text-green-600">₹{quoteData.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</b></div>
+              <span className="font-semibold text-gray-800 mb-3 block">Your Custom System Configuration:</span>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                <div className="flex items-center gap-2"><Sun className="h-4 w-4 text-yellow-500" /> System Size: <b className="ml-auto">{quoteData.actualSystemSizeKwp} kWp</b></div>
+                <div className="flex items-center gap-2"><Zap className="h-4 w-4 text-blue-500" /> Inverter: <b className="ml-auto">{quoteData.inverterSizeKw} kW</b></div>
+                <div className="flex items-center gap-2 text-gray-600"> Panels: <b className="ml-auto text-gray-800">{quoteData.numberOfPanels} x 710Wp</b></div>
+                {mountingType && <div className="flex items-center gap-2 text-gray-600">Mounting: <b className="ml-auto text-gray-800">{mountingType}</b></div>}
+              </div>
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t font-bold text-lg"><IndianRupee className="h-5 w-5 text-green-600" /> Estimated Price: <b className="ml-auto text-green-600">₹{quoteData.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</b></div>
             </div>
           )}
         </DialogHeader>
@@ -211,8 +211,8 @@ const CalculatorQuoteForm = ({ open, onOpenChange, quoteData, mountingType }: Ca
                   <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder="your.email@example.com" />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="project_location">Project Location *</Label>
-                    <Input id="project_location" required value={formData.project_location} onChange={(e) => handleInputChange("project_location", e.target.value)} placeholder="City, State" />
+                  <Label htmlFor="project_location">Project Location *</Label>
+                  <Input id="project_location" required value={formData.project_location} onChange={(e) => handleInputChange("project_location", e.target.value)} placeholder="City, State" />
                 </div>
               </div>
               <div className="pt-4">

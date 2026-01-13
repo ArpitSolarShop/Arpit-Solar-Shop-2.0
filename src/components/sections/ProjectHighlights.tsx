@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+// import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +23,7 @@ import c7 from '@/assets/Arpit_Solar_Shop_Happy_Cuatomers/c7.jpg';
 import c8 from '@/assets/Arpit_Solar_Shop_Happy_Cuatomers/c8.jpg';
 import c9 from '@/assets/Arpit_Solar_Shop_Happy_Cuatomers/c9.jpg';
 
-const customerImages = [c1, c2, c3, c4, c5, c6, c7, c8, c9];
+const customerImages = [c1.src, c2.src, c3.src, c4.src, c5.src, c6.src, c7.src, c8.src, c9.src];
 
 interface Project {
   id: string;
@@ -38,16 +40,19 @@ const ProjectHighlights = () => {
 
   const fetchProjects = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('id, title, category, location, cover_image_url')
-        .limit(6)
-        .order('created_at', { ascending: false });
+      const response = await fetch('/api/projects?limit=6');
+      const { data, error } = await response.json();
 
-      if (error) throw error;
-      setProjects(data || []);
+      if (error) {
+        // Silently handle missing table or known errors
+        console.warn("Projects API warning:", error);
+        setProjects([]);
+      } else {
+        setProjects(data || []);
+      }
     } catch (error) {
       console.error("Error fetching projects:", error);
+      setProjects([]);
     } finally {
       setLoading(false);
     }

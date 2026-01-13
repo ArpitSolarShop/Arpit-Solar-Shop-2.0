@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -17,10 +18,10 @@ import { CheckCircle, AlertCircle, Battery, Zap } from "lucide-react"
 interface HybridQuoteFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  product?: { 
-    id: number; 
-    system_capacity: string; 
-    variant: 'WITH_BATTERY' | 'WOBB'; 
+  product?: {
+    id: number;
+    system_capacity: string;
+    variant: 'WITH_BATTERY' | 'WOBB';
     price: number;
     battery_kwh?: number | null;
     inverter_kwp?: number;
@@ -114,7 +115,7 @@ const HybridQuoteForm = ({
   const validateForm = () => {
     const phoneRegex = /^[6-9]\d{9}$/
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    
+
     if (!formData.name) return "Name is required"
     if (!formData.phone || !phoneRegex.test(formData.phone)) return "Valid phone number is required (10 digits, starting with 6-9)"
     if (formData.email && !emailRegex.test(formData.email)) return "Invalid email format"
@@ -172,23 +173,22 @@ const HybridQuoteForm = ({
         power_demand_kw: derivedCapacity,
         estimated_system_size_kw: derivedCapacity,
         product_name: product
-          ? `${product.system_capacity} ${
-              product.variant === "WITH_BATTERY" ? "Hybrid with Battery" : "Hybrid without Battery"
-            }`
+          ? `${product.system_capacity} ${product.variant === "WITH_BATTERY" ? "Hybrid with Battery" : "Hybrid without Battery"
+          }`
           : productName,
         additional_details: {
           category: product?.category ?? "DCR",
           variant: product?.variant ?? (hasBattery ? "WITH_BATTERY" : "WOBB"),
           ...(product
             ? {
-                system_capacity: product.system_capacity,
-                price: product.price,
-                battery_kwh: product.battery_kwh ?? null,
-                inverter_kwp: product.inverter_kwp,
-                module_watt: product.module_watt,
-                module_count: product.module_count,
-                phase: product.phase ?? (product.system_capacity?.includes("3Ph") ? "3Ph" : "1Ph"),
-              }
+              system_capacity: product.system_capacity,
+              price: product.price,
+              battery_kwh: product.battery_kwh ?? null,
+              inverter_kwp: product.inverter_kwp,
+              module_watt: product.module_watt,
+              module_count: product.module_count,
+              phase: product.phase ?? (product.system_capacity?.includes("3Ph") ? "3Ph" : "1Ph"),
+            }
             : {}),
         },
         entity_type: formData.entity_type || null,

@@ -54,13 +54,13 @@ const RelianceQuoteForm = ({
 
 
   useEffect(() => {
-    console.log('RelianceQuoteForm props:', { 
-      productType, 
-      powerDemandKw, 
+    console.log('RelianceQuoteForm props:', {
+      productType,
+      powerDemandKw,
       dcCables,
-      productName 
+      productName
     });
-    
+
     if (powerDemandKw !== null && powerDemandKw !== undefined) {
       setFormData((prev) => ({
         ...prev,
@@ -107,7 +107,7 @@ const RelianceQuoteForm = ({
 
       // Insert into Supabase: solar_quote_requests
       try {
-        await supabase.from<any>('solar_quote_requests').insert(insertData)
+        await supabase.from('solar_quote_requests').insert(insertData)
       } catch (dbErr) {
         console.warn('DB insert failed:', dbErr)
       }
@@ -115,7 +115,7 @@ const RelianceQuoteForm = ({
       // Optional secondary server
       try {
         //await fetch('http://localhost:3000/generate-quote', {
-         await fetch('https://solar-quote-server.onrender.com/generate-quote', {
+        await fetch('https://solar-quote-server.onrender.com/generate-quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(insertData),
@@ -169,8 +169,8 @@ const RelianceQuoteForm = ({
 
 
 
-      
-      
+
+
       toast({
         title: "Quote Request Submitted!",
         description: isLargeSystem

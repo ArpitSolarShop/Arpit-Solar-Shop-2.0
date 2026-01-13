@@ -77,12 +77,14 @@
 
 
 
+"use client";
+
 import React, { useRef, useState } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
-import Video1 from "@/assets/TV/Arpit_Solar_Shop_Installation_Video (1).mp4";
-import Video2 from "@/assets/TV/Arpit_Solar_Shop_Installation_Video.mp4";
-import Video3 from "@/assets/TV/Logo_T_Shirt_Video_Enhancement.mp4";
+const Video1 = "/assets/TV/Arpit_Solar_Shop_Installation_Video (1).mp4";
+const Video2 = "/assets/TV/Arpit_Solar_Shop_Installation_Video.mp4";
+const Video3 = "/assets/TV/Logo_T_Shirt_Video_Enhancement.mp4";
 
 const TVCard: React.FC = () => {
   const videos = [Video1, Video2, Video3];

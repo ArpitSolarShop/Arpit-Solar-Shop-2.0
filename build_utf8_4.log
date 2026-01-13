@@ -1,0 +1,15 @@
+
+> arpit-solar-shop-next-app@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.6
+   - Environments: .env.local
+
+
+> Build error occurred
+[Error: EINVAL: invalid argument, readlink 'C:\Users\arpit\OneDrive\Desktop\Arpit Solar Shop Web App\arpit-solar-shop-next-app\.next\cache'] {
+  errno: -4071,
+  code: 'EINVAL',
+  syscall: 'readlink',
+  path: 'C:\\Users\\arpit\\OneDrive\\Desktop\\Arpit Solar Shop Web App\\arpit-solar-shop-next-app\\.next\\cache'
+}

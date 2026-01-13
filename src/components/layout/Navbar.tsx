@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // **Logo Sizing Changes:**
 
 // - **Transparent state**: Increased from `w-20 h-20 sm:w-24 sm:h-24` to `w-32 h-24 sm:w-40 sm:h-28` with negative margins `-my-2 sm:-my-3`
@@ -18,8 +19,8 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { GetQuoteForm } from "@/pages/GetQuote"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { GetQuoteForm } from "@/components/forms/GetQuoteForm"
 import {
   Menu,
   X,
@@ -71,7 +72,8 @@ type SocialLink = {
   url: string
 }
 
-import { Link, useLocation } from "react-router-dom"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 const Navbar = () => {
   // State management
@@ -80,9 +82,23 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [isQuoteOpen, setIsQuoteOpen] = useState(false)
-  const location = useLocation()
-  const pathname = location.pathname
+  const pathname = usePathname()
+
   const menuCloseTimer = useRef<NodeJS.Timeout | null>(null)
+  const navbarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      if (navbarRef.current) {
+        const height = navbarRef.current.offsetHeight
+        document.documentElement.style.setProperty("--navbar-height", `${height}px`)
+      }
+    }
+
+    updateNavbarHeight()
+    window.addEventListener("resize", updateNavbarHeight)
+    return () => window.removeEventListener("resize", updateNavbarHeight)
+  }, [])
 
   // Memoized navigation items
   const navigationItems: NavigationItem[] = useMemo(
@@ -145,7 +161,7 @@ const Navbar = () => {
             description: "Smart solar solutions with battery backup",
             recommended: "Perfect for areas with power fluctuations"
           },
-          
+
         ],
       },
       { name: "Services", icon: Hammer, href: "/services" },
@@ -250,35 +266,30 @@ const Navbar = () => {
         ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-white/20"
         : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
 
-      const topPosition = isTransparent ? "73px" : "65px"
-
       return (
         <div
-          className={`fixed left-0 right-0 ${baseClasses} border-b shadow-xl z-40`}
-          style={{ top: topPosition, width: "100vw" }}
+          className={`absolute top-full left-0 w-full ${baseClasses} border-t border-b shadow-xl z-40`}
           onMouseEnter={() => handleMenuEnter(item.name)}
           onMouseLeave={handleMenuLeave}
         >
           <div className="container mx-auto px-4 py-6">
             <div className={`${item.name === "Products" ? "max-w-6xl mx-auto" : "max-w-4xl mx-auto"}`}>
               <div
-                className={`gap-4 ${
-                  item.name === "Products"
-                    ? "flex justify-center flex-wrap"
-                    : item.name === "Solutions" || item.name === "About"
-                      ? "grid grid-cols-1 sm:grid-cols-2"
-                      : "space-y-2"
-                }`}
+                className={`gap-4 ${item.name === "Products"
+                  ? "flex justify-center flex-wrap"
+                  : item.name === "Solutions" || item.name === "About"
+                    ? "grid grid-cols-1 sm:grid-cols-2"
+                    : "space-y-2"
+                  }`}
               >
                 {item.dropdown.map((dropdownItem) => (
                   <Link
                     key={`${item.name}-${dropdownItem.name}`}
-                    to={dropdownItem.href}
-                    className={`${
-                      item.name === "Products" || item.name === "Solutions" || item.name === "About"
-                        ? "flex flex-col items-center gap-3 p-4 min-w-[200px]"
-                        : "flex items-center gap-3 p-3"
-                    } cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-200 dark:hover:border-blue-700 group`}
+                    href={dropdownItem.href}
+                    className={`${item.name === "Products" || item.name === "Solutions" || item.name === "About"
+                      ? "flex flex-col items-center gap-3 p-4 min-w-[200px]"
+                      : "flex items-center gap-3 p-3"
+                      } cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-200 dark:hover:border-blue-700 group`}
                   >
                     {(item.name === "Products" || item.name === "Solutions" || item.name === "About") && (
                       <div className="w-20 h-20 bg-white dark:bg-gray-700 rounded-lg p-2 shadow-sm group-hover:shadow-md transition-shadow duration-200 flex items-center justify-center">
@@ -313,11 +324,10 @@ const Navbar = () => {
                       )}
                       {dropdownItem.recommended && (
                         <div
-                          className={`text-xs px-2 py-1 rounded-full mt-2 inline-block transition-colors duration-200 ${
-                            dropdownItem.recommended === "Currently Out of Stock"
-                              ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 group-hover:bg-red-200 dark:group-hover:bg-red-800"
-                              : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 group-hover:bg-blue-200 dark:group-hover:bg-blue-800"
-                          }`}
+                          className={`text-xs px-2 py-1 rounded-full mt-2 inline-block transition-colors duration-200 ${dropdownItem.recommended === "Currently Out of Stock"
+                            ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 group-hover:bg-red-200 dark:group-hover:bg-red-800"
+                            : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 group-hover:bg-blue-200 dark:group-hover:bg-blue-800"
+                            }`}
                         >
                           {dropdownItem.recommended}
                         </div>
@@ -375,14 +385,13 @@ const Navbar = () => {
                       {item.name}
                     </div>
                     <div
-                      className={`gap-3 px-3 py-3 ${
-                        item.name === "Products" ? "flex overflow-x-auto pb-2" : "grid grid-cols-1 xs:grid-cols-2"
-                      }`}
+                      className={`gap-3 px-3 py-3 ${item.name === "Products" ? "flex overflow-x-auto pb-2" : "grid grid-cols-1 xs:grid-cols-2"
+                        }`}
                     >
                       {item.dropdown.map((dropdownItem) => (
                         <Link
                           key={dropdownItem.name}
-                          to={dropdownItem.href}
+                          href={dropdownItem.href}
                           className="flex flex-col items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 rounded-lg border border-transparent hover:border-blue-200 dark:hover:border-blue-700 flex-shrink-0 min-w-[140px]"
                           onClick={closeMobileMenu}
                         >
@@ -411,11 +420,10 @@ const Navbar = () => {
                             )}
                             {dropdownItem.recommended && (
                               <div
-                                className={`text-xs px-2 py-1 rounded-full mt-2 inline-block ${
-                                  dropdownItem.recommended === "Currently Out of Stock"
-                                    ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400"
-                                    : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400"
-                                }`}
+                                className={`text-xs px-2 py-1 rounded-full mt-2 inline-block ${dropdownItem.recommended === "Currently Out of Stock"
+                                  ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400"
+                                  : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400"
+                                  }`}
                               >
                                 {dropdownItem.recommended}
                               </div>
@@ -427,12 +435,11 @@ const Navbar = () => {
                   </div>
                 ) : (
                   <Link
-                    to={item.href!}
-                    className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-lg ${
-                      isActivePath(item.href!)
-                        ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                        : "text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    }`}
+                    href={item.href!}
+                    className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-lg ${isActivePath(item.href!)
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                      : "text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
                     onClick={closeMobileMenu}
                   >
                     <item.icon className={`w-4 h-4 ${item.iconClassName || ""}`} />
@@ -493,24 +500,25 @@ const Navbar = () => {
   const underlineEffect =
     "relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-0 after:transition-all after:duration-300"
 
+  const activeItem = useMemo(() => navigationItems.find(i => i.name === activeDropdown), [activeDropdown, navigationItems])
+
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+      <div ref={navbarRef} className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         {isTransparent ? (
           // Transparent navbar
           <div className="w-full px-4 py-2">
             <div className="container mx-auto">
               <div className="flex items-center justify-between">
                 {/* Logo */}
-                <Link to="/" className="flex items-center pl-2 sm:pl-4">
+                <Link href="/" className="flex items-center pl-2 sm:pl-4">
                   <img
                     src="/logo.png"
                     alt="Arpit Solar Logo"
-                    className={`object-contain transition-all duration-300 ${
-                      logoRestricted
-                        ? "w-24 h-16 sm:w-28 sm:h-20 -my-1 sm:-my-2" // Restricted size when mega menu open
-                        : "w-32 h-24 sm:w-40 sm:h-28 -my-2 sm:-my-3" // Full size when no mega menu
-                    }`}
+                    className={`object-contain transition-all duration-300 ${logoRestricted
+                      ? "w-24 h-16 sm:w-28 sm:h-20 -my-1 sm:-my-2" // Restricted size when mega menu open
+                      : "w-32 h-24 sm:w-40 sm:h-28 -my-2 sm:-my-3" // Full size when no mega menu
+                      }`}
                     loading="eager"
                   />
                 </Link>
@@ -539,14 +547,12 @@ const Navbar = () => {
                             </span>
                             <ChevronDown className="w-4 h-4 ml-1" />
                           </Button>
-                          {activeDropdown === item.name && <DropdownContent item={item} isTransparent={true} />}
                         </>
                       ) : (
                         <Link
-                          to={item.href!}
-                          className={`flex items-center gap-1 px-3 xl:px-4 py-2 text-sm font-medium transition-colors duration-200 text-white ${underlineEffect} after:bg-white ${
-                            isActivePath(item.href!) ? "after:w-full" : "after:w-0 group-hover:after:w-full"
-                          }`}
+                          href={item.href!}
+                          className={`flex items-center gap-1 px-3 xl:px-4 py-2 text-sm font-medium transition-colors duration-200 text-white ${underlineEffect} after:bg-white ${isActivePath(item.href!) ? "after:w-full" : "after:w-0 group-hover:after:w-full"
+                            }`}
                         >
                           <item.icon className={`w-4 h-4 mr-1 ${item.iconClassName || ""}`} />
                           {item.name}
@@ -599,15 +605,14 @@ const Navbar = () => {
             <div className="container mx-auto px-4 py-2">
               <div className="flex items-center justify-between">
                 {/* Logo */}
-                <Link to="/" className="flex items-center pl-2 sm:pl-4">
+                <Link href="/" className="flex items-center pl-2 sm:pl-4">
                   <img
                     src="/logo.png"
                     alt="Arpit Solar Logo"
-                    className={`object-contain transition-all duration-300 ${
-                      logoRestricted
-                        ? "w-20 h-14 sm:w-24 sm:h-16 -my-1" // Restricted size when mega menu open
-                        : "w-28 h-20 sm:w-32 sm:h-24 -my-1 sm:-my-2" // Full size when no mega menu
-                    }`}
+                    className={`object-contain transition-all duration-300 ${logoRestricted
+                      ? "w-20 h-14 sm:w-24 sm:h-16 -my-1" // Restricted size when mega menu open
+                      : "w-28 h-20 sm:w-32 sm:h-24 -my-1 sm:-my-2" // Full size when no mega menu
+                      }`}
                     loading="eager"
                   />
                 </Link>
@@ -636,16 +641,14 @@ const Navbar = () => {
                             </span>
                             <ChevronDown className="w-4 h-4 ml-1" />
                           </Button>
-                          {activeDropdown === item.name && <DropdownContent item={item} isTransparent={false} />}
                         </>
                       ) : (
                         <Link
-                          to={item.href!}
-                          className={`flex items-center gap-1 px-3 xl:px-4 py-2 text-sm font-medium transition-colors duration-200 ${underlineEffect} after:bg-blue-600 dark:after:bg-blue-400 ${
-                            isActivePath(item.href!)
-                              ? "text-blue-600 dark:text-blue-400 after:w-full"
-                              : "text-gray-700 dark:text-gray-200 after:w-0 group-hover:after:w-full"
-                          }`}
+                          href={item.href!}
+                          className={`flex items-center gap-1 px-3 xl:px-4 py-2 text-sm font-medium transition-colors duration-200 ${underlineEffect} after:bg-blue-600 dark:after:bg-blue-400 ${isActivePath(item.href!)
+                            ? "text-blue-600 dark:text-blue-400 after:w-full"
+                            : "text-gray-700 dark:text-gray-200 after:w-0 group-hover:after:w-full"
+                            }`}
                         >
                           <item.icon className={`w-4 h-4 mr-1 ${item.iconClassName || ""}`} />
                           {item.name}
@@ -694,12 +697,18 @@ const Navbar = () => {
           </div>
         )}
 
+        {/* Dropdown Content */}
+        {activeItem && (
+          <DropdownContent item={activeItem} isTransparent={isTransparent} />
+        )}
+
         {/* Mobile Menu */}
         <MobileMenu />
 
         {/* Get Quote Modal */}
         <Dialog open={isQuoteOpen} onOpenChange={setIsQuoteOpen}>
           <DialogContent className="sm:max-w-3xl w-[95vw] max-h-[90vh] p-0 gap-0 border-0 bg-white text-black">
+            <DialogTitle className="sr-only">Get a Quote</DialogTitle>
             <div className="h-1 w-full sunset-gradient" />
             <div className="p-4 sm:p-6 overflow-y-auto">
               <GetQuoteForm compact showHeader={false} />

@@ -307,7 +307,8 @@
 
 
 
-"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 
 import { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -631,8 +632,8 @@ export default function TataSolarPricingPage() {
             isLargeSystem
               ? `Large Scale System (> ${config.limit} kWp)`
               : selectedProduct
-              ? `${selectedProduct.systemSize} kWp Solar System (${selectedProduct.phase}-Phase)`
-              : "Tata Power Solar Product"
+                ? `${selectedProduct.systemSize} kWp Solar System (${selectedProduct.phase}-Phase)`
+                : "Tata Power Solar Product"
           }
           isLargeSystem={isLargeSystem}
           powerDemandKw={isLargeSystem ? null : selectedProduct?.systemSize || null}
