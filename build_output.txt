@@ -1,0 +1,47 @@
+
+> arpit-solar-shop-next-app@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.6
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./src/app/api/generate-quote/route.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./src/app/api/generate-quote/route.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./src/app/api/generate-quote/route.ts
+
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./src/assets/reliance.tsx:596:10
+Type error: Cannot find name 'RelianceQuoteForm'.
+
+[0m [90m 594 |[39m         [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 595 |[39m[0m
+[0m[31m[1m>[22m[39m[90m 596 |[39m         [33m<[39m[33mRelianceQuoteForm[39m open[33m=[39m{isFormOpen} onOpenChange[33m=[39m{setIsFormOpen} productName[33m=[39m{selectedProduct[33m?[39m[33m.[39msystemSize [33m===[39m [35m0[39m [33m||[39m selectedProduct[33m?[39m[33m.[39msystemSizeKWp [33m===[39m [35m0[39m [33m?[39m [32m`Large Scale System (Above ${commercialLimit} kWp)`[39m [33m:[39m selectedProduct [33m?[39m getProductName(selectedProduct[33m,[39m selectedCommercialType [33m||[39m productType) [33m:[39m [32m"Reliance Solar Product"[39m} isLargeSystem[33m=[39m{selectedProduct[33m?[39m[33m.[39msystemSize [33m===[39m [35m0[39m [33m||[39m selectedProduct[33m?[39m[33m.[39msystemSizeKWp [33m===[39m [35m0[39m} productType[33m=[39m{productType} powerDemandKw[33m=[39m{productType [33m===[39m [32m"commercial"[39m [33m?[39m selectedProduct[33m?[39m[33m.[39msystemSizeKWp [33m||[39m [36mnull[39m [33m:[39m selectedProduct[33m?[39m[33m.[39msystemSize [33m||[39m selectedProduct[33m?[39m[33m.[39msystemSizeKW [33m||[39m [36mnull[39m} mountingType[33m=[39m{(() [33m=>[39m { [36mif[39m ([33m![39mselectedCommercialType) [36mreturn[39m [36mnull[39m[33m;[39m [36mif[39m (selectedCommercialType[33m.[39mincludes([32m"tin-shed"[39m)) [36mreturn[39m [32m"Tin Shed"[39m[33m;[39m [36mif[39m (selectedCommercialType[33m.[39mincludes([32m"rcc"[39m)) [36mreturn[39m [32m"RCC Elevated"[39m[33m;[39m [36mif[39m (selectedCommercialType[33m.[39mincludes([32m"without-mms"[39m)) [36mreturn[39m [32m"Without MMS"[39m[33m;[39m [36mif[39m (selectedCommercialType[33m.[39mincludes([32m"mms"[39m)) [36mreturn[39m [32m"Pre GI MMS"[39m[33m;[39m [36mreturn[39m [36mnull[39m[33m;[39m })()} [33m/[39m[33m>[39m[0m
+[0m [90m     |[39m          [31m[1m^[22m[39m[0m
+[0m [90m 597 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 598 |[39m     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 599 |[39m   )[0m
+Static worker exited with code: 1 and signal: null

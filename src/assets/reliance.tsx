@@ -593,7 +593,28 @@ export default function Reliance() {
           <p>Reliance Industries Ltd. | {new Date().getFullYear()}</p>
         </div>
 
-        <RelianceQuoteForm open={isFormOpen} onOpenChange={setIsFormOpen} productName={selectedProduct?.systemSize === 0 || selectedProduct?.systemSizeKWp === 0 ? `Large Scale System (Above ${commercialLimit} kWp)` : selectedProduct ? getProductName(selectedProduct, selectedCommercialType || productType) : "Reliance Solar Product"} isLargeSystem={selectedProduct?.systemSize === 0 || selectedProduct?.systemSizeKWp === 0} productType={productType} powerDemandKw={productType === "commercial" ? selectedProduct?.systemSizeKWp || null : selectedProduct?.systemSize || selectedProduct?.systemSizeKW || null} mountingType={(() => { if (!selectedCommercialType) return null; if (selectedCommercialType.includes("tin-shed")) return "Tin Shed"; if (selectedCommercialType.includes("rcc")) return "RCC Elevated"; if (selectedCommercialType.includes("without-mms")) return "Without MMS"; if (selectedCommercialType.includes("mms")) return "Pre GI MMS"; return null; })()} />
+        <UniversalQuoteForm
+          open={isFormOpen}
+          onOpenChange={setIsFormOpen}
+          category="Reliance"
+          productDetails={{
+            name: selectedProduct?.systemSize === 0 || selectedProduct?.systemSizeKWp === 0 ? `Large Scale System (Above ${commercialLimit} kWp)` : selectedProduct ? getProductName(selectedProduct, selectedCommercialType || productType) : "Reliance Solar Product",
+            description: productType,
+            systemSize: Number(productType === "commercial" ? selectedProduct?.systemSizeKWp || 0 : selectedProduct?.systemSize || selectedProduct?.systemSizeKW || 0),
+            mountingType: (() => {
+              if (!selectedCommercialType) return undefined;
+              if (selectedCommercialType.includes("tin-shed")) return "Tin Shed";
+              if (selectedCommercialType.includes("rcc")) return "RCC Elevated";
+              if (selectedCommercialType.includes("without-mms")) return "Without MMS";
+              if (selectedCommercialType.includes("mms")) return "Pre GI MMS";
+              return undefined;
+            })()
+          }}
+          config={{
+            title: "Get Reliance Solar Quote",
+            description: "Get a customized quote for your Reliance Solar system."
+          }}
+        />
       </div>
     </div>
   )

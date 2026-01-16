@@ -13,9 +13,9 @@ import LocationJsonLd from "@/components/analytics/LocationJsonLd";
 import RecentUpdates from "@/components/sections/RecentUpdates";
 
 interface Props {
-    params: {
+    params: Promise<{
         city: string;
-    };
+    }>;
 }
 
 export async function generateStaticParams() {

@@ -1,0 +1,87 @@
+
+> arpit-solar-shop-next-app@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.6
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./src/app/api/generate-quote/route.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./src/app/api/generate-quote/route.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./src/app/api/generate-quote/route.ts
+
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/111) ...
+   Generating static pages (27/111) 
+   Generating static pages (55/111) 
+   Generating static pages (83/111) 
+ ✓ Generating static pages (111/111)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                        Size     First Load JS
+┌ ○ /                                              9.38 kB         240 kB
+├ ○ /_not-found                                    983 B           106 kB
+├ ○ /about/sustainability                          179 B           109 kB
+├ ○ /about/us                                      179 B           109 kB
+├ ○ /admin                                         108 kB          274 kB
+├ ƒ /api/generate-quote                            152 B           106 kB
+├ ƒ /api/projects                                  152 B           106 kB
+├ ƒ /api/quote/submit                              152 B           106 kB
+├ ƒ /api/test-quote                                152 B           106 kB
+├ ƒ /city/[city]                                   4.98 kB         265 kB
+├ ○ /contact                                       2.26 kB         115 kB
+├ ○ /get-quote                                     1.22 kB         140 kB
+├ ○ /hybrid-solar                                  5.95 kB         173 kB
+├ ○ /integrated                                    6.74 kB         174 kB
+├ ○ /manifest.webmanifest                          0 B                0 B
+├ ○ /reliance                                      17.1 kB         199 kB
+├ ○ /robots.txt                                    0 B                0 B
+├ ○ /services                                      6.64 kB         119 kB
+├ ○ /shakti-solar                                  9.48 kB         177 kB
+├ ○ /sitemap.xml                                   0 B                0 B
+├ ● /solar-installation/[city]                     6.48 kB         210 kB
+├   ├ /solar-installation/varanasi
+├   ├ /solar-installation/mau
+├   ├ /solar-installation/varanasi-cantt-varanasi
+├   └ [+83 more paths]
+├ ○ /solutions/commercial-industrial               7.61 kB         215 kB
+├ ○ /solutions/residential                         8.61 kB         219 kB
+└ ○ /tata-solar                                    5.35 kB         173 kB
++ First Load JS shared by all                      105 kB
+  ├ chunks/1517-f7af1810cd4889d4.js                50.5 kB
+  ├ chunks/4bd1b696-38ea7e8b2e518e6d.js            52.9 kB
+  └ other shared chunks (total)                    2.01 kB
+
+
+ƒ Middleware                                       32.2 kB
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
