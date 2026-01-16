@@ -5,7 +5,7 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import IntegratedQuoteForm from '@/components/forms/integrated-quote-form'
+import UniversalQuoteForm from '@/components/forms/UniversalQuoteForm'
 import { supabase } from '@/integrations/supabase/client'
 
 type IntegratedRow = {
@@ -267,12 +267,25 @@ export default function IntegratedPriceData() {
         </div>
       )}
 
-      <IntegratedQuoteForm
+      <UniversalQuoteForm
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
-        product={selectedProduct}
-        productName={selectedProduct ? `${selectedProduct.brand} ${selectedProduct.system_kw} kW(${selectedProduct.module_type || 'N/A'})` : undefined}
-        powerDemandKw={selectedProduct ? selectedProduct.system_kw : null}
+        category="Integrated"
+        productDetails={
+          selectedProduct ? {
+            name: `${selectedProduct.brand} ${selectedProduct.system_kw} kW System`,
+            systemSize: selectedProduct.system_kw,
+            price: selectedProduct.price,
+            phase: selectedProduct.phase,
+            brand: selectedProduct.brand,
+            module_type: selectedProduct.module_type || 'N/A',
+            description: `${selectedProduct.no_of_modules} Modules | ${selectedProduct.inverter_capacity_kw}kW Inverter | ${selectedProduct.module_watt}Wp Modules`
+          } : undefined
+        }
+        config={{
+          title: "Integrated Solar Solution Quote",
+          description: "Complete system with panels, inverter, and installation."
+        }}
       />
     </div>
   )

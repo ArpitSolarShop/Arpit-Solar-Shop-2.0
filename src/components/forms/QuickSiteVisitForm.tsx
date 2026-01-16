@@ -42,30 +42,25 @@ export function QuickSiteVisitForm({ city, children }: QuickSiteVisitFormProps) 
                 // We typically continue to try Kit19 even if Supabase fails (as per HeroGetQuote logic)
             }
 
-            // 2. Send to Kit19 API
-            const apiUrl = process.env.NEXT_PUBLIC_KIT19_API;
-            const authKey = process.env.NEXT_PUBLIC_KIT19_AUTH;
-
-            if (apiUrl && authKey) {
+            // 2. Send to Kit19 API via Proxy Server (Standardized)
+            try {
                 const payload = {
-                    PersonName: formData.name,
-                    MobileNo: formData.phone,
-                    City: formData.location,
-                    project_location: formData.location, // Providing both just in case
-                    SourceName: "Website",
-                    MediumName: "Quick Site Visit Form",
-                    CampaignName: `Location Page - ${city}`,
-                    InitialRemarks: `Requested Free Site Visit. Location: ${formData.location}`,
+                    name: formData.name,
+                    phone: formData.phone,
+                    project_location: formData.location,
+                    source: `Quick Site Visit - ${city}`,
+                    customer_type: "residential",
+                    solution_classification: "Residential", // Default
+                    product_category: "General", // Default
                 };
 
-                await fetch(apiUrl, {
-                    method: "POST",
-                    headers: {
-                        "kit19-Auth-Key": authKey,
-                        "Content-Type": "application/json",
-                    },
+                await fetch('/api/generate-quote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
+            } catch (err) {
+                console.warn("Secondary server submission failed:", err);
             }
 
             setSuccess(true);

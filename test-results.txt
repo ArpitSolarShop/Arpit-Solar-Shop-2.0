@@ -1,0 +1,16 @@
+Testing Tata...
+✅ Tata SUCCESS: Status 200
+   PDF URL: N/A
+-----------------------------------
+Testing Shakti...
+✅ Shakti SUCCESS: Status 200
+   PDF URL: N/A
+-----------------------------------
+Testing Reliance...
+✅ Reliance SUCCESS: Status 200
+   PDF URL: N/A
+-----------------------------------
+Testing Integrated...
+✅ Integrated SUCCESS: Status 200
+   PDF URL: N/A
+-----------------------------------

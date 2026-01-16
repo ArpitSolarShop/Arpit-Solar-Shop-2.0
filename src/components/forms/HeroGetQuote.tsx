@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useEffect, useState } from "react"
@@ -206,7 +205,7 @@ const sendToKit19 = async (formData: QuoteFormData, estimateData: EstimateData, 
             },
             body: JSON.stringify(payload),
         })
-        console.log("Kit19: Lead synced successfully (once)")
+        // Kit19: Lead synced successfully
     } catch (err) {
         console.warn("Kit19: Sync failed (non-critical)", err)
     }
@@ -388,7 +387,7 @@ export function HeroGetQuote() {
                 }
             }
 
-            const res = await fetch("https://solar-quote-server.onrender.com/generate-quote", {
+            const res = await fetch("/api/generate-quote", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),

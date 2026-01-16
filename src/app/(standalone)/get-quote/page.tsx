@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
-import { GetQuoteForm } from "@/components/forms/GetQuoteForm";
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
 
 export default function GetQuote() {
     return (
@@ -31,7 +31,16 @@ export default function GetQuote() {
                     </p>
                 </div>
                 <Suspense fallback={<div className="text-center py-10">Loading quote form...</div>}>
-                    <GetQuoteForm />
+                    <UniversalQuoteForm
+                        open={true}
+                        onOpenChange={() => { }}
+                        category="Generic"
+                        mode="embedded"
+                        config={{
+                            title: "Solar Consultation",
+                            description: "Fill in the details below to get started."
+                        }}
+                    />
                 </Suspense>
             </div>
         </div>

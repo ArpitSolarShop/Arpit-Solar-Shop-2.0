@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // **Logo Sizing Changes:**
 
@@ -15,12 +16,11 @@
 
 
 
-"use client"
-
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { GetQuoteForm } from "@/components/forms/GetQuoteForm"
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
 import {
   Menu,
   X,
@@ -71,9 +71,6 @@ type SocialLink = {
   icon: any
   url: string
 }
-
-import Link from "next/link"
-import { usePathname } from "next/navigation"
 
 const Navbar = () => {
   // State management
@@ -706,15 +703,17 @@ const Navbar = () => {
         <MobileMenu />
 
         {/* Get Quote Modal */}
-        <Dialog open={isQuoteOpen} onOpenChange={setIsQuoteOpen}>
-          <DialogContent className="sm:max-w-3xl w-[95vw] max-h-[90vh] p-0 gap-0 border-0 bg-white text-black">
-            <DialogTitle className="sr-only">Get a Quote</DialogTitle>
-            <div className="h-1 w-full sunset-gradient" />
-            <div className="p-4 sm:p-6 overflow-y-auto">
-              <GetQuoteForm compact showHeader={false} />
-            </div>
-          </DialogContent>
-        </Dialog>
+        {isQuoteOpen && (
+          <UniversalQuoteForm
+            open={isQuoteOpen}
+            onOpenChange={setIsQuoteOpen}
+            category="Generic"
+            config={{
+              title: "Get a Free Quote",
+              description: "Tell us about your requirements and we'll get back to you."
+            }}
+          />
+        )}
       </div>
     </>
   )

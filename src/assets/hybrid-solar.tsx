@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { supabase } from "@/integrations/supabase/client"
 import { Battery } from "lucide-react"
-import HybridQuoteForm from "@/components/forms/hybrid-quote-form"
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
 
 type HybridSystemData = {
   id: number
@@ -424,24 +424,23 @@ export default function HybridSolarPricing() {
       </div>
 
       {/* Hybrid Quote Form Modal */}
-      <HybridQuoteForm
+      <UniversalQuoteForm
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
-        product={selectedSystem ? {
-          id: selectedSystem.id,
-          system_capacity: `${selectedSystem.capacity_kw} kW ${selectedSystem.phase}`,
-          variant: selectedSystem.variant,
-          price: selectedSystem.price_inr,
-          battery_kwh: selectedSystem.battery_kwh,
-          inverter_kwp: selectedSystem.inverter_kwp,
-          module_watt: selectedSystem.module_watt,
-          module_count: selectedSystem.module_count,
-          category: selectedSystem.category,
-          phase: selectedSystem.phase
-        } : null}
-        productName={selectedSystem ? `${selectedSystem.capacity_kw} kW ${selectedSystem.phase} ${selectedSystem.category} ${selectedSystem.technology} Hybrid System` : "Hybrid Solar System"}
-        hasBattery={selectedSystem?.variant === 'WITH_BATTERY'}
-        powerDemandKw={selectedSystem?.capacity_kw || null}
+        category="Hybrid"
+        productDetails={
+          selectedSystem ? {
+            name: `${selectedSystem.capacity_kw} kW ${selectedSystem.phase} ${selectedSystem.category} ${selectedSystem.technology} Hybrid System`,
+            systemSize: selectedSystem.capacity_kw,
+            price: selectedSystem.price_inr,
+            phase: selectedSystem.phase,
+            description: `${selectedSystem.technology} | ${selectedSystem.variant === 'WITH_BATTERY' ? 'With Battery' : 'No Battery'} | ${selectedSystem.module_count}x${selectedSystem.module_watt}Wp Modules | ${selectedSystem.battery_kwh ? selectedSystem.battery_kwh + 'kWh Battery' : ''}`
+          } : undefined
+        }
+        config={{
+          title: selectedSystem ? "Hybrid Solar Quote" : "Free Consultation",
+          description: selectedSystem ? "Complete hybrid system with battery backup." : "Get expert advice on hybrid solar solutions."
+        }}
       />
     </div>
   )

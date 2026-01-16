@@ -317,7 +317,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowUpDown, Search } from "lucide-react";
-import TataQuoteForm from "@/components/forms/tata-quote-form";
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -625,19 +625,26 @@ export default function TataSolarPricingPage() {
         </Card>
 
         {/* Quote Form */}
-        <TataQuoteForm
+        <UniversalQuoteForm
           open={isFormOpen}
           onOpenChange={setIsFormOpen}
-          productName={
-            isLargeSystem
-              ? `Large Scale System (> ${config.limit} kWp)`
-              : selectedProduct
-                ? `${selectedProduct.systemSize} kWp Solar System (${selectedProduct.phase}-Phase)`
-                : "Tata Power Solar Product"
+          category="Tata"
+          productDetails={
+            selectedProduct || isLargeSystem ? {
+              name: isLargeSystem
+                ? `Large Scale System (> ${config.limit} kWp)`
+                : `${selectedProduct!.systemSize} kWp Solar System (${selectedProduct!.phase}-Phase)`,
+              systemSize: isLargeSystem ? 15 : selectedProduct!.systemSize,
+              phase: isLargeSystem ? "Three" : selectedProduct!.phase,
+              price: isLargeSystem ? undefined : selectedProduct!.totalPrice,
+              description: isLargeSystem
+                ? "Commercial Grade Solar Solution"
+                : `${selectedProduct!.noOfModules} Modules | ${selectedProduct!.phase} Phase`
+            } : undefined
           }
-          isLargeSystem={isLargeSystem}
-          powerDemandKw={isLargeSystem ? null : selectedProduct?.systemSize || null}
-          phase={selectedProduct?.phase || "Three"}
+          config={{
+            title: isLargeSystem ? "Commercial Solar Quote" : "Tata Solar Quote"
+          }}
         />
       </div>
     </div>

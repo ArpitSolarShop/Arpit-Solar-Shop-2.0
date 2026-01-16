@@ -11,9 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowUpDown, Search, Home, Sun, TrendingUp, DollarSign, Battery, CheckCircle, Lock, LucideIcon } from "lucide-react";
-import RelianceQuoteForm from "@/components/forms/reliance-quote-form";
-import ShaktiQuoteForm from "@/components/forms//shakti-quote-form";
-import TataQuoteForm from "@/components/forms/tata-quote-form";
+import UniversalQuoteForm, { QuoteCategory } from "@/components/forms/UniversalQuoteForm";
 import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/asian-women-working-hard-together-innovation.jpg";
 import Link from "next/link";
@@ -307,13 +305,10 @@ const customQuoteTemplate: Omit<ResidentialSystem, "slNo"> = {
 
 // Main Component
 export default function Residential() {
-  const [isShaktiFormOpen, setIsShaktiFormOpen] = useState(false);
-  const [isRelianceFormOpen, setIsRelianceFormOpen] = useState(false);
-  const [isTataFormOpen, setIsTataFormOpen] = useState(false);
 
-  const [selectedShaktiProduct, setSelectedShaktiProduct] = useState<ResidentialSystem | null>(null);
-  const [selectedRelianceProduct, setSelectedRelianceProduct] = useState<ResidentialSystem | null>(null);
-  const [selectedTataProduct, setSelectedTataProduct] = useState<ResidentialSystem | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<QuoteCategory>("Generic");
+  const [selectedProduct, setSelectedProduct] = useState<ResidentialSystem | null>(null);
 
   const [shaktiRows, setShaktiRows] = useState<ResidentialSystem[]>([]);
   const [relianceRows, setRelianceRows] = useState<ResidentialSystem[]>([]);
@@ -417,18 +412,21 @@ export default function Residential() {
   }, []);
 
   const handleShaktiRowClick = (product: ResidentialSystem) => {
-    setSelectedShaktiProduct(product);
-    setIsShaktiFormOpen(true);
+    setSelectedProduct(product);
+    setSelectedCategory("Shakti");
+    setIsFormOpen(true);
   };
 
   const handleRelianceRowClick = (product: ResidentialSystem) => {
-    setSelectedRelianceProduct(product);
-    setIsRelianceFormOpen(true);
+    setSelectedProduct(product);
+    setSelectedCategory("Reliance");
+    setIsFormOpen(true);
   };
 
   const handleTataRowClick = (product: ResidentialSystem) => {
-    setSelectedTataProduct(product);
-    setIsTataFormOpen(true);
+    setSelectedProduct(product);
+    setSelectedCategory("Tata");
+    setIsFormOpen(true);
   };
 
   const whyChooseSolar = [
@@ -638,25 +636,27 @@ export default function Residential() {
                 <p className="text-gray-600">Every home is unique. Our experts can design a custom solar solution based on your roof space, energy consumption, and budget requirements.</p>
                 <div className="flex flex-wrap gap-4 justify-center mt-4">
                   <Button variant="outline" className="border-gray-400 text-gray-700 hover:bg-gray-200 bg-transparent" onClick={() => {
-                    setSelectedShaktiProduct({ ...customQuoteTemplate, slNo: 0, systemSize: 10 });
-                    setIsShaktiFormOpen(true);
+                    setSelectedProduct({ ...customQuoteTemplate, slNo: 0, systemSize: 3 });
+                    setSelectedCategory("Shakti");
+                    setIsFormOpen(true);
                   }}>
                     Get Shakti Solar Quote
                   </Button>
                   <Button variant="outline" className="border-gray-400 text-gray-700 hover:bg-gray-200 bg-transparent" onClick={() => {
-                    setSelectedRelianceProduct({ ...customQuoteTemplate, slNo: 0, systemSize: 13.8 });
-                    setIsRelianceFormOpen(true);
+                    setSelectedProduct({ ...customQuoteTemplate, slNo: 0, systemSize: 5 });
+                    setSelectedCategory("Reliance");
+                    setIsFormOpen(true);
                   }}>
                     Get Reliance Solar Quote
                   </Button>
                   <Button variant="outline" className="border-gray-400 text-gray-700 hover:bg-gray-200 bg-transparent" onClick={() => {
-                    setSelectedTataProduct({
+                    setSelectedProduct({
                       ...customQuoteTemplate,
                       slNo: 0,
-                      // --- THIS IS THE UPDATED LINE ---
-                      systemSize: 15.08,
+                      systemSize: 4,
                     });
-                    setIsTataFormOpen(true);
+                    setSelectedCategory("Tata");
+                    setIsFormOpen(true);
                   }}>
                     Get Tata Power Solar Quote
                   </Button>
@@ -682,48 +682,25 @@ export default function Residential() {
         <p className="mt-2">Monthly generation estimates are based on 4.5 peak sun hours. Actual generation may vary based on weather conditions.</p>
       </div>
 
-      {/* Quote Form Dialogs */}
-      <ShaktiQuoteForm
-        open={isShaktiFormOpen}
-        onOpenChange={setIsShaktiFormOpen}
-        productName={
-          selectedShaktiProduct?.systemSize === 0
-            ? "Custom Shakti Solar Residential Solution"
-            : selectedShaktiProduct
-              ? `${selectedShaktiProduct.systemSize} kWp Shakti Solar System - ${selectedShaktiProduct.noOfModules} Modules`
-              : "Shakti Solar Residential System"
+      {/* Universal Quote Form */}
+      <UniversalQuoteForm
+        open={isFormOpen}
+        onOpenChange={setIsFormOpen}
+        category={selectedCategory}
+        productDetails={
+          selectedProduct ? {
+            name: selectedProduct.systemSize > 0
+              ? `${selectedCategory} ${selectedProduct.systemSize}kW System`
+              : `Custom ${selectedCategory} System`,
+            systemSize: selectedProduct.systemSize,
+            price: selectedProduct.totalPrice,
+            phase: selectedProduct.phase,
+            description: `${selectedProduct.noOfModules} Modules | ${selectedProduct.inverterCapacity}kW Inverter`
+          } : undefined
         }
-        isLargeSystem={false}
-        powerDemandKw={selectedShaktiProduct?.systemSize || null}
-      />
-
-      <RelianceQuoteForm
-        open={isRelianceFormOpen}
-        onOpenChange={setIsRelianceFormOpen}
-        productName={
-          selectedRelianceProduct?.systemSize === 0
-            ? "Custom Reliance Solar Residential Solution"
-            : selectedRelianceProduct
-              ? `${selectedRelianceProduct.systemSize} kWp Reliance Solar System - ${selectedRelianceProduct.noOfModules} Modules`
-              : "Reliance Solar Residential System"
-        }
-        isLargeSystem={false}
-        productType="residential"
-        powerDemandKw={selectedRelianceProduct?.systemSize || null}
-      />
-
-      <TataQuoteForm
-        open={isTataFormOpen}
-        onOpenChange={setIsTataFormOpen}
-        productName={
-          selectedTataProduct?.systemSize === 0
-            ? "Custom Tata Power Solar Residential Solution"
-            : selectedTataProduct
-              ? `${selectedTataProduct.systemSize} kWp Tata Power Solar System - ${selectedTataProduct.noOfModules} Modules`
-              : "Tata Power Solar Residential System"
-        }
-        isLargeSystem={false}
-        powerDemandKw={selectedTataProduct?.systemSize || null}
+        config={{
+          features: ["Certified Installation", "25 Year Warranty", "Net Metering Support"]
+        }}
       />
 
 

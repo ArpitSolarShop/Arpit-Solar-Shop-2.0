@@ -295,7 +295,7 @@ import { useState } from "react";
 // import Navbar
 // import Footer
 import TataSolarPricingPage from "@/assets/tata-solar"; // This path is now updated
-import { GetQuoteForm as GetQuote } from "@/components/forms/GetQuoteForm";
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
 import { Zap } from "lucide-react";
 
 
@@ -374,25 +374,15 @@ export default function TataSolar() {
         </section>
 
         {isQuoteOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={() => setIsQuoteOpen(false)}
-          >
-            <div
-              className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-6 relative">
-                <button
-                  onClick={() => setIsQuoteOpen(false)}
-                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-                >
-                  âœ–
-                </button>
-                <GetQuote />
-              </div>
-            </div>
-          </div>
+          <UniversalQuoteForm
+            open={isQuoteOpen}
+            onOpenChange={setIsQuoteOpen}
+            category="Tata"
+            config={{
+              title: "Tata Power Solar Consultation",
+              description: "Get a free consultation from India's #1 Solar Rooftop Company."
+            }}
+          />
         )}
 
         <section className="scroll-mt-16 py-16 bg-white text-center">

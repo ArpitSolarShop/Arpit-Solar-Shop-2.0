@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ArrowUpDown, Search } from "lucide-react"
-import ShaktiQuoteForm from "@/components/forms/shakti-quote-form"
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
 import { supabase } from "@/integrations/supabase/client"
 
 type GridTieSystemData = {
@@ -278,18 +278,27 @@ export default function ShaktiSolar() {
         </div>
 
         {/* Quote Form Dialog */}
-        <ShaktiQuoteForm
+        <UniversalQuoteForm
           open={isFormOpen}
           onOpenChange={setIsFormOpen}
-          productName={
-            selectedProduct?.systemSize === 0
-              ? "Large Scale Solar System (Above 10 kWp)"
-              : selectedProduct
-                ? `${selectedProduct.systemSize} kWp Solar System - ${selectedProduct.noOfModules} Modules`
-                : "Shakti Solar Product"
+          category="Shakti"
+          productDetails={
+            selectedProduct ? {
+              name: selectedProduct.systemSize === 0
+                ? "Large Scale Solar System (Above 10 kWp)"
+                : `${selectedProduct.systemSize} kWp Solar System - ${selectedProduct.noOfModules} Modules`,
+              systemSize: selectedProduct.systemSize === 0 ? null : selectedProduct.systemSize,
+              price: selectedProduct.preGiElevatedPrice,
+              phase: selectedProduct.phase,
+              description: selectedProduct.systemSize === 0
+                ? 'Commercial/Industrial Large Scale System'
+                : `Inverter: ${selectedProduct.inverterCapacity}kW | Modules: ${selectedProduct.noOfModules} x DCR RIL 535 Wp`
+            } : undefined
           }
-          isLargeSystem={selectedProduct?.systemSize === 0}
-          powerDemandKw={selectedProduct?.systemSize === 0 ? null : selectedProduct?.systemSize || null}
+          config={{
+            title: "Shakti Solar Quote",
+            description: "Get a quote for Shakti Solar grid-tie systems."
+          }}
         />
       </div>
     </div>

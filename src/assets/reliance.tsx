@@ -10,8 +10,7 @@
 // import { Label } from "@/components/ui/label"
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 // import { Calculator, Cable, Package, ArrowUpDown, Search, CheckCircle, Zap, Sparkles, Sun, IndianRupee, RefreshCcw, BarChart, Loader2 } from "lucide-react"
-// import RelianceQuoteForm from "@/components/forms/reliance-quote-form"
-// import CalculatorQuoteForm from "@/components/forms/calculator-quote-form"
+// import { Loader2 } from "lucide-react"
 // import { supabase } from "@/integrations/supabase/client"
 
 // // --- TYPES ---
@@ -290,8 +289,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calculator, Cable, Package, ArrowUpDown, Search, CheckCircle, Zap, Sparkles, Sun, IndianRupee, RefreshCcw, BarChart, Loader2 } from "lucide-react"
-import RelianceQuoteForm from "@/components/forms/reliance-quote-form"
-import CalculatorQuoteForm from "@/components/forms/calculator-quote-form"
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
 import { supabase } from "@/integrations/supabase/client"
 
 // --- TYPES ---
@@ -502,11 +500,22 @@ const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalcul
           </div>
         </div>
       </Card>
-      <CalculatorQuoteForm
+      <UniversalQuoteForm
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
-        quoteData={result}
-        mountingType={isCommercialSize ? mountingType : null}
+        category="Calculator"
+        productDetails={
+          result ? {
+            name: `Custom Solar System Quote (${result.actualSystemSizeKwp} kWp)`,
+            systemSize: result.actualSystemSizeKwp,
+            price: result.totalPrice,
+            description: `${result.estimateBasis} | ${result.numberOfPanels} Panels | ${result.inverterSizeKw}kW Inverter | Mounting: ${isCommercialSize ? mountingType : "Standard"}`
+          } : undefined
+        }
+        config={{
+          title: "Instant Quote Result",
+          description: "Your estimated solar system quote."
+        }}
       />
     </>
   )

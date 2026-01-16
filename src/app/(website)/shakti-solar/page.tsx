@@ -24,7 +24,7 @@ import Man2 from "@/assets/shakti-solar-contents/Group-1707478385-1-1.png.webp";
 import Man3 from "@/assets/shakti-solar-contents/Group-1707478386-1.png.webp";
 import Man4 from "@/assets/shakti-solar-contents/Group-1707478387-1-1-scaled.png.webp";
 import Man5 from "@/assets/shakti-solar-contents/Group-1707478388-1.png.webp";
-import { GetQuoteForm as GetQuote } from "@/components/forms/GetQuoteForm";
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
 import ModuleImg from "@/assets/shakti-solar-contents/Solar PV Modules.png";
 import InverterImg from "@/assets/shakti-solar-contents/Sunshakti Inverter.png";
 import MountingImg from "@/assets/shakti-solar-contents/Module Mounting Structures.png";
@@ -104,25 +104,15 @@ const WelcomeSection = () => {
       </section>
 
       {isQuoteOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn"
-          onClick={() => setIsQuoteOpen(false)}
-        >
-          <div
-            className="bg-white rounded-lg shadow-lg w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto relative animate-scaleIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setIsQuoteOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-            >
-              —
-            </button>
-            <div className="p-6">
-              <GetQuote />
-            </div>
-          </div>
-        </div>
+        <UniversalQuoteForm
+          open={isQuoteOpen}
+          onOpenChange={setIsQuoteOpen}
+          category="Shakti"
+          config={{
+            title: "Book Free Solar Assessment",
+            description: "Maximize your energy savings with Shakti Solar."
+          }}
+        />
       )}
     </>
   );

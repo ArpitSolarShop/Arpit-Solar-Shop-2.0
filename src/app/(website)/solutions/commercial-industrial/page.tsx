@@ -22,7 +22,7 @@ import {
   Zap,
   LucideIcon,
 } from "lucide-react"
-import RelianceQuoteForm from "@/components/forms/reliance-quote-form"
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
 import { supabase } from "@/integrations/supabase/client"
 import heroImage from "@/assets/factory-businessmen-doing-sales-presentation-shareholders.jpg"
 import Link from "next/link"
@@ -661,20 +661,26 @@ export default function CommercialIndustrial() {
       </div>
 
       {/* Quote Form Dialogs */}
-      <RelianceQuoteForm
+      <UniversalQuoteForm
         open={isRelianceFormOpen}
         onOpenChange={setIsRelianceFormOpen}
-        productName={
-          selectedRelianceProduct?.systemSize === 0
-            ? "Custom Reliance Solar Commercial Solution"
-            : selectedRelianceProduct
-              ? `${selectedRelianceProduct.systemSize} kWp Reliance Commercial Solar System - ${selectedRelianceProduct.noOfModules} Modules`
-              : "Reliance Solar Commercial System"
+        category="Reliance"
+        productDetails={
+          selectedRelianceProduct ? {
+            name: selectedRelianceProduct.systemSize === 0
+              ? "Custom Reliance Solar Commercial Solution"
+              : `${selectedRelianceProduct.systemSize} kWp Reliance Commercial Solar System`,
+            systemSize: selectedRelianceProduct.systemSize,
+            description: selectedRelianceProduct.systemSize === 0
+              ? "Large scale commercial project"
+              : `Mounting: ${selectedMountingType} | Modules: ${selectedRelianceProduct.noOfModules}`,
+            mountingType: selectedMountingType
+          } : undefined
         }
-        isLargeSystem={selectedRelianceProduct?.systemSize === 0}
-        productType="commercial"
-        powerDemandKw={selectedRelianceProduct?.systemSize || null}
-        mountingType={selectedMountingType}
+        config={{
+          title: "Get Commercial Solar Quote",
+          description: "Request a detailed proposal for your business."
+        }}
       />
 
     </div>

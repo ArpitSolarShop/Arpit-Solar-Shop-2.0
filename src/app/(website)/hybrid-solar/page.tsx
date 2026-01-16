@@ -4,7 +4,7 @@ import { useState } from "react"
 // import Navbar
 // import Footer
 import HybridSolarPricing from "@/assets/hybrid-solar"
-import { GetQuoteForm } from "@/components/forms/GetQuoteForm"
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
 import { Zap, Battery, Sun, Moon, Clock, Shield, Settings, Check, LucideIcon } from "lucide-react"
 
 const FeatureCard = ({ icon: Icon, title, description }: { icon: LucideIcon, title: string, description: string }) => (
@@ -155,20 +155,15 @@ export default function HybridSolar() {
 
       {/* Quote Modal */}
       {isQuoteOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setIsQuoteOpen(false)}>
-          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="p-6 relative">
-              <button
-                onClick={() => setIsQuoteOpen(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-              >
-                âœ•
-              </button>
-              <h2 className="text-2xl font-bold mb-6">Get a Free Quote for Hybrid Solar</h2>
-              <GetQuoteForm compact={true} showHeader={false} />
-            </div>
-          </div>
-        </div>
+        <UniversalQuoteForm
+          open={isQuoteOpen}
+          onOpenChange={setIsQuoteOpen}
+          category="Hybrid"
+          config={{
+            title: "Hybrid Solar Quote",
+            description: "Get a quote for our advanced hybrid solar solutions."
+          }}
+        />
       )}
 
 

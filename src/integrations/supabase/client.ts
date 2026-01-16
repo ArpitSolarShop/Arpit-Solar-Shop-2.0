@@ -13,9 +13,28 @@ if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
+// Safe initialization to prevent build/runtime crashes if env vars are missing
+const createSafeClient = () => {
+  try {
+    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+      console.error('⚠️ Missing Supabase environment variables! Check .env.local');
+      // Return a mock or throw only on usage?
+      // Throwing here crashes the module import.
+      // Better to return a dummy client that warns on usage, but for now let's just create it with empty strings if missing to avoid crash, 
+      // but log error. Supabase client might throw if empty.
+      if (!SUPABASE_URL) return createClient('https://placeholder.supabase.co', 'placeholder');
+    }
+    return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      }
+    });
+  } catch (e) {
+    console.error("Supabase Client Init Error:", e);
+    // Fallback
+    return createClient('https://placeholder.supabase.co', 'placeholder');
   }
-});
+}
+
+export const supabase = createSafeClient();
