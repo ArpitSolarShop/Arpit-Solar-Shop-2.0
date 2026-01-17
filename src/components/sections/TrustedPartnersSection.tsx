@@ -96,8 +96,6 @@ const TrustedPartnersSection: React.FC = () => {
 const App: React.FC = () => {
   return (
     <div className="min-h-screen font-sans text-gray-900">
-      {/* Tailwind CSS CDN - IMPORTANT: In a real project, you'd set up Tailwind via npm */}
-      <script src="https://cdn.tailwindcss.com"></script>
       <TrustedPartnersSection />
     </div>
   );

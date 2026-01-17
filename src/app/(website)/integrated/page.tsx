@@ -17,14 +17,7 @@ import {
 import IntegratedPriceData from "@/assets/integrated-products";
 
 export default function Integrated() {
-  useEffect(() => {
-    if (typeof window !== "undefined" && !window["tailwind"]) {
-      const script = document.createElement("script");
-      script.src = "https://cdn.tailwindcss.com";
-      script.async = true;
-      document.head.appendChild(script);
-    }
-  }, []);
+
 
   const brands = useMemo(
     () => [
