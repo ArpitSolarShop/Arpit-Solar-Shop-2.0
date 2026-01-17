@@ -77,9 +77,10 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
         await fs.writeFile(tempPath, pdfBuffer);
 
         return tempPath;
-    } catch (error) {
+    } catch (error: any) {
         console.error('❌ Puppeteer error:', error);
-        throw new Error('Failed to generate PDF from HTML');
+        // Throw the specific error message to generic API handler
+        throw new Error(`Failed to generate PDF: ${error.message || error}`);
     } finally {
         if (browser) await browser.close();
     }

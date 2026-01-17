@@ -327,14 +327,22 @@ export async function POST(req: NextRequest) {
 
         // 7. Send WhatsApp
         console.log('🔵 Step 7: Sending WhatsApp message...');
-        await sendWhatsAppMessage(phone, pdfUrl);
-        console.log('✅ Step 7 Complete - WhatsApp sent');
+        let whatsappResult = { sent: false, error: null };
+        try {
+            await sendWhatsAppMessage(phone, pdfUrl);
+            console.log('✅ Step 7 Complete - WhatsApp sent');
+            whatsappResult.sent = true;
+        } catch (waError: any) {
+            console.error('⚠️ Step 7 Warning - WhatsApp failed:', waError.message);
+            whatsappResult.error = waError.message;
+            // We do NOT throw here, so the user still gets the PDF
+        }
 
         // Cleanup (optional, or rely on OS/restart)
         // await fs.remove(finalPdfPath);
 
         console.log('🎉 ALL STEPS COMPLETE - Returning success response');
-        return NextResponse.json({ success: true, pdfUrl });
+        return NextResponse.json({ success: true, pdfUrl, whatsappResult });
 
     } catch (err: any) {
         console.error('❌❌❌ FATAL ERROR in generate-quote:', err);
