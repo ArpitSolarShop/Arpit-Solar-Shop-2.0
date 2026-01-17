@@ -1,5 +1,5 @@
-
-import puppeteer from 'puppeteer';
+import puppeteerCore from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs-extra';
@@ -11,30 +11,52 @@ fs.ensureDirSync(OUTPUT_DIR);
 
 interface PdfOptions {
     html: string;
-    data?: any; // For future expansion if we pass raw data for verification
+    data?: any;
 }
 
 export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string> {
     let browser;
     try {
         console.log('🚀 Launching Puppeteer...');
-        browser = await puppeteer.launch({
+
+        // Determine environment and executable
+        let executablePath: string | undefined;
+        let args: string[] = chromium.args;
+
+        if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production') {
+            console.log('☁️ Running in PRODUCTION (Vercel/Serverless)');
+            executablePath = await chromium.executablePath();
+        } else {
+            console.log('💻 Running in DEVELOPMENT (Local)');
+            // Attempt to find local Chrome/Chromium
+            // If this fails locally, users might need to install Puppeteer full or set path
+            try {
+                // Try standard puppeteer path if available (if installed as dev dependency)
+                const puppeteer = await import('puppeteer');
+                executablePath = puppeteer.executablePath();
+            } catch (e) {
+                // Fallback for win32
+                if (process.platform === 'win32') {
+                    executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+                } else {
+                    executablePath = await chromium.executablePath(); // Fallback to sparticuz?
+                }
+            }
+        }
+
+        console.log(`ℹ️ Executable Path: ${executablePath || 'Auto-detected'}`);
+
+        browser = await puppeteerCore.launch({
+            args: [...args, '--no-sandbox', '--disable-setuid-sandbox'],
+            defaultViewport: { width: 1920, height: 1080 },
+            executablePath: executablePath,
             headless: true,
-            executablePath: puppeteer.executablePath(), // Use installed Chrome
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage', // Overcome limited resource problems
-                '--disable-accelerated-2d-canvas',
-                '--no-first-run',
-                '--no-zygote',
-                '--disable-gpu'
-            ]
         });
+
         console.log('✅ Puppeteer launched');
         const page = await browser.newPage();
 
-        // Set content and wait for DOM to load (don't wait for external resources)
+        // Set content and wait for DOM to load
         console.log('📄 Setting HTML content...');
         await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 30000 });
         console.log('✅ HTML content set');
