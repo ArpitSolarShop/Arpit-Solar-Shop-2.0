@@ -21,6 +21,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
+import { useCart } from "@/context/CartContext"
 import {
   Menu,
   X,
@@ -80,6 +81,7 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [isQuoteOpen, setIsQuoteOpen] = useState(false)
   const pathname = usePathname()
+  const { cartCount, setIsCartOpen } = useCart()
 
   const menuCloseTimer = useRef<NodeJS.Timeout | null>(null)
   const navbarRef = useRef<HTMLDivElement>(null)
@@ -573,6 +575,22 @@ const Navbar = () => {
                     {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                   </Button>
 
+                  {/* Cart Button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsCartOpen(true)}
+                    className="relative w-8 h-8 sm:w-9 sm:h-9 text-white hover:text-white/80 transition-all duration-200"
+                    aria-label="Shopping cart"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Button>
+
                   <Button
                     onClick={() => setIsQuoteOpen(true)}
                     className="hidden lg:flex bg-white/20 hover:bg-white/30 text-white font-semibold px-4 sm:px-6 py-2 rounded-full border border-white/30 transition-all duration-200 text-sm"
@@ -667,6 +685,22 @@ const Navbar = () => {
                     aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
                   >
                     {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  </Button>
+
+                  {/* Cart Button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsCartOpen(true)}
+                    className="relative w-8 h-8 sm:w-9 sm:h-9 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                    aria-label="Shopping cart"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
                   </Button>
 
                   <Button
