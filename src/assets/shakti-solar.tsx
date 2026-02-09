@@ -162,18 +162,25 @@ export default function ShaktiSolar() {
 
   useEffect(() => {
     const loadData = async () => {
-      // Grid tie systems
-      const { data: grid, error: gridErr } = await supabase.from('shakti_grid_tie_systems').select('*').order('sl_no', { ascending: true })
+      // Grid tie systems from unified solar_products table
+      const { data: grid, error: gridErr } = await supabase
+        .from('solar_products')
+        .select('*')
+        .eq('category', 'Shakti')
+        .order('system_size_kw', { ascending: true })
       if (!gridErr && grid) {
-        setGridData(grid.map((r: any) => ({
-          slNo: r.sl_no,
-          systemSize: Number(r.system_size),
-          noOfModules: r.no_of_modules,
-          inverterCapacity: Number(r.inverter_capacity),
-          phase: r.phase,
-          preGiElevatedWithGst: Number(r.pre_gi_elevated_with_gst),
-          preGiElevatedPrice: Number(r.pre_gi_elevated_price),
-        })))
+        setGridData(grid.map((r: any, idx: number) => {
+          const specs = r.specifications || {};
+          return {
+            slNo: specs.sl_no || idx + 1,
+            systemSize: Number(r.system_size_kw),
+            noOfModules: specs.module_count || 0,
+            inverterCapacity: Number(specs.inverter_kw || 0),
+            phase: r.phase || '1Ph',
+            preGiElevatedWithGst: Number(specs.price_per_kw || 0),
+            preGiElevatedPrice: Number(r.price),
+          };
+        }))
       }
       // Config
       const { data: cfg, error: cfgErr } = await supabase.from('shakti_config').select('*')

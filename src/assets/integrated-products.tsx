@@ -47,9 +47,10 @@ export default function IntegratedPriceData() {
       setLoading(true)
       try {
         const { data, error } = await supabase
-          .from('integrated_products' as any)
+          .from('solar_products')
           .select('*')
-          .order('system_kw', { ascending: true })
+          .eq('category', 'Integrated')
+          .order('system_size_kw', { ascending: true })
 
         if (error) throw error
         if (!data) {
@@ -58,28 +59,33 @@ export default function IntegratedPriceData() {
         }
 
         if (mounted) {
-          setRows(data.map((r: any) => ({
-            id: r.id,
-            brand: r.brand,
-            system_kw: Number(r.system_kw),
-            phase: r.phase,
-            price: Number(r.price),
-            inverter_capacity_kw: Number(r.inverter_capacity_kw),
-            module_watt: Number(r.module_watt),
-            module_type: r.module_type || 'TopCon',
-            no_of_modules: Number(r.no_of_modules),
-            acdb_nos: r.acdb_nos ? Number(r.acdb_nos) : 1,
-            dcdb_nos: r.dcdb_nos ? Number(r.dcdb_nos) : 1,
-            earthing_rod_nos: r.earthing_rod_nos ? Number(r.earthing_rod_nos) : 3,
-            earthing_chemical_nos: r.earthing_chemical_nos ? Number(r.earthing_chemical_nos) : 3,
-            ac_wire_brand: r.ac_wire_brand || 'Polycab',
-            ac_wire_length_mtr: r.ac_wire_length_mtr ? Number(r.ac_wire_length_mtr) : 10,
-            dc_wire_brand: r.dc_wire_brand || 'Polycab',
-            dc_wire_length_mtr: r.dc_wire_length_mtr ? Number(r.dc_wire_length_mtr) : 20,
-            earthing_wire_brand: r.earthing_wire_brand || 'AL Wire',
-            earthing_wire_length_mtr: r.earthing_wire_length_mtr ? Number(r.earthing_wire_length_mtr) : 90,
-            lighting_arrestor_qty: r.lighting_arrestor_qty ? Number(r.lighting_arrestor_qty) : 1,
-          })))
+          setRows(data.map((r: any, idx: number) => {
+            const specs = r.specifications || {};
+            const compQtys = specs.component_qtys || {};
+            const wireBrands = specs.wire_brands || {};
+            return {
+              id: idx + 1,
+              brand: specs.brand || 'Generic',
+              system_kw: Number(r.system_size_kw),
+              phase: r.phase || '1Ph',
+              price: Number(r.price),
+              inverter_capacity_kw: Number(specs.inverter_kw || 0),
+              module_watt: Number(specs.module_watt || 0),
+              module_type: specs.module_type || 'TopCon',
+              no_of_modules: Number(specs.module_count || 0),
+              acdb_nos: compQtys.acdb ? Number(compQtys.acdb) : 1,
+              dcdb_nos: compQtys.dcdb ? Number(compQtys.dcdb) : 1,
+              earthing_rod_nos: compQtys.earthing_rod ? Number(compQtys.earthing_rod) : 3,
+              earthing_chemical_nos: compQtys.earthing_chemical ? Number(compQtys.earthing_chemical) : 3,
+              ac_wire_brand: wireBrands.ac || 'Polycab',
+              ac_wire_length_mtr: compQtys.ac_wire_mtr ? Number(compQtys.ac_wire_mtr) : 10,
+              dc_wire_brand: wireBrands.dc || 'Polycab',
+              dc_wire_length_mtr: compQtys.dc_wire_mtr ? Number(compQtys.dc_wire_mtr) : 20,
+              earthing_wire_brand: wireBrands.earthing || 'AL Wire',
+              earthing_wire_length_mtr: compQtys.earthing_wire_mtr ? Number(compQtys.earthing_wire_mtr) : 90,
+              lighting_arrestor_qty: compQtys.lightning_arrester ? Number(compQtys.lightning_arrester) : 1,
+            };
+          }))
         }
       } catch (err: any) {
         console.error('Failed to load integrated products', err)

@@ -90,6 +90,11 @@ export const adminNavigation: NavigationItem[] = [
                 icon: ShoppingCart,
             },
             {
+                name: "Quotations",
+                href: "/admin/quotations",
+                icon: FileText,
+            },
+            {
                 name: "Invoices",
                 href: "/admin/invoices",
                 icon: Receipt,

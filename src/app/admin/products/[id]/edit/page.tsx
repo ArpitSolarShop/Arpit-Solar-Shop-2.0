@@ -24,13 +24,19 @@ export default function EditProductPage() {
         try {
             setLoading(true);
             const { data, error } = await supabase
-                .from('products')
+                .from('solar_products')
                 .select('*')
                 .eq('id', params.id)
                 .single();
 
             if (error) throw error;
-            setProduct(data);
+            // Map data to include name if not set
+            const mapped = {
+                ...data,
+                name: data.name || `${data.category} ${data.system_size_kw} kW System`,
+                brand: data.brand || data.category,
+            };
+            setProduct(mapped);
         } catch (err: any) {
             console.error('Error fetching product:', err);
             setError(err.message);

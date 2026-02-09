@@ -23,14 +23,14 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Product {
-    id: number;
+    id: string;
     name: string;
     brand: string;
     category: string;
     price: number;
+    system_size_kw: number;
     image_url?: string;
     is_published: boolean;
-    stock_quantity: number;
 }
 
 interface ProductTableProps {
@@ -40,7 +40,7 @@ interface ProductTableProps {
 
 export default function ProductTable({ products, onRefresh }: ProductTableProps) {
     const { toast } = useToast();
-    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-IN', {
@@ -50,10 +50,10 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
         }).format(price);
     };
 
-    const handleTogglePublish = async (id: number, currentStatus: boolean) => {
+    const handleTogglePublish = async (id: string, currentStatus: boolean) => {
         try {
             const { error } = await supabase
-                .from('products')
+                .from('solar_products')
                 .update({ is_published: !currentStatus })
                 .eq('id', id);
 
@@ -74,13 +74,13 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
         }
     };
 
-    const handleDelete = async (id: number, name: string) => {
+    const handleDelete = async (id: string, name: string) => {
         if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
         setDeletingId(id);
         try {
             const { error } = await supabase
-                .from('products')
+                .from('solar_products')
                 .delete()
                 .eq('id', id);
 
@@ -112,8 +112,8 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
                         <TableHead>Name</TableHead>
                         <TableHead>Brand</TableHead>
                         <TableHead>Category</TableHead>
+                        <TableHead>Size (kW)</TableHead>
                         <TableHead>Price</TableHead>
-                        <TableHead>Stock</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="w-16">Actions</TableHead>
                     </TableRow>
@@ -144,8 +144,8 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
                                 <TableCell className="font-medium">{product.name}</TableCell>
                                 <TableCell>{product.brand}</TableCell>
                                 <TableCell>{product.category}</TableCell>
+                                <TableCell>{product.system_size_kw} kW</TableCell>
                                 <TableCell>{formatPrice(product.price)}</TableCell>
-                                <TableCell>{product.stock_quantity || 0}</TableCell>
                                 <TableCell>
                                     <Badge variant={product.is_published ? "default" : "secondary"}>
                                         {product.is_published ? "Published" : "Draft"}

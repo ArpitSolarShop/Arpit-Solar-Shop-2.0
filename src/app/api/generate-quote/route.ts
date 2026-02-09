@@ -2,351 +2,281 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs-extra';
-import handlebars from 'handlebars';
+import { createClient } from '@supabase/supabase-js';
 import {
-    fetchClosestRow,
-    fetchFirstRow,
-    fetchAllRows,
+    fetchClosestRow, // Still used for specific reliance config if needed, or legacy fallback
     fetchConfig,
     uploadToBucket,
     insertQuoteRequest
 } from '@/lib/server/services/supabase';
-import { generatePdfFromHtml, enhancePdf } from '@/lib/server/services/pdf';
+import { generatePdfFromHtml } from '@/lib/server/services/pdf';
 import { sendWhatsAppMessage } from '@/lib/server/services/whatsapp';
+import { generateQuoteHtml } from '@/lib/quoteTemplate';
+import { defaultComponents } from '@/lib/companyDetails';
 
-export const maxDuration = 120; // Allow longer timeout for PDF gen (increased from 60)
+export const maxDuration = 120;
 
 export async function POST(req: NextRequest) {
-    console.log('🔵 API Route /api/generate-quote called');
+    console.log('🔵 API Route /api/generate-quote called (Unified)');
     try {
-        console.log('🔵 Step 1: Parsing request body...');
-        const body = await req.json();
-        console.log('✅ Step 1 Complete - Received form data:', JSON.stringify(body, null, 2));
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
 
+        const body = await req.json();
         const formData = body;
         const { product_category, power_demand_kw, phone, source, metadata, phase, name, address } = formData;
+
+        // 1. Calculations & Data Fetching
         let tempVars: any = { ...formData };
-
-        console.log('🔵 Step 2: Setting up template variables...');
-        // Default meta for invoice
         tempVars.ref_number = `Q-${Date.now().toString().slice(-6)}`;
-        tempVars.name = name || 'Valued Customer';
-        tempVars.address = address || 'N/A';
-        console.log('✅ Step 2 Complete - Template vars initialized');
-        console.log('🔵 Step 3: Processing product category:', product_category);
 
-        // Add current date and time (India timezone)
-        const generationDate = new Date().toLocaleString('en-IN', {
-            timeZone: 'Asia/Kolkata',
-            year: 'numeric', month: 'long', day: 'numeric',
-            hour: '2-digit', minute: '2-digit', hour12: true
-        });
-        tempVars.quote_date = generationDate;
+        let calculatedValues = {
+            basePrice: 0,
+            gstAmount: 0,
+            total: 0,
+            grandTotal: 0,
+            centralSubsidy: 0,
+            stateSubsidy: 0,
+            effectiveCost: 0,
+            extraCosts: 0
+        };
 
-        // -----------------------------
-        // Data Fetching Logic (Same as before)
-        // -----------------------------
+        let selectedProductData: any = {
+            capacity: parseFloat(power_demand_kw) || 0,
+            phase: phase === 'Three' ? 3 : 1,
+            systemType: product_category === 'Hybrid' ? 'Hybrid' : 'On-grid',
+            panelBrand: product_category,
+            panelWattage: '550',
+            panelType: 'Monocrystalline',
+            inverterBrand: 'Best in Class',
+            panelWarranty: '25 Years',
+            inverterWarranty: '5 Years'
+        };
+
+        // --- Data Fetching Logic (Unified) ---
         if (source === 'Calculator Quote Form') {
             if (!metadata) throw new Error('Calculator form submission is missing metadata.');
-            tempVars.system_size = power_demand_kw;
-            tempVars.number_of_modules = metadata.panel_config ? metadata.panel_config.split(' ')[0] : 'N/A';
-            tempVars.inverter_capacity = metadata.inverter_size_kw;
-            tempVars.phase = formData.customer_type === 'commercial' ? 'Three' : 'Single';
-            if (phase) tempVars.phase = phase;
-            tempVars.price_per_watt = metadata.price_per_watt;
-            tempVars.total_price = metadata.estimated_price;
-            tempVars.base_price = metadata.base_price;
-            tempVars.gst_amount = metadata.gst_amount;
+            calculatedValues.basePrice = metadata.base_price;
+            calculatedValues.gstAmount = metadata.gst_amount;
+            calculatedValues.total = metadata.estimated_price;
+            calculatedValues.grandTotal = metadata.estimated_price;
+            calculatedValues.centralSubsidy = 78000; // Approx
 
+            const capacity = parseFloat(power_demand_kw);
+            if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
+            else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
+            else calculatedValues.centralSubsidy = 78000;
+
+            calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
+
+            // Attempt to fetch extra details if available
             const config = await fetchConfig('reliance_system_config');
-            tempVars.module_wattage = config.PRODUCT_DESCRIPTION || config.product_description || 'N/A';
-            tempVars.scope_of_work = config.WORK_SCOPE || config.work_scope || '';
-            const dcCable: any = await fetchFirstRow('reliance_dc_cable_data');
-            tempVars.dc_cable_per_meter = dcCable ? dcCable.price : 'N/A';
-            const kitItems: any = await fetchAllRows('reliance_kit_items');
-            tempVars.kit_items = (kitItems || []).map((item: any) => `${item.item}: ${item.description}`).join(', ');
-            // Identify mounting type for template roughly if needed, purely data for now.
-            tempVars.mounting_type = 'Standard';
-
-        } else if (product_category === 'Reliance') {
-            let systemData: any;
-            let basePriceNum: number = 0;
-
-            if (Number(power_demand_kw) <= 13.8) {
-                systemData = await fetchClosestRow('reliance_grid_tie_systems', power_demand_kw, 'system_size');
-                if (!systemData) throw new Error('No matching data in reliance_grid_tie_systems');
-                tempVars.system_size = systemData.system_size;
-                tempVars.number_of_modules = systemData.no_of_modules;
-                tempVars.inverter_capacity = systemData.inverter_capacity;
-                tempVars.phase = systemData.phase ?? tempVars.phase;
-                tempVars.price_per_watt = systemData.price_per_watt ?? systemData.hdg_elevated_with_gst ?? 'N/A';
-                basePriceNum = systemData.total_price ?? systemData.hdg_elevated_price ?? 0;
-            } else {
-                systemData = await fetchClosestRow('reliance_large_systems', power_demand_kw, 'system_size_kw');
-                if (!systemData) throw new Error('No matching data in reliance_large_systems');
-                tempVars.system_size = systemData.system_size_kw;
-                tempVars.number_of_modules = systemData.no_of_modules;
-                tempVars.inverter_capacity = systemData.inverter_capacity;
-                tempVars.phase = systemData.phase ?? tempVars.phase;
-
-                if (formData.mounting_type === 'Tin Shed') {
-                    tempVars.price_per_watt = systemData.short_rail_tin_shed_price_per_watt;
-                    basePriceNum = systemData.short_rail_tin_shed_price;
-                } else if (formData.mounting_type === 'RCC Elevated') {
-                    tempVars.price_per_watt = systemData.hdg_elevated_rcc_price_per_watt;
-                    basePriceNum = systemData.hdg_elevated_rcc_price;
-                } else if (formData.mounting_type === 'Pre GI MMS') {
-                    tempVars.price_per_watt = systemData.pre_gi_mms_price_per_watt;
-                    basePriceNum = systemData.pre_gi_mms_price;
-                } else if (formData.mounting_type === 'Without MMS') {
-                    tempVars.price_per_watt = systemData.price_without_mms_price_per_watt;
-                    basePriceNum = systemData.price_without_mms_price;
-                } else {
-                    tempVars.price_per_watt = 'N/A';
-                    basePriceNum = 0;
-                }
+            if (config) {
+                selectedProductData.panelWattage = (config.product_description || '550').replace(/\D/g, '');
+                selectedProductData.panelType = config.product_description || 'Monocrystalline';
             }
 
-            if (basePriceNum > 0) {
-                const gstAmount = basePriceNum * 0.138;
-                const totalPrice = basePriceNum + gstAmount;
-                tempVars.base_price = Math.round(basePriceNum);
-                tempVars.gst_amount = Math.round(gstAmount);
-                tempVars.total_price = Math.round(totalPrice);
-            } else {
-                tempVars.base_price = 'N/A';
-                tempVars.gst_amount = 'N/A';
-                tempVars.total_price = 'N/A';
-            }
-
-            const config = await fetchConfig('reliance_system_config');
-            tempVars.module_wattage = config.PRODUCT_DESCRIPTION || config.product_description || 'N/A';
-            tempVars.scope_of_work = config.WORK_SCOPE || config.work_scope || '';
-            const dcCable: any = await fetchFirstRow('reliance_dc_cable_data');
-            tempVars.dc_cable_per_meter = dcCable ? dcCable.price : 'N/A';
-            const kitItems: any = await fetchAllRows('reliance_kit_items');
-            tempVars.kit_items = (kitItems || []).map((item: any) => `${item.item}: ${item.description}`).join(', ');
-
-        } else if (product_category === 'Shakti' || product_category === 'Tata') {
-            const tableName = product_category === 'Shakti' ? 'shakti_grid_tie_systems' : 'tata_grid_tie_systems';
-            if (product_category === 'Tata' && !phase) {
-                console.warn('⚠️ Phase not provided for Tata, defaulting to Three');
-                tempVars.phase = 'Three';
-            }
-
-            try {
-                const allSystems: any = await fetchAllRows(tableName);
-                let systemData = (allSystems || []).find((sys: any) => sys.system_size == power_demand_kw && (!phase || sys.phase === phase));
-                if (!systemData) systemData = await fetchClosestRow(tableName, power_demand_kw, 'system_size');
-
-                if (!systemData) {
-                    console.warn(`⚠️ No matching data found in ${tableName}, using fallback pricing`);
-                    // Fallback: Calculate approximate pricing
-                    const systemSizeNum = parseFloat(power_demand_kw) || 3;
-                    const pricePerKw = product_category === 'Tata' ? 45000 : 42000; // Approximate prices
-                    const basePriceNum = systemSizeNum * pricePerKw;
-                    const gstAmount = basePriceNum * 0.089;
-                    const totalPriceNum = basePriceNum + gstAmount;
-
-                    tempVars.base_price = Math.round(basePriceNum);
-                    tempVars.gst_amount = Math.round(gstAmount);
-                    tempVars.total_price = Math.round(totalPriceNum);
-                    tempVars.system_size = systemSizeNum;
-                    tempVars.number_of_modules = Math.ceil(systemSizeNum * 1000 / 550); // Assuming 550W panels
-                    tempVars.inverter_capacity = systemSizeNum;
-                    tempVars.phase = phase || 'Three';
-                    tempVars.price_per_kwp = Math.round(pricePerKw);
-                    tempVars.module_wattage = '550W Monocrystalline';
-                } else {
-                    const totalPriceNum = systemData.total_price ?? systemData.pre_gi_elevated_price ?? 0;
-                    if (totalPriceNum > 0) {
-                        const basePriceNum = totalPriceNum / 1.089;
-                        const gstAmount = totalPriceNum - basePriceNum;
-                        tempVars.base_price = Math.round(basePriceNum);
-                        tempVars.gst_amount = Math.round(gstAmount);
-                        tempVars.total_price = Math.round(totalPriceNum);
-                    } else {
-                        tempVars.base_price = 'N/A';
-                        tempVars.gst_amount = 'N/A';
-                        tempVars.total_price = 'N/A';
-                    }
-
-                    tempVars.system_size = systemData.system_size;
-                    tempVars.number_of_modules = systemData.no_of_modules;
-                    tempVars.inverter_capacity = systemData.inverter_capacity;
-                    tempVars.phase = systemData.phase;
-                    if (product_category === 'Tata') tempVars.price_per_kwp = systemData.price_per_kwp ?? 'N/A';
-                    else tempVars.price_per_watt = systemData.pre_gi_elevated_with_gst ?? 'N/A';
-                }
-
-                const config = await fetchConfig(`${product_category.toLowerCase()}_config`);
-                tempVars.module_wattage = config.product_description || config.PRODUCT_DESCRIPTION || '550W Monocrystalline';
-            } catch (err) {
-                console.error(`❌ Error fetching ${product_category} data:`, err);
-                // Use fallback pricing even on error
-                const systemSizeNum = parseFloat(power_demand_kw) || 3;
-                const pricePerKw = product_category === 'Tata' ? 45000 : 42000;
-                const basePriceNum = systemSizeNum * pricePerKw;
-                const gstAmount = basePriceNum * 0.089;
-                const totalPriceNum = basePriceNum + gstAmount;
-
-                tempVars.base_price = Math.round(basePriceNum);
-                tempVars.gst_amount = Math.round(gstAmount);
-                tempVars.total_price = Math.round(totalPriceNum);
-                tempVars.system_size = systemSizeNum;
-                tempVars.number_of_modules = Math.ceil(systemSizeNum * 1000 / 550);
-                tempVars.inverter_capacity = systemSizeNum;
-                tempVars.phase = phase || 'Three';
-                tempVars.price_per_kwp = Math.round(pricePerKw);
-                tempVars.module_wattage = '550W Monocrystalline';
-            }
-        } else if (product_category === 'Integrated') {
-            const tableName = 'integrated_products';
-            const brand = (formData as any).brand; // Extract brand from body
-
-            const allSystems: any = await fetchAllRows(tableName);
-
-            // Filter by system_kw (mapped to power_demand_kw) and phase. 
-            // Also filter by Brand if provided.
-            let systemData = (allSystems || []).find((sys: any) =>
-                sys.system_kw == power_demand_kw &&
-                (!phase || sys.phase === phase) &&
-                (!brand || sys.brand === brand)
-            );
-
-            // Fallback: search closest by system_kw, but still try to respect brand if possible
-            if (!systemData) {
-                const closest = await fetchClosestRow(tableName, power_demand_kw, 'system_kw');
-                // If the closest row doesn't match brand/phase, we might want to search specifically within filtered set
-                // But simplified: just use closest for now if strict match fails.
-                systemData = closest;
-            }
-
-            if (!systemData) throw new Error(`No matching data found in ${tableName}`);
-
-            const totalPriceNum = Number(systemData.price) || 0;
-            if (totalPriceNum > 0) {
-                // Assuming 13.8% GST structure for consistency with Reliance
-                const basePriceNum = totalPriceNum / 1.138;
-                const gstAmount = totalPriceNum - basePriceNum;
-                tempVars.base_price = Math.round(basePriceNum);
-                tempVars.gst_amount = Math.round(gstAmount);
-                tempVars.total_price = Math.round(totalPriceNum);
-            } else {
-                tempVars.base_price = 'N/A';
-                tempVars.gst_amount = 'N/A';
-                tempVars.total_price = 'N/A';
-            }
-
-            tempVars.system_size = systemData.system_kw;
-            tempVars.number_of_modules = systemData.no_of_modules;
-            tempVars.inverter_capacity = systemData.inverter_capacity_kw;
-            tempVars.phase = systemData.phase;
-            tempVars.price_per_watt = systemData.module_watt; // Using module watt as proxy for 'tech spec' 
-            tempVars.module_wattage = `${systemData.brand} ${systemData.module_type || ''}`;
-            tempVars.scope_of_work = "Complete Supply, Installation, and Commissioning of Integrated Solar Power Plant";
-
-
-        } else if (['Tata', 'Shakti', 'Reliance', 'Hybrid', 'Generic'].includes(product_category)) {
-            // Valid categories from UniversalQuoteForm - use fallback pricing
-            console.log('⚠️ Using fallback pricing for category:', product_category);
-            const systemSizeNum = parseFloat(power_demand_kw) || 3;
-            const pricePerKw = 45000; // Default price per kW
-            const basePriceNum = systemSizeNum * pricePerKw;
-            const gstAmount = basePriceNum * 0.089;
-            const totalPriceNum = basePriceNum + gstAmount;
-
-            tempVars.base_price = Math.round(basePriceNum);
-            tempVars.gst_amount = Math.round(gstAmount);
-            tempVars.total_price = Math.round(totalPriceNum);
-            tempVars.system_size = systemSizeNum;
-            tempVars.number_of_modules = Math.ceil(systemSizeNum * 1000 / 550);
-            tempVars.inverter_capacity = systemSizeNum;
-            tempVars.phase = phase || 'Three';
-            tempVars.price_per_kwp = Math.round(pricePerKw);
-            tempVars.module_wattage = '550W Monocrystalline';
-            tempVars.mounting_type = 'Elevated';
         } else {
-            console.log('❌ Invalid product_category or source:', { product_category, source });
-            return NextResponse.json({ error: 'Invalid product_category or source' }, { status: 400 });
+            // Unified Fetch from solar_products
+            let categoryFilter = product_category;
+            // Map simple category names to DB valid enum
+            if (['Tata', 'Shakti', 'Reliance', 'Hybrid', 'Integrated'].includes(product_category)) {
+                categoryFilter = product_category;
+            } else {
+                categoryFilter = 'Tata'; // Default?
+            }
+
+            console.log(`🔎 Searching solar_products for ${categoryFilter}, Size: ${power_demand_kw}`);
+
+            const { data: products, error } = await supabase
+                .from('solar_products')
+                .select('*')
+                .eq('category', categoryFilter)
+                .order('system_size_kw', { ascending: true });
+
+            if (error) {
+                console.error('Unified DB Query Error:', error);
+                throw error;
+            }
+
+            let systemData: any;
+            if (products && products.length > 0) {
+                // Find match within small tolerance
+                systemData = products.find((p: any) =>
+                    Math.abs(p.system_size_kw - Number(power_demand_kw)) < 0.1
+                );
+
+                // If no exact match, find closest
+                if (!systemData) {
+                    systemData = products.reduce((prev: any, curr: any) =>
+                        Math.abs(curr.system_size_kw - Number(power_demand_kw)) < Math.abs(prev.system_size_kw - Number(power_demand_kw)) ? curr : prev
+                    );
+                }
+            }
+
+            if (systemData) {
+                let basePriceNum = Number(systemData.price);
+                const specs = systemData.specifications || {};
+
+                // Handle Reliance Special Pricing logic (structure types)
+                if (product_category === 'Reliance' && specs.structure_prices) {
+                    if (formData.mounting_type === 'Tin Shed') basePriceNum = Number(specs.structure_prices.tin_shed || basePriceNum);
+                    else if (formData.mounting_type === 'RCC Elevated') basePriceNum = Number(specs.structure_prices.rcc_elevated || specs.structure_prices.hdg_elevated || basePriceNum);
+                    else if (formData.mounting_type === 'Pre GI MMS') basePriceNum = Number(specs.structure_prices.pre_gi_mms || basePriceNum);
+                    else if (formData.mounting_type === 'Without MMS') basePriceNum = Number(specs.structure_prices.without_mms || basePriceNum);
+                }
+
+                // GST Logic
+                if (product_category === 'Reliance') {
+                    if (systemData.system_size_kw <= 13.8) {
+                        // DB Price is Total (hdg_elevated_price)
+                        calculatedValues.total = Number(basePriceNum);
+                        calculatedValues.basePrice = Math.round(calculatedValues.total / 1.138);
+                        calculatedValues.gstAmount = calculatedValues.total - calculatedValues.basePrice;
+                        calculatedValues.grandTotal = calculatedValues.total;
+                    } else {
+                        // Large: DB Price is usually Base. But previous logic treated it as base? 
+                        // Reliance large systems table had `hdg_elevated_rcc_price` (Total?)
+                        // User's reliance_large_systems schema doesn't explicitly say if it includes GST.
+                        // BUT, looking at `reliance_grid_tie_systems`, `hdg_elevated_price` WAS matched to `total_price` in the old code.
+                        // Let's assume consistent behavior: Price in DB is "Total Project Cost" usually?
+                        // Wait, previous code for Large:
+                        // `const gst = basePriceNum * 0.138; const total = basePriceNum + gst;`
+                        // So Previous code treated Large System DB prices as EXCLUSIVE of GST (Base).
+
+                        calculatedValues.basePrice = Number(basePriceNum);
+                        calculatedValues.gstAmount = Math.round(calculatedValues.basePrice * 0.138);
+                        calculatedValues.total = calculatedValues.basePrice + calculatedValues.gstAmount;
+                        calculatedValues.grandTotal = calculatedValues.total;
+                    }
+                } else if (product_category === 'Integrated') {
+                    // Integrated DB prices are Total (13.8% GST included)
+                    calculatedValues.total = Number(basePriceNum);
+                    calculatedValues.basePrice = Math.round(calculatedValues.total / 1.138);
+                    calculatedValues.gstAmount = calculatedValues.total - calculatedValues.basePrice;
+                    calculatedValues.grandTotal = calculatedValues.total;
+
+                } else if (product_category === 'Tata' || product_category === 'Shakti') {
+                    // Tata/Shakti DB prices are Total (8.9% GST included?)
+                    // Old Code: `base = total / 1.089`
+                    calculatedValues.total = Number(basePriceNum);
+                    calculatedValues.basePrice = Math.round(calculatedValues.total / 1.089);
+                    calculatedValues.gstAmount = calculatedValues.total - calculatedValues.basePrice;
+                    calculatedValues.grandTotal = calculatedValues.total;
+                } else {
+                    // Hybrid or others
+                    // Assume DB price is total?
+                    calculatedValues.grandTotal = Number(basePriceNum);
+                    calculatedValues.total = Number(basePriceNum);
+                    calculatedValues.basePrice = Number(basePriceNum);
+                }
+
+                selectedProductData.capacity = systemData.system_size_kw;
+                selectedProductData.phase = systemData.phase === 'Three' ? 3 : 1;
+                if (specs.module_watt) selectedProductData.panelWattage = specs.module_watt;
+                if (specs.module_count) selectedProductData.panelCount = specs.module_count;
+                if (specs.inverter_kw) selectedProductData.inverterSize = specs.inverter_kw;
+                if (specs.technology) selectedProductData.panelType = specs.technology;
+                if (specs.brand) selectedProductData.panelBrand = specs.brand;
+
+            } else {
+                // Fallback if NO data found even in unified table (rare)
+                console.log('⚠️ No unified product found, using fallback estimation.');
+                const systemSizeNum = parseFloat(power_demand_kw) || 3;
+                calculatedValues.grandTotal = systemSizeNum * 45000;
+                selectedProductData.capacity = systemSizeNum;
+            }
+
+            // Subsidy calc
+            const capacity = selectedProductData.capacity;
+            if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
+            else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
+            else calculatedValues.centralSubsidy = 78000;
+            calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy);
         }
 
-        // Format numbers
-        ['total_price', 'base_price', 'gst_amount'].forEach(field => {
-            if (typeof tempVars[field] === 'number') {
-                tempVars[field] = tempVars[field].toLocaleString('en-IN', { maximumFractionDigits: 0 });
+        // 2. Prepare Assets (Logo, Sig, Payment)
+        let logoUrl = '';
+        try {
+            const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+            const logoBuffer = await fs.readFile(logoPath);
+            logoUrl = `data:image/png;base64,${logoBuffer.toString('base64')}`;
+        } catch (e) { }
+
+        let qrCodeUrl = '';
+        const upiLink = `upi://pay?pa=9044555574@okbizaxis&pn=Arpit%20Solar%20Shop&am=${calculatedValues.grandTotal}&cu=INR`;
+        try {
+            const qrPath = path.join(process.cwd(), 'public', 'payment.png');
+            const qrBuffer = await fs.readFile(qrPath);
+            qrCodeUrl = `data:image/png;base64,${qrBuffer.toString('base64')}`;
+        } catch (e) { }
+
+        let signatureUrl = '';
+        try {
+            const sigPath = path.join(process.cwd(), 'public', 'signature.png');
+            const sigBuffer = await fs.readFile(sigPath);
+            signatureUrl = `data:image/png;base64,${sigBuffer.toString('base64')}`;
+        } catch (e) { }
+
+        // 3. Components Selection
+        const compKey = selectedProductData.systemType === 'Hybrid' ? 'Hybrid' :
+            (power_demand_kw > 10 ? 'Commercial' : 'On-grid');
+
+        const selectedComponents = defaultComponents[compKey as keyof typeof defaultComponents] || defaultComponents['On-grid'];
+
+        // 4. Generate HTML
+        const html = generateQuoteHtml({
+            customerInfo: {
+                name: name || 'Valued Customer',
+                phone: phone,
+                address: address || 'N/A'
+            },
+            selectedProduct: selectedProductData,
+            calculations: calculatedValues,
+            components: selectedComponents,
+            logoUrl,
+            signatureUrl,
+            qrCodeUrl,
+            upiLink,
+            panelWarranty: selectedProductData.panelWarranty,
+            inverterWarranty: selectedProductData.inverterWarranty,
+            savings: {
+                annualUnits: selectedProductData.capacity * 1400,
+                annualSavings: selectedProductData.capacity * 1400 * 6.5,
+                roiYears: (calculatedValues.effectiveCost > 0
+                    ? (calculatedValues.effectiveCost / (selectedProductData.capacity * 1400 * 6.5)).toFixed(1)
+                    : '0')
             }
         });
 
-        console.log('✅ Step 3 Complete - Data fetching done');
-        console.log('🔵 Step 4: Starting PDF generation flow...');
-        // -----------------------------
-        // PDF Generation Flow
-        // -----------------------------
-
-        // 1. Read HTML Template
-        console.log('🔵 Step 4a: Reading HTML template...');
-        const templatePath = path.join(process.cwd(), 'src', 'lib', 'server', 'templates', 'invoice.hbs');
-        const templateSource = await fs.readFile(templatePath, 'utf-8');
-
-        console.log('✅ Step 4a Complete - Template read');
-        // 2. Compile Template
-        console.log('🔵 Step 4b: Compiling template...');
-        const template = handlebars.compile(templateSource);
-        const html = template(tempVars);
-        console.log('✅ Step 4b Complete - HTML generated');
-
-        // 3. Generate Preliminary PDF
-        console.log('🔵 Step 4c: Generating PDF from HTML (this may take 30-60 seconds)...');
+        // 5. Generate PDF
+        console.log('📄 Generating PDF...');
         const pdfPath = await generatePdfFromHtml({ html });
-        console.log('✅ Step 4c Complete - PDF generated at:', pdfPath);
+        console.log('✅ PDF Generated at:', pdfPath);
 
-        // 4. Enhance PDF (QR Code, Signature, Lock)
-        console.log('🔵 Step 4d: Enhancing PDF with QR code and signature...');
-        const qrData = `Ref:${tempVars.ref_number}|Amt:${tempVars.total_price}|Date:${tempVars.quote_date}`;
-        const finalPdfPath = await enhancePdf(
-            pdfPath,
-            qrData,
-            'Digitally Signed by Arpit Solar Shop | Immutable'
-        );
-        console.log('✅ Step 4d Complete - PDF enhanced');
+        // 6. Upload
+        const pdfUrl = await uploadToBucket(pdfPath);
+        console.log('✅ Uploaded to bucket:', pdfUrl);
 
-        // 5. Upload to Bucket
-        console.log('🔵 Step 5: Uploading PDF to Supabase...');
-        const pdfUrl = await uploadToBucket(finalPdfPath);
-        console.log('✅ Step 5 Complete - PDF uploaded:', pdfUrl);
+        // 7. Save to DB
+        await insertQuoteRequest(formData);
 
-        // 6. DB Record
-        console.log('🔵 Step 6: Saving to database...');
-        try {
-            await insertQuoteRequest(formData);
-            console.log('✅ Step 6 Complete - Data saved to database');
-        } catch (dbErr) {
-            console.error('❌ Step 6 Failed - Database error:', dbErr);
-        }
-
-        // 7. Send WhatsApp
-        console.log('🔵 Step 7: Sending WhatsApp message...');
+        // 8. WhatsApp
         let whatsappResult = { sent: false, error: null };
         try {
             await sendWhatsAppMessage(phone, pdfUrl);
-            console.log('✅ Step 7 Complete - WhatsApp sent');
             whatsappResult.sent = true;
         } catch (waError: any) {
-            console.error('⚠️ Step 7 Warning - WhatsApp failed:', waError.message);
+            console.error('WhatsApp failed:', waError);
             whatsappResult.error = waError.message;
-            // We do NOT throw here, so the user still gets the PDF
         }
 
-        // Cleanup (optional, or rely on OS/restart)
-        // await fs.remove(finalPdfPath);
-
-        console.log('🎉 ALL STEPS COMPLETE - Returning success response');
         return NextResponse.json({ success: true, pdfUrl, whatsappResult });
 
-    } catch (err: any) {
-        console.error('❌❌❌ FATAL ERROR in generate-quote:', err);
-        console.error('Error stack:', err.stack);
-        return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+    } catch (error: any) {
+        console.error('❌ API Error:', error);
+        return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
     }
 }

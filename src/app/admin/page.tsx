@@ -6,7 +6,7 @@ import StatsCard from "@/components/admin/StatsCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { supabase } from "@/integrations/supabase/client";
+
 
 interface Stats {
     totalProducts: number;
@@ -32,35 +32,20 @@ export default function AdminDashboard() {
 
     const fetchStats = async () => {
         try {
-            // Fetch products
-            const { data: products, error: productsError } = await supabase
-                .from('products')
-                .select('price, is_published, stock_quantity');
+            const response = await fetch('/api/admin/stats');
 
-            if (productsError) throw productsError;
+            if (!response.ok) {
+                throw new Error('Failed to fetch stats');
+            }
 
-            // Fetch orders
-            const { data: orders, error: ordersError } = await supabase
-                .from('orders')
-                .select('total_amount, status');
-
-            if (ordersError) throw ordersError;
-
-            const total = products?.length || 0;
-            const published = products?.filter(p => p.is_published).length || 0;
-            const totalValue = products?.reduce((sum, p) => sum + ((p.price || 0) * (p.stock_quantity || 0)), 0) || 0;
-            // const avgPrice = total > 0 ? (products?.reduce((sum, p) => sum + (p.price || 0), 0) || 0) / total : 0;
-
-            // Order stats
-            const totalOrders = orders?.length || 0;
-            const totalRevenue = orders?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0;
+            const data = await response.json();
 
             setStats({
-                totalProducts: total,
-                publishedProducts: published,
-                totalValue,
-                totalOrders,
-                totalRevenue,
+                totalProducts: data.totalProducts,
+                publishedProducts: data.publishedProducts,
+                totalValue: data.totalValue,
+                totalOrders: data.totalOrders,
+                totalRevenue: data.totalRevenue,
             });
         } catch (error) {
             console.error('Error fetching stats:', error);

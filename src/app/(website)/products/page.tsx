@@ -50,7 +50,7 @@ export default function ProductsPage() {
         try {
             setLoading(true);
             const { data, error } = await supabase
-                .from("products")
+                .from("solar_products")
                 .select("*")
                 .eq("is_published", true)
                 .order("sort_order", { ascending: true });
@@ -59,7 +59,18 @@ export default function ProductsPage() {
                 throw error;
             }
 
-            const loadedProducts = data || [];
+            // Map solar_products to expected Product interface
+            const loadedProducts = (data || []).map((p: any) => ({
+                id: p.id,
+                name: p.name || `${p.category} ${p.system_size_kw} kW Solar System`,
+                description: p.description || `Complete ${p.category} solar system with ${p.system_size_kw} kW capacity`,
+                category: p.category,
+                brand: p.brand || p.category,
+                price: Number(p.price),
+                is_published: p.is_published ?? true,
+                specifications: p.specifications,
+                image_url: p.image_url,
+            }));
             setProducts(loadedProducts);
 
             // Calculate max price for slider

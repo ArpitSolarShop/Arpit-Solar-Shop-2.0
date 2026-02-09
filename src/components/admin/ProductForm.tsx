@@ -11,11 +11,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface ProductFormProps {
     initialData?: any;
     isEdit?: boolean;
 }
+
+const CATEGORIES = ["Tata", "Shakti", "Hybrid", "Integrated", "Reliance"];
 
 export default function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
     const router = useRouter();
@@ -27,16 +36,10 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
         description: initialData?.description || "",
         brand: initialData?.brand || "",
         category: initialData?.category || "",
-        product_type: initialData?.product_type || "",
+        system_size_kw: initialData?.system_size_kw || "",
         price: initialData?.price || "",
-        discount_price: initialData?.discount_price || "",
         image_url: initialData?.image_url || "",
-        stock_quantity: initialData?.stock_quantity || 0,
-        sku: initialData?.sku || "",
-        slug: initialData?.slug || "",
-        meta_title: initialData?.meta_title || "",
-        meta_description: initialData?.meta_description || "",
-        is_published: initialData?.is_published ?? false,
+        is_published: initialData?.is_published ?? true,
         specifications: initialData?.specifications ? JSON.stringify(initialData.specifications, null, 2) : "{}",
     });
 
@@ -64,29 +67,24 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
                 return;
             }
 
-            // Prepare data
+            // Prepare data for solar_products
             const productData = {
-                name: formData.name,
-                description: formData.description,
-                brand: formData.brand,
+                name: formData.name || `${formData.category} ${formData.system_size_kw} kW System`,
+                description: formData.description || `Complete ${formData.category} solar system with ${formData.system_size_kw} kW capacity`,
+                brand: formData.brand || formData.category,
                 category: formData.category,
-                product_type: formData.product_type,
+                system_size_kw: parseFloat(formData.system_size_kw) || 0,
                 price: parseFloat(formData.price) || null,
-                discount_price: parseFloat(formData.discount_price) || null,
                 image_url: formData.image_url || null,
-                stock_quantity: parseInt(formData.stock_quantity as any) || 0,
-                sku: formData.sku || null,
-                slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
-                meta_title: formData.meta_title || null,
-                meta_description: formData.meta_description || null,
                 is_published: formData.is_published,
                 specifications,
+                sort_order: 0,
             };
 
             if (isEdit && initialData?.id) {
                 // Update existing product
                 const { error } = await supabase
-                    .from('products')
+                    .from('solar_products')
                     .update(productData)
                     .eq('id', initialData.id);
 
@@ -99,7 +97,7 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
             } else {
                 // Create new product
                 const { error } = await supabase
-                    .from('products')
+                    .from('solar_products')
                     .insert([productData]);
 
                 if (error) throw error;
@@ -128,31 +126,70 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
             {/* Basic Information */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Basic Information</CardTitle>
+                    <CardTitle>Solar System Details</CardTitle>
                     <CardDescription>Enter the basic product details</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="name">Product Name *</Label>
+                            <Label htmlFor="category">Category *</Label>
+                            <Select
+                                value={formData.category}
+                                onValueChange={(value) => setFormData(prev => ({
+                                    ...prev,
+                                    category: value,
+                                    brand: prev.brand || value
+                                }))}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {CATEGORIES.map((cat) => (
+                                        <SelectItem key={cat} value={cat}>
+                                            {cat}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="system_size_kw">System Size (kW) *</Label>
+                            <Input
+                                id="system_size_kw"
+                                name="system_size_kw"
+                                type="number"
+                                value={formData.system_size_kw}
+                                onChange={handleChange}
+                                required
+                                placeholder="e.g., 3, 5, 10"
+                                step="0.1"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Product Name</Label>
                             <Input
                                 id="name"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                required
-                                placeholder="e.g., Tata Solar 5kW System"
+                                placeholder="Auto-generated if left empty"
                             />
+                            <p className="text-xs text-gray-500">
+                                Leave empty to auto-generate: "{formData.category || "Category"} {formData.system_size_kw || "X"} kW System"
+                            </p>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="brand">Brand *</Label>
+                            <Label htmlFor="brand">Brand</Label>
                             <Input
                                 id="brand"
                                 name="brand"
                                 value={formData.brand}
                                 onChange={handleChange}
-                                required
-                                placeholder="e.g., Tata Power Solar"
+                                placeholder={formData.category || "e.g., Tata Power Solar"}
                             />
                         </div>
                     </div>
@@ -164,32 +201,9 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            rows={4}
-                            placeholder="Enter product description..."
+                            rows={3}
+                            placeholder="Leave empty to auto-generate based on category and size"
                         />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="category">Category</Label>
-                            <Input
-                                id="category"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                placeholder="e.g., Solar Systems"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="product_type">Product Type</Label>
-                            <Input
-                                id="product_type"
-                                name="product_type"
-                                value={formData.product_type}
-                                onChange={handleChange}
-                                placeholder="e.g., On-Grid, Hybrid"
-                            />
-                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -198,34 +212,21 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
             <Card>
                 <CardHeader>
                     <CardTitle>Pricing</CardTitle>
-                    <CardDescription>Set product pricing</CardDescription>
+                    <CardDescription>Set product price</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="price">Price (₹)</Label>
-                            <Input
-                                id="price"
-                                name="price"
-                                type="number"
-                                value={formData.price}
-                                onChange={handleChange}
-                                placeholder="0"
-                                step="0.01"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="discount_price">Discount Price (₹)</Label>
-                            <Input
-                                id="discount_price"
-                                name="discount_price"
-                                type="number"
-                                value={formData.discount_price}
-                                onChange={handleChange}
-                                placeholder="0"
-                                step="0.01"
-                            />
-                        </div>
+                <CardContent>
+                    <div className="max-w-xs space-y-2">
+                        <Label htmlFor="price">Price (₹) *</Label>
+                        <Input
+                            id="price"
+                            name="price"
+                            type="number"
+                            value={formData.price}
+                            onChange={handleChange}
+                            required
+                            placeholder="e.g., 250000"
+                            step="1"
+                        />
                     </div>
                 </CardContent>
             </Card>
@@ -234,7 +235,7 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
             <Card>
                 <CardHeader>
                     <CardTitle>Media</CardTitle>
-                    <CardDescription>Product images and media</CardDescription>
+                    <CardDescription>Product image</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
@@ -244,7 +245,7 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
                             name="image_url"
                             value={formData.image_url}
                             onChange={handleChange}
-                            placeholder="https://example.com/image.jpg or /logo.png"
+                            placeholder="https://example.com/image.jpg"
                         />
                         {formData.image_url && (
                             <div className="mt-2">
@@ -266,7 +267,7 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
             <Card>
                 <CardHeader>
                     <CardTitle>Specifications</CardTitle>
-                    <CardDescription>Product technical specifications (JSON format)</CardDescription>
+                    <CardDescription>Technical specifications (JSON format)</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Textarea
@@ -274,76 +275,10 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
                         name="specifications"
                         value={formData.specifications}
                         onChange={handleChange}
-                        rows={8}
-                        placeholder='{"capacity": "5kW", "warranty": "25 years"}'
+                        rows={6}
+                        placeholder='{"panel_watt": 545, "inverter_kwp": 5, "warranty_years": 25}'
                         className="font-mono text-sm"
                     />
-                </CardContent>
-            </Card>
-
-            {/* Inventory & SEO */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Inventory & SEO</CardTitle>
-                    <CardDescription>Stock and search engine optimization</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="stock_quantity">Stock Quantity</Label>
-                            <Input
-                                id="stock_quantity"
-                                name="stock_quantity"
-                                type="number"
-                                value={formData.stock_quantity}
-                                onChange={handleChange}
-                                placeholder="0"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="sku">SKU</Label>
-                            <Input
-                                id="sku"
-                                name="sku"
-                                value={formData.sku}
-                                onChange={handleChange}
-                                placeholder="PROD-001"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="slug">URL Slug</Label>
-                            <Input
-                                id="slug"
-                                name="slug"
-                                value={formData.slug}
-                                onChange={handleChange}
-                                placeholder="product-name"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="meta_title">Meta Title</Label>
-                        <Input
-                            id="meta_title"
-                            name="meta_title"
-                            value={formData.meta_title}
-                            onChange={handleChange}
-                            placeholder="SEO title"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="meta_description">Meta Description</Label>
-                        <Textarea
-                            id="meta_description"
-                            name="meta_description"
-                            value={formData.meta_description}
-                            onChange={handleChange}
-                            rows={3}
-                            placeholder="SEO description"
-                        />
-                    </div>
                 </CardContent>
             </Card>
 
@@ -374,7 +309,7 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
                 <Button
                     type="submit"
                     className="bg-blue-600 hover:bg-blue-700"
-                    disabled={loading}
+                    disabled={loading || !formData.category || !formData.system_size_kw || !formData.price}
                 >
                     {loading ? (
                         <>

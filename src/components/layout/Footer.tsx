@@ -150,6 +150,7 @@ const Footer = () => {
                                 <button onClick={() => handlePolicyClick('privacy')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Privacy Policy </button>
                                 <button onClick={() => handlePolicyClick('terms')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Terms of Service </button>
                                 <button onClick={() => handlePolicyClick('cookies')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Cookie Policy </button>
+                                <Link href="/admin/login" className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200">Admin</Link>
                             </div>
                         </div>
                     </div>

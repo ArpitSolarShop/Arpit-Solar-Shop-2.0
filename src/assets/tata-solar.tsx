@@ -513,22 +513,26 @@ export default function TataSolarPricingPage() {
     const loadData = async () => {
       try {
         setIsLoading(true)
-        // Fetch grid tie systems data
+        // Fetch grid tie systems data from unified solar_products table
         const { data: grid, error: gridError } = await supabase
-          .from("tata_grid_tie_systems")
+          .from("solar_products")
           .select("*")
-          .order("sl_no", { ascending: true });
+          .eq("category", "Tata")
+          .order("system_size_kw", { ascending: true });
         if (gridError) throw new Error(`Failed to fetch grid systems: ${gridError.message}`);
         if (grid && isMounted) {
           setGridData(
-            grid.map((r: any) => ({
-              ...r,
-              slNo: r.sl_no,
-              systemSize: Number(r.system_size),
-              noOfModules: r.no_of_modules,
-              pricePerKwp: Number(r.price_per_kwp),
-              totalPrice: Number(r.total_price),
-            }))
+            grid.map((r: any, idx: number) => {
+              const specs = r.specifications || {};
+              return {
+                slNo: specs.sl_no || idx + 1,
+                systemSize: Number(r.system_size_kw),
+                noOfModules: specs.module_count || 0,
+                phase: r.phase || '1Ph',
+                pricePerKwp: specs.price_per_kw || (r.price / r.system_size_kw),
+                totalPrice: Number(r.price),
+              };
+            })
           );
         }
 

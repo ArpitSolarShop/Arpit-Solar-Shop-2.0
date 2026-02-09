@@ -25,8 +25,6 @@ import { useCart } from "@/context/CartContext"
 import {
   Menu,
   X,
-  Sun,
-  Moon,
   ChevronDown,
   ShoppingCart,
   Hammer,
@@ -39,6 +37,8 @@ import {
   Instagram,
   Home,
   Building,
+  Newspaper,
+  Lock,
 } from "lucide-react"
 
 // Pinterest Icon Component (inline to avoid import issues)
@@ -76,7 +76,6 @@ type SocialLink = {
 const Navbar = () => {
   // State management
   const [isOpen, setIsOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [isQuoteOpen, setIsQuoteOpen] = useState(false)
@@ -164,6 +163,7 @@ const Navbar = () => {
         ],
       },
       { name: "Services", icon: Hammer, href: "/services" },
+      { name: "Blog", icon: Newspaper, href: "/blog" },
       {
         name: "About",
         icon: Info,
@@ -219,14 +219,6 @@ const Navbar = () => {
   }, [])
 
   // Memoized handlers
-  const toggleDarkMode = useCallback(() => {
-    setDarkMode((prev) => {
-      const newMode = !prev
-      document.documentElement.classList.toggle("dark", newMode)
-      return newMode
-    })
-  }, [])
-
   const handleMenuEnter = useCallback((menuName: string) => {
     if (menuCloseTimer.current) {
       clearTimeout(menuCloseTimer.current)
@@ -467,30 +459,13 @@ const Navbar = () => {
                 })}
               </div>
               <div className="flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  onClick={toggleDarkMode}
-                  className="flex-1 justify-start text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  {darkMode ? <Sun className="w-4 h-4 mr-2" /> : <Moon className="w-4 h-4 mr-2" />}
-                  {darkMode ? "Light Mode" : "Dark Mode"}
-                </Button>
-                <Button
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all duration-200"
-                  onClick={() => {
-                    setIsQuoteOpen(true)
-                    closeMobileMenu()
-                  }}
-                >
-                  Get Quote
-                </Button>
               </div>
             </div>
           </div>
         </div>
       </div>
     )
-  }, [isOpen, darkMode, isActivePath, closeMobileMenu, toggleDarkMode, handleSocialClick, navigationItems, socialLinks])
+  }, [isOpen, isActivePath, closeMobileMenu, handleSocialClick, navigationItems, socialLinks])
 
   // Main component logic
   const isHomePage = pathname === "/"
@@ -565,16 +540,6 @@ const Navbar = () => {
                 <div className="flex items-center space-x-2 sm:space-x-4 pr-2 sm:pr-4">
                   <SocialIcons className="hidden md:flex items-center space-x-2 text-white/80 hover:text-white" />
 
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={toggleDarkMode}
-                    className="hidden lg:flex w-8 h-8 sm:w-9 sm:h-9 text-white hover:text-white/80 transition-all duration-200"
-                    aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                  >
-                    {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                  </Button>
-
                   {/* Cart Button */}
                   <Button
                     variant="ghost"
@@ -591,12 +556,7 @@ const Navbar = () => {
                     )}
                   </Button>
 
-                  <Button
-                    onClick={() => setIsQuoteOpen(true)}
-                    className="hidden lg:flex bg-white/20 hover:bg-white/30 text-white font-semibold px-4 sm:px-6 py-2 rounded-full border border-white/30 transition-all duration-200 text-sm"
-                  >
-                    Get Quote
-                  </Button>
+
 
                   {/* Mobile Menu Button */}
                   <div className="lg:hidden">
@@ -677,16 +637,6 @@ const Navbar = () => {
                 <div className="flex items-center space-x-2 sm:space-x-4 pr-2 sm:pr-4">
                   <SocialIcons className="hidden md:flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" />
 
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={toggleDarkMode}
-                    className="hidden lg:flex w-8 h-8 sm:w-9 sm:h-9 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                    aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                  >
-                    {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                  </Button>
-
                   {/* Cart Button */}
                   <Button
                     variant="ghost"
@@ -703,12 +653,7 @@ const Navbar = () => {
                     )}
                   </Button>
 
-                  <Button
-                    onClick={() => setIsQuoteOpen(true)}
-                    className="hidden lg:flex bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 sm:px-6 py-2 rounded-full transition-all duration-200 text-sm"
-                  >
-                    Get Quote
-                  </Button>
+
 
                   {/* Mobile Menu Button */}
                   <div className="lg:hidden">

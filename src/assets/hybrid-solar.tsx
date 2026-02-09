@@ -53,19 +53,23 @@ export default function HybridSolarPricing() {
     try {
       setLoading(true);
 
-      // Fetch data from Supabase with proper typing
+      // Fetch data from Supabase unified table
       const { data, error } = await supabase
-        .from('hybrid_solar_pricing')
+        .from('solar_products')
         .select('*')
-        .order('capacity_kw', { ascending: true });
+        .eq('category', 'Hybrid')
+        .order('system_size_kw', { ascending: true });
 
       if (error) throw error;
 
       if (data && data.length > 0) {
-        // Map and ensure all fields are properly typed
-        const mappedData = data.map((r: any) => {
+        // Map unified table structure to expected HybridSystemData format
+        const mappedData = data.map((r: any, idx: number) => {
+          const specs = r.specifications || {};
+          const compQtys = specs.component_qtys || {};
+
           // Normalize category to ensure consistent values
-          const normalizedCategory = (r.category || '').toUpperCase().trim()
+          const normalizedCategory = (specs.category_type || 'DCR').toUpperCase().trim()
           let category: 'DCR' | 'NON_DCR' | 'NDCR' = 'DCR'
           if (normalizedCategory === 'NON_DCR' || normalizedCategory === 'NON-DCR') {
             category = 'NON_DCR'
@@ -76,26 +80,26 @@ export default function HybridSolarPricing() {
           }
 
           return {
-            id: r.id,
+            id: idx + 1,
             category: category,
-            variant: r.variant as 'WITH_BATTERY' | 'WOBB',
-            capacity_kw: Number(r.capacity_kw),
+            variant: (specs.variant || 'WITH_BATTERY') as 'WITH_BATTERY' | 'WOBB',
+            capacity_kw: Number(r.system_size_kw),
             phase: r.phase || '1Ph',
-            price_inr: Number(r.price_inr),
-            inverter_kwp: Number(r.inverter_kwp),
-            battery_kwh: r.battery_kwh ? Number(r.battery_kwh) : null,
-            module_watt: Number(r.module_watt),
-            module_count: Number(r.module_count),
-            structure_type: r.structure_type || '3x6',
-            technology: (r.technology || 'TOPCON') as 'TOPCON' | 'MONO_BIFACIAL' | 'TOPCON_NDCR',
-            acdb_qty: r.acdb_qty ? Number(r.acdb_qty) : 1,
-            dcdb_qty: r.dcdb_qty ? Number(r.dcdb_qty) : 1,
-            earthing_rod_qty: r.earthing_rod_qty ? Number(r.earthing_rod_qty) : 3,
-            earthing_chemical_qty: r.earthing_chemical_qty ? Number(r.earthing_chemical_qty) : 3,
-            lightning_arrester_qty: r.lightning_arrester_qty ? Number(r.lightning_arrester_qty) : 1,
-            ac_wire_mtr: r.ac_wire_mtr ? Number(r.ac_wire_mtr) : 10,
-            dc_wire_mtr: r.dc_wire_mtr ? Number(r.dc_wire_mtr) : 20,
-            earthing_wire_mtr: r.earthing_wire_mtr ? Number(r.earthing_wire_mtr) : 90,
+            price_inr: Number(r.price),
+            inverter_kwp: Number(specs.inverter_kw || 0),
+            battery_kwh: specs.battery_kwh ? Number(specs.battery_kwh) : null,
+            module_watt: Number(specs.module_watt || 0),
+            module_count: Number(specs.module_count || 0),
+            structure_type: specs.structure_type || '3x6',
+            technology: (specs.technology || 'TOPCON') as 'TOPCON' | 'MONO_BIFACIAL' | 'TOPCON_NDCR',
+            acdb_qty: compQtys.acdb ? Number(compQtys.acdb) : 1,
+            dcdb_qty: compQtys.dcdb ? Number(compQtys.dcdb) : 1,
+            earthing_rod_qty: compQtys.earthing_rod ? Number(compQtys.earthing_rod) : 3,
+            earthing_chemical_qty: compQtys.earthing_chemical ? Number(compQtys.earthing_chemical) : 3,
+            lightning_arrester_qty: compQtys.lightning_arrester ? Number(compQtys.lightning_arrester) : 1,
+            ac_wire_mtr: compQtys.ac_wire_mtr ? Number(compQtys.ac_wire_mtr) : 10,
+            dc_wire_mtr: compQtys.dc_wire_mtr ? Number(compQtys.dc_wire_mtr) : 20,
+            earthing_wire_mtr: compQtys.earthing_wire_mtr ? Number(compQtys.earthing_wire_mtr) : 90,
             created_at: r.created_at,
             updated_at: r.updated_at,
           }

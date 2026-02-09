@@ -28,38 +28,72 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
             executablePath = await chromium.executablePath();
         } else {
             console.log('💻 Running in DEVELOPMENT (Local)');
-            // Attempt to find local Chrome/Chromium
-            // If this fails locally, users might need to install Puppeteer full or set path
-            try {
-                // Try standard puppeteer path if available (if installed as dev dependency)
-                const puppeteer = await import('puppeteer');
-                executablePath = puppeteer.executablePath();
-            } catch (e) {
-                // Fallback for win32
-                if (process.platform === 'win32') {
-                    executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-                } else {
-                    executablePath = await chromium.executablePath(); // Fallback to sparticuz?
+
+            // For Windows, always use system Chrome - it's more reliable
+            if (process.platform === 'win32') {
+                const possiblePaths = [
+                    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+                    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+                    process.env.LOCALAPPDATA + '\\Google\\Chrome\\Application\\chrome.exe',
+                ];
+
+                console.log('🔍 Searching for Chrome on Windows...');
+                for (const chromePath of possiblePaths) {
+                    if (chromePath && await fs.pathExists(chromePath)) {
+                        executablePath = chromePath;
+                        console.log('✅ Found Chrome at:', executablePath);
+                        break;
+                    }
+                }
+
+                if (!executablePath) {
+                    throw new Error('Chrome not found. Please install Google Chrome from https://www.google.com/chrome/');
+                }
+            } else if (process.platform === 'darwin') {
+                executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+                console.log('🍎 Using macOS Chrome path:', executablePath);
+            } else {
+                // Linux - try bundled Chromium from sparticuz, then fallback
+                try {
+                    executablePath = await chromium.executablePath();
+                    console.log('🐧 Using Chromium from sparticuz:', executablePath);
+                } catch (e) {
+                    console.log('⚠️ Chromium not available, trying system Chrome...');
+                    executablePath = '/usr/bin/google-chrome';
                 }
             }
         }
 
-        console.log(`ℹ️ Executable Path: ${executablePath || 'Auto-detected'}`);
+        console.log(`ℹ️ Final Executable Path: ${executablePath}`);
+        console.log(`ℹ️ Platform: ${process.platform}`);
+        console.log(`ℹ️ Node Environment: ${process.env.NODE_ENV || 'development'}`);
+
+        console.log('🚀 Attempting to launch browser with config:', {
+            args: [...args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+            executablePath,
+            headless: true,
+        });
 
         browser = await puppeteerCore.launch({
-            args: [...args, '--no-sandbox', '--disable-setuid-sandbox'],
+            args: [...args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
             defaultViewport: { width: 1920, height: 1080 },
             executablePath: executablePath,
             headless: true,
+            timeout: 120000, // Increased to 2 minutes
+            protocolTimeout: 120000, // Add protocol timeout
         });
 
         console.log('✅ Puppeteer launched');
         const page = await browser.newPage();
 
-        // Set content and wait for DOM to load
+        // Set content with faster loading strategy
         console.log('📄 Setting HTML content...');
-        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 60000 }); // Changed from networkidle0 to domcontentloaded for faster loading
         console.log('✅ HTML content set');
+
+        // Reduced wait time - only 500ms is needed for CSS/fonts to apply
+        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log('✅ Rendering wait complete');
 
         console.log('📄 Generating PDF...');
         const pdfBuffer = await page.pdf({
@@ -70,19 +104,41 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
                 bottom: '20px',
                 left: '20px',
                 right: '20px'
-            }
+            },
+            timeout: 60000, // Reduced to 60s - should be more than enough
         });
 
         const tempPath = path.join(OUTPUT_DIR, `temp_${Date.now()}.pdf`);
         await fs.writeFile(tempPath, pdfBuffer);
+        console.log('✅ PDF saved to disk');
 
         return tempPath;
     } catch (error: any) {
         console.error('❌ Puppeteer error:', error);
-        // Throw the specific error message to generic API handler
-        throw new Error(`Failed to generate PDF: ${error.message || error}`);
+        console.error('Error stack:', error.stack);
+
+        // Provide more specific error messages for common issues
+        if (error.message?.includes('Target closed') || error.message?.includes('Session closed')) {
+            throw new Error('PDF generation failed: Browser connection lost. This may be due to system resources. Please try again or contact support if the issue persists.');
+        } else if (error.message?.includes('timeout') || error.message?.includes('Timeout')) {
+            throw new Error('PDF generation timed out (>90s). The quote data may be too complex or the server is busy. Please try again.');
+        } else if (error.message?.includes('Protocol error')) {
+            throw new Error('Browser protocol error. Try again or use a simpler quote configuration.');
+        } else {
+            throw new Error(`Failed to generate PDF: ${error.message || error}`);
+        }
     } finally {
-        if (browser) await browser.close();
+        // Proper cleanup: close browser in try-catch to prevent cleanup errors from masking real issues
+        if (browser) {
+            try {
+                console.log('🧹 Closing browser...');
+                await browser.close();
+                console.log('✅ Browser closed successfully');
+            } catch (closeError) {
+                console.error('⚠️ Error closing browser (non-fatal):', closeError);
+                // Don't throw here - we want to preserve the original error if any
+            }
+        }
     }
 }
 
