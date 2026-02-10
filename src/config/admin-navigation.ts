@@ -8,10 +8,8 @@ import {
     Settings,
     FileText,
     UserCog,
-    Tag,
     Megaphone,
     Boxes,
-    Grid3x3,
     Palette,
     Warehouse,
     CreditCard,
@@ -29,7 +27,6 @@ import {
     ShoppingBag,
     Newspaper,
     Menu,
-    FolderTree,
     type LucideIcon
 } from "lucide-react";
 
@@ -58,24 +55,14 @@ export const adminNavigation: NavigationItem[] = [
                 icon: Package,
             },
             {
-                name: "Categories",
-                href: "/admin/categories",
-                icon: FolderTree,
-            },
-            {
-                name: "Attributes",
-                href: "/admin/attributes",
-                icon: Grid3x3,
-            },
-            {
                 name: "Inventory",
                 href: "/admin/inventory",
                 icon: Warehouse,
             },
             {
-                name: "Brands",
-                href: "/admin/brands",
-                icon: Tag,
+                name: "Product Components",
+                href: "/admin/solar-product-components",
+                icon: Boxes,
             },
         ],
     },

@@ -18,7 +18,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { MoreVertical, Edit, Trash2, Eye, EyeOff, Boxes } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -114,6 +114,7 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
                         <TableHead>Category</TableHead>
                         <TableHead>Size (kW)</TableHead>
                         <TableHead>Price</TableHead>
+                        <TableHead>Components</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="w-16">Actions</TableHead>
                     </TableRow>
@@ -121,7 +122,7 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
                 <TableBody>
                     {products.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                            <TableCell colSpan={9} className="text-center py-8 text-gray-500">
                                 No products found
                             </TableCell>
                         </TableRow>
@@ -147,6 +148,14 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
                                 <TableCell>{product.system_size_kw} kW</TableCell>
                                 <TableCell>{formatPrice(product.price)}</TableCell>
                                 <TableCell>
+                                    <Link href={`/admin/solar-product-components?brand=${encodeURIComponent(product.category)}`}>
+                                        <Badge variant="outline" className="cursor-pointer hover:bg-blue-50 hover:border-blue-400 text-blue-700 border-blue-200 gap-1">
+                                            <Boxes className="w-3 h-3" />
+                                            {product.category}
+                                        </Badge>
+                                    </Link>
+                                </TableCell>
+                                <TableCell>
                                     <Badge variant={product.is_published ? "default" : "secondary"}>
                                         {product.is_published ? "Published" : "Draft"}
                                     </Badge>
@@ -163,6 +172,12 @@ export default function ProductTable({ products, onRefresh }: ProductTableProps)
                                                 <Link href={`/admin/products/${product.id}/edit`}>
                                                     <Edit className="w-4 h-4 mr-2" />
                                                     Edit
+                                                </Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <Link href={`/admin/solar-product-components?brand=${encodeURIComponent(product.category)}`}>
+                                                    <Boxes className="w-4 h-4 mr-2" />
+                                                    Manage Components
                                                 </Link>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem

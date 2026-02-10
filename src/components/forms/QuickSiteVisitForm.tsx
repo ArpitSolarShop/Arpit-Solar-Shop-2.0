@@ -48,6 +48,7 @@ export function QuickSiteVisitForm({ city, children }: QuickSiteVisitFormProps) 
                     name: formData.name,
                     phone: formData.phone,
                     project_location: formData.location,
+                    address: formData.location || 'N/A',
                     source: `Quick Site Visit - ${city}`,
                     customer_type: "residential",
                     solution_classification: "Residential", // Default

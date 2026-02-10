@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Boxes } from "lucide-react";
 import Link from "next/link";
 import ProductForm from "@/components/admin/ProductForm";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,6 +79,15 @@ export default function EditProductPage() {
                 </Link>
                 <h1 className="text-3xl font-bold text-gray-900">Edit Product</h1>
                 <p className="text-gray-600 mt-1">Update product information</p>
+                {(product as any)?.category && (
+                    <Link
+                        href={`/admin/solar-product-components?brand=${encodeURIComponent((product as any).category)}`}
+                        className="inline-flex items-center gap-1.5 mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                        <Boxes className="w-4 h-4" />
+                        Manage {(product as any).category} Components →
+                    </Link>
+                )}
             </div>
 
             {/* Form */}

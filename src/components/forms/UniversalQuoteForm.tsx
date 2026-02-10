@@ -149,6 +149,7 @@ const UniversalQuoteForm = ({
             const apiPayload = {
                 ...dbPayload,
                 // Enriched fields for API / PDF
+                address: formData.project_location || 'N/A',
                 phase: formData.phase, // Important for Tata
                 brand: productDetails?.brand, // Important for Integrated
                 cables: formData.cables,

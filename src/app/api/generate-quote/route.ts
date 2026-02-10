@@ -62,12 +62,12 @@ export async function POST(req: NextRequest) {
             calculatedValues.gstAmount = metadata.gst_amount;
             calculatedValues.total = metadata.estimated_price;
             calculatedValues.grandTotal = metadata.estimated_price;
-            calculatedValues.centralSubsidy = 78000; // Approx
-
+            // Subsidy calc for calculator form
             const capacity = parseFloat(power_demand_kw);
             if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
             else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
             else calculatedValues.centralSubsidy = 78000;
+            calculatedValues.stateSubsidy = 30000;
 
             calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
 
@@ -189,12 +189,13 @@ export async function POST(req: NextRequest) {
                 selectedProductData.capacity = systemSizeNum;
             }
 
-            // Subsidy calc
+            // Subsidy calc (Central + State)
             const capacity = selectedProductData.capacity;
             if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
             else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
             else calculatedValues.centralSubsidy = 78000;
-            calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy);
+            calculatedValues.stateSubsidy = 30000;
+            calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
         }
 
         // 2. Prepare Assets (Logo, Sig, Payment)
@@ -220,11 +221,34 @@ export async function POST(req: NextRequest) {
             signatureUrl = `data:image/png;base64,${sigBuffer.toString('base64')}`;
         } catch (e) { }
 
-        // 3. Components Selection
+        // 3. Components Selection — fetch from DB by brand, with hardcoded fallback
         const compKey = selectedProductData.systemType === 'Hybrid' ? 'Hybrid' :
             (power_demand_kw > 10 ? 'Commercial' : 'On-grid');
 
-        const selectedComponents = defaultComponents[compKey as keyof typeof defaultComponents] || defaultComponents['On-grid'];
+        let selectedComponents = defaultComponents[compKey as keyof typeof defaultComponents] || defaultComponents['On-grid'];
+
+        try {
+            const { createClient } = await import('@supabase/supabase-js');
+            const sbAdmin = createClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+                process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+            );
+            // Use product_category (brand name: Tata, Shakti, Reliance, Integrated, Hybrid)
+            // as the direct DB category lookup
+            const brandCategory = product_category || compKey;
+            const { data: dbComponents } = await sbAdmin
+                .from('solar_product_components')
+                .select('name, description, quantity, make, sort_order')
+                .eq('category', brandCategory)
+                .eq('is_active', true)
+                .order('sort_order');
+
+            if (dbComponents && dbComponents.length > 0) {
+                selectedComponents = dbComponents;
+            }
+        } catch (dbErr) {
+            console.warn('Could not fetch components from DB, using defaults:', dbErr);
+        }
 
         // 4. Generate HTML
         const html = generateQuoteHtml({
@@ -243,8 +267,8 @@ export async function POST(req: NextRequest) {
             panelWarranty: selectedProductData.panelWarranty,
             inverterWarranty: selectedProductData.inverterWarranty,
             savings: {
-                annualUnits: selectedProductData.capacity * 1400,
-                annualSavings: selectedProductData.capacity * 1400 * 6.5,
+                annualUnits: Math.round(selectedProductData.capacity * 1400 * 100) / 100,
+                annualSavings: Math.round(selectedProductData.capacity * 1400 * 6.5 * 100) / 100,
                 roiYears: (calculatedValues.effectiveCost > 0
                     ? (calculatedValues.effectiveCost / (selectedProductData.capacity * 1400 * 6.5)).toFixed(1)
                     : '0')

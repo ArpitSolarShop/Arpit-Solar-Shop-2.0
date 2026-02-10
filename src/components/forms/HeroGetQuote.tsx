@@ -369,6 +369,7 @@ export function HeroGetQuote() {
                 monthly_bill: formData.monthlyBill,
                 power_demand_kw: product.size,
                 project_location: `${estimateData.fullAddress || ''}${formData.pinCode ? ', ' + formData.pinCode : ''}`,
+                address: estimateData.fullAddress ? `${estimateData.fullAddress}${estimateData.landmark ? ', ' + estimateData.landmark : ''}${formData.pinCode ? ', ' + formData.pinCode : ''}` : (formData.city || formData.pinCode || 'N/A'),
                 product_name: `${product.size} kWp Solar System (${product.phase}-Phase)${product.mountingType ? ` - ${product.mountingType}` : ''}`,
                 product_category: product.brand,
                 source: "Quote Form",
