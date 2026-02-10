@@ -283,20 +283,42 @@ export async function POST(req: NextRequest) {
             if (dbComponents && dbComponents.length > 0) {
                 selectedComponents = dbComponents;
 
-                // Update selectedProductData based on components if found
-                const inverterComp = dbComponents.find((c: any) =>
-                    c.name.toLowerCase().includes('inverter') || c.name.toLowerCase().includes('pcu')
+                // --- DYNAMIC QUANTITY SCALING ---
+                const panelWattageNum = parseFloat(selectedProductData.panelWattage) || 550;
+                // Calculate needed panels: (Capacity (kW) * 1000) / Wattage
+                const neededPanels = Math.ceil((selectedProductData.capacity * 1000) / panelWattageNum);
+                selectedProductData.panelCount = neededPanels;
+
+                // Update Panel Component
+                const panelCompIndex = selectedComponents.findIndex((c: any) =>
+                    c.name.toLowerCase().includes('panel') ||
+                    c.name.toLowerCase().includes('module') ||
+                    c.name.toLowerCase().includes('pv')
                 );
-                if (inverterComp && inverterComp.make) {
-                    selectedProductData.inverterBrand = inverterComp.make;
+
+                if (panelCompIndex !== -1) {
+                    selectedComponents[panelCompIndex] = {
+                        ...selectedComponents[panelCompIndex],
+                        quantity: `${neededPanels} Nos`,
+                        description: `${selectedProductData.panelWattage}Wp (${selectedProductData.panelType})`
+                    };
+                    if (selectedComponents[panelCompIndex].make) {
+                        selectedProductData.panelBrand = selectedComponents[panelCompIndex].make;
+                    }
                 }
 
-                const panelComp = dbComponents.find((c: any) =>
-                    c.name.toLowerCase().includes('panel') || c.name.toLowerCase().includes('module')
+                // Update Inverter Component (keep quantity 1 usually, but update makes)
+                const inverterCompIndex = selectedComponents.findIndex((c: any) =>
+                    c.name.toLowerCase().includes('inverter') || c.name.toLowerCase().includes('pcu')
                 );
-                if (panelComp && panelComp.make) {
-                    selectedProductData.panelBrand = panelComp.make;
+                if (inverterCompIndex !== -1) {
+                    if (selectedComponents[inverterCompIndex].make) {
+                        selectedProductData.inverterBrand = selectedComponents[inverterCompIndex].make;
+                    }
                 }
+
+                // Update Structure (if it exists and looks like it needs scaling, though usually it's "1 Set")
+                // For now, only scaling panels is critical for user trust.
             }
         } catch (dbErr) {
             console.warn('Could not fetch components from DB, using defaults:', dbErr);
