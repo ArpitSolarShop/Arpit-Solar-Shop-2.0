@@ -231,7 +231,7 @@ export async function POST(req: NextRequest) {
             const { createClient } = await import('@supabase/supabase-js');
             const sbAdmin = createClient(
                 process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-                process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+                process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
             );
             // Use product_category (brand name: Tata, Shakti, Reliance, Integrated, Hybrid)
             // as the direct DB category lookup
@@ -245,6 +245,21 @@ export async function POST(req: NextRequest) {
 
             if (dbComponents && dbComponents.length > 0) {
                 selectedComponents = dbComponents;
+
+                // Update selectedProductData based on components if found
+                const inverterComp = dbComponents.find((c: any) =>
+                    c.name.toLowerCase().includes('inverter') || c.name.toLowerCase().includes('pcu')
+                );
+                if (inverterComp && inverterComp.make) {
+                    selectedProductData.inverterBrand = inverterComp.make;
+                }
+
+                const panelComp = dbComponents.find((c: any) =>
+                    c.name.toLowerCase().includes('panel') || c.name.toLowerCase().includes('module')
+                );
+                if (panelComp && panelComp.make) {
+                    selectedProductData.panelBrand = panelComp.make;
+                }
             }
         } catch (dbErr) {
             console.warn('Could not fetch components from DB, using defaults:', dbErr);
@@ -275,6 +290,7 @@ export async function POST(req: NextRequest) {
             }
         });
 
+        // 5. Generate PDF
         // 5. Generate PDF
         console.log('📄 Generating PDF...');
         const pdfPath = await generatePdfFromHtml({ html });
