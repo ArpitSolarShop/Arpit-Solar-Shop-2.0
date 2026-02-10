@@ -3,34 +3,34 @@
 import { companyDetails as defaultCompanyDetails } from './companyDetails';
 
 export const generateQuoteHtml = (data: any): string => {
-    const { customerInfo, selectedProduct, calculations, components = [], terms = [], logoUrl, qrCodeUrl, upiLink } = data;
-    const company = defaultCompanyDetails;
+  const { customerInfo, selectedProduct, calculations, components = [], terms = [], logoUrl, qrCodeUrl, upiLink } = data;
+  const company = defaultCompanyDetails;
 
-    // Safe number extraction
-    const n = (v: any) => (typeof v === 'number' && isFinite(v) ? v : 0);
-    const basePrice = n(calculations?.basePrice) || n(calculations?.subtotal);
-    const extraCosts = n(calculations?.extraCosts);
-    const gstAmount = n(calculations?.gstAmount);
-    const total = n(calculations?.total) || n(calculations?.grandTotal);
-    const centralSubsidy = n(calculations?.centralSubsidy);
-    const stateSubsidy = n(calculations?.stateSubsidy);
-    const effectiveCost = n(calculations?.effectiveCost);
-    const gstRate = n(data?.taxRate) * 100 || 8.9;
+  // Safe number extraction
+  const n = (v: any) => (typeof v === 'number' && isFinite(v) ? v : 0);
+  const basePrice = n(calculations?.basePrice) || n(calculations?.subtotal);
+  const extraCosts = n(calculations?.extraCosts);
+  const gstAmount = n(calculations?.gstAmount);
+  const total = n(calculations?.total) || n(calculations?.grandTotal);
+  const centralSubsidy = n(calculations?.centralSubsidy);
+  const stateSubsidy = n(calculations?.stateSubsidy);
+  const effectiveCost = n(calculations?.effectiveCost);
+  const gstRate = n(calculations?.taxRate) || n(data?.taxRate) * 100 || 8.9;
 
-    const formatCurrency = (val: number) => new Intl.NumberFormat('en-IN').format(Math.round(val));
-    const currentDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    const quoteNumber = `ASS-${(customerInfo?.name || 'X').charAt(0).toUpperCase()}${Date.now().toString().slice(-6)}`;
+  const formatCurrency = (val: number) => new Intl.NumberFormat('en-IN').format(Math.round(val));
+  const currentDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  const quoteNumber = `ASS-${(customerInfo?.name || 'X').charAt(0).toUpperCase()}${Date.now().toString().slice(-6)}`;
 
-    // System info
-    const systemSize = selectedProduct?.capacity || 0;
-    const phase = selectedProduct?.phase === 1 ? 'Single Phase' : 'Three Phase';
-    const panelBrand = selectedProduct?.panelBrand || '';
-    const panelWattage = selectedProduct?.panelWattage || '';
-    const panelType = selectedProduct?.panelType || '';
-    const inverterBrand = selectedProduct?.inverterBrand || '';
-    const systemType = selectedProduct?.systemType || 'On-grid';
+  // System info
+  const systemSize = selectedProduct?.capacity || 0;
+  const phase = selectedProduct?.phase === 1 ? 'Single Phase' : 'Three Phase';
+  const panelBrand = selectedProduct?.panelBrand || '';
+  const panelWattage = selectedProduct?.panelWattage || '';
+  const panelType = selectedProduct?.panelType || '';
+  const inverterBrand = selectedProduct?.inverterBrand || '';
+  const systemType = selectedProduct?.systemType || 'On-grid';
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8" />
@@ -295,13 +295,13 @@ export const generateQuoteHtml = (data: any): string => {
       <div class="terms-title">Terms and Conditions</div>
       <div class="terms-grid">
         ${(terms.length > 0 ? terms : [
-            'Payment: 10% Advance on structure installation.',
-            'Delivery: 85% Before delivery of kit. 5% Post installation.',
-            'Subsidy directly credited to customer bank account.',
-            'Installation completed within 7-10 working days.',
-            'Module Warranty: 25 Years. Inverter: 5 Years.',
-            'Free Annual Maintenance for 1st year.'
-        ]).map((term: string) => `<div class="term-item">${term.replace(/^([^:]+):/, '<strong>$1:</strong>')}</div>`).join('')}
+      'Payment: 10% Advance on structure installation.',
+      'Delivery: 85% Before delivery of kit. 5% Post installation.',
+      'Subsidy directly credited to customer bank account.',
+      'Installation completed within 7-10 working days.',
+      'Module Warranty: 25 Years. Inverter: 5 Years.',
+      'Free Annual Maintenance for 1st year.'
+    ]).map((term: string) => `<div class="term-item">${term.replace(/^([^:]+):/, '<strong>$1:</strong>')}</div>`).join('')}
       </div>
     </div>
     

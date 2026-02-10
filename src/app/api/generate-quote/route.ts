@@ -79,13 +79,18 @@ export async function POST(req: NextRequest) {
             }
 
         } else {
+            // Fetch Subsidies
+            const { data: subsidies } = await supabase
+                .from('solar_subsidies')
+                .select('*')
+                .eq('is_active', true);
+
             // Unified Fetch from solar_products
             let categoryFilter = product_category;
-            // Map simple category names to DB valid enum
             if (['Tata', 'Shakti', 'Reliance', 'Hybrid', 'Integrated'].includes(product_category)) {
                 categoryFilter = product_category;
             } else {
-                categoryFilter = 'Tata'; // Default?
+                categoryFilter = 'Tata'; // Default
             }
 
             console.log(`🔎 Searching solar_products for ${categoryFilter}, Size: ${power_demand_kw}`);
@@ -103,12 +108,10 @@ export async function POST(req: NextRequest) {
 
             let systemData: any;
             if (products && products.length > 0) {
-                // Find match within small tolerance
+                // Find closest match
                 systemData = products.find((p: any) =>
                     Math.abs(p.system_size_kw - Number(power_demand_kw)) < 0.1
                 );
-
-                // If no exact match, find closest
                 if (!systemData) {
                     systemData = products.reduce((prev: any, curr: any) =>
                         Math.abs(curr.system_size_kw - Number(power_demand_kw)) < Math.abs(prev.system_size_kw - Number(power_demand_kw)) ? curr : prev
@@ -117,62 +120,40 @@ export async function POST(req: NextRequest) {
             }
 
             if (systemData) {
-                let basePriceNum = Number(systemData.price);
+                let initialPrice = Number(systemData.price);
                 const specs = systemData.specifications || {};
 
-                // Handle Reliance Special Pricing logic (structure types)
+                // Handle Reliance Special Pricing (Structure)
+                // This adds to/replaces the base price. We assume this "structure price" follows the same GST rule as the main product.
                 if (product_category === 'Reliance' && specs.structure_prices) {
-                    if (formData.mounting_type === 'Tin Shed') basePriceNum = Number(specs.structure_prices.tin_shed || basePriceNum);
-                    else if (formData.mounting_type === 'RCC Elevated') basePriceNum = Number(specs.structure_prices.rcc_elevated || specs.structure_prices.hdg_elevated || basePriceNum);
-                    else if (formData.mounting_type === 'Pre GI MMS') basePriceNum = Number(specs.structure_prices.pre_gi_mms || basePriceNum);
-                    else if (formData.mounting_type === 'Without MMS') basePriceNum = Number(specs.structure_prices.without_mms || basePriceNum);
+                    if (formData.mounting_type === 'Tin Shed') initialPrice = Number(specs.structure_prices.tin_shed || initialPrice);
+                    else if (formData.mounting_type === 'RCC Elevated') initialPrice = Number(specs.structure_prices.rcc_elevated || specs.structure_prices.hdg_elevated || initialPrice);
+                    else if (formData.mounting_type === 'Pre GI MMS') initialPrice = Number(specs.structure_prices.pre_gi_mms || initialPrice);
+                    else if (formData.mounting_type === 'Without MMS') initialPrice = Number(specs.structure_prices.without_mms || initialPrice);
                 }
 
-                // GST Logic
-                if (product_category === 'Reliance') {
-                    if (systemData.system_size_kw <= 13.8) {
-                        // DB Price is Total (hdg_elevated_price)
-                        calculatedValues.total = Number(basePriceNum);
-                        calculatedValues.basePrice = Math.round(calculatedValues.total / 1.138);
-                        calculatedValues.gstAmount = calculatedValues.total - calculatedValues.basePrice;
-                        calculatedValues.grandTotal = calculatedValues.total;
-                    } else {
-                        // Large: DB Price is usually Base. But previous logic treated it as base? 
-                        // Reliance large systems table had `hdg_elevated_rcc_price` (Total?)
-                        // User's reliance_large_systems schema doesn't explicitly say if it includes GST.
-                        // BUT, looking at `reliance_grid_tie_systems`, `hdg_elevated_price` WAS matched to `total_price` in the old code.
-                        // Let's assume consistent behavior: Price in DB is "Total Project Cost" usually?
-                        // Wait, previous code for Large:
-                        // `const gst = basePriceNum * 0.138; const total = basePriceNum + gst;`
-                        // So Previous code treated Large System DB prices as EXCLUSIVE of GST (Base).
+                // Dynamic GST Calculation
+                const gstRate = systemData.gst_rate ?? 8.9; // Default 8.9%
+                const priceIncludesGst = systemData.price_includes_gst ?? true; // Default to Inclusive
 
-                        calculatedValues.basePrice = Number(basePriceNum);
-                        calculatedValues.gstAmount = Math.round(calculatedValues.basePrice * 0.138);
-                        calculatedValues.total = calculatedValues.basePrice + calculatedValues.gstAmount;
-                        calculatedValues.grandTotal = calculatedValues.total;
-                    }
-                } else if (product_category === 'Integrated') {
-                    // Integrated DB prices are Total (13.8% GST included)
-                    calculatedValues.total = Number(basePriceNum);
-                    calculatedValues.basePrice = Math.round(calculatedValues.total / 1.138);
-                    calculatedValues.gstAmount = calculatedValues.total - calculatedValues.basePrice;
-                    calculatedValues.grandTotal = calculatedValues.total;
-
-                } else if (product_category === 'Tata' || product_category === 'Shakti') {
-                    // Tata/Shakti DB prices are Total (8.9% GST included?)
-                    // Old Code: `base = total / 1.089`
-                    calculatedValues.total = Number(basePriceNum);
-                    calculatedValues.basePrice = Math.round(calculatedValues.total / 1.089);
-                    calculatedValues.gstAmount = calculatedValues.total - calculatedValues.basePrice;
-                    calculatedValues.grandTotal = calculatedValues.total;
+                if (priceIncludesGst) {
+                    // Reverse Calc: Total = Base * (1 + Rate/100) -> Base = Total / (1 + Rate/100)
+                    calculatedValues.basePrice = Math.round(initialPrice / (1 + gstRate / 100));
+                    calculatedValues.gstAmount = initialPrice - calculatedValues.basePrice;
+                    calculatedValues.total = initialPrice;
                 } else {
-                    // Hybrid or others
-                    // Assume DB price is total?
-                    calculatedValues.grandTotal = Number(basePriceNum);
-                    calculatedValues.total = Number(basePriceNum);
-                    calculatedValues.basePrice = Number(basePriceNum);
+                    // Forward Calc: Total = Base + (Base * Rate/100)
+                    calculatedValues.basePrice = initialPrice;
+                    calculatedValues.gstAmount = Math.round(initialPrice * (gstRate / 100));
+                    calculatedValues.total = initialPrice + calculatedValues.gstAmount;
                 }
 
+                // Add rate to values for display
+                (calculatedValues as any).taxRate = gstRate;
+
+                calculatedValues.grandTotal = calculatedValues.total; // + extraCosts if any
+
+                // Product Data Population
                 selectedProductData.capacity = systemData.system_size_kw;
                 selectedProductData.phase = systemData.phase === 'Three' ? 3 : 1;
                 if (specs.module_watt) selectedProductData.panelWattage = specs.module_watt;
@@ -182,19 +163,75 @@ export async function POST(req: NextRequest) {
                 if (specs.brand) selectedProductData.panelBrand = specs.brand;
 
             } else {
-                // Fallback if NO data found even in unified table (rare)
+                // Fallback
                 console.log('⚠️ No unified product found, using fallback estimation.');
                 const systemSizeNum = parseFloat(power_demand_kw) || 3;
                 calculatedValues.grandTotal = systemSizeNum * 45000;
                 selectedProductData.capacity = systemSizeNum;
             }
 
-            // Subsidy calc (Central + State)
+            // Dynamic Subsidy Calculation
             const capacity = selectedProductData.capacity;
-            if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
-            else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
-            else calculatedValues.centralSubsidy = 78000;
-            calculatedValues.stateSubsidy = 30000;
+
+            if (subsidies && subsidies.length > 0) {
+                let centralTotal = 0;
+                let stateTotal = 0;
+
+                subsidies.forEach((sub: any) => {
+                    let amount = 0;
+
+                    // STRATEGY PATTERN
+                    switch (sub.calculation_type) {
+                        case 'per_kw':
+                            amount = capacity * (sub.amount_per_kw || 0);
+                            break;
+
+                        case 'flat':
+                            amount = Number(sub.flat_amount || 0);
+                            break;
+
+                        case 'capped_per_kw':
+                            const raw = capacity * (sub.amount_per_kw || 0);
+                            const cap = Number(sub.max_cap || 0);
+                            amount = (cap > 0 && raw > cap) ? cap : raw;
+                            break;
+
+                        case 'tiered_surya_ghar':
+                            // Logic: 30k/kW for first 2kW, 18k/kW for next 1kW (2-3kW), 0 for beyond. Cap at 78k.
+                            if (capacity <= 2) {
+                                amount = capacity * 30000;
+                            } else if (capacity <= 3) {
+                                amount = (2 * 30000) + ((capacity - 2) * 18000);
+                            } else {
+                                amount = 78000;
+                            }
+                            break;
+
+                        default:
+                            amount = 0;
+                    }
+
+                    if (sub.scheme_type === 'Central') {
+                        centralTotal += amount;
+                    } else if (sub.scheme_type === 'State') {
+                        // Use string matching or state field if we had customer state. 
+                        // For now assuming all active state subsidies apply (or just UP as default).
+                        // In future: Check if customer.state === sub.state
+                        stateTotal += amount;
+                    }
+                });
+
+                calculatedValues.centralSubsidy = centralTotal;
+                calculatedValues.stateSubsidy = stateTotal;
+
+            } else {
+                // Legacy Fallback
+                if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
+                else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
+                else calculatedValues.centralSubsidy = 78000;
+                calculatedValues.stateSubsidy = 30000;
+            }
+
             calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
         }
 

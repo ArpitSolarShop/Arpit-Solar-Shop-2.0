@@ -38,6 +38,8 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
         category: initialData?.category || "",
         system_size_kw: initialData?.system_size_kw || "",
         price: initialData?.price || "",
+        gst_rate: initialData?.gst_rate || "8.9",
+        price_includes_gst: initialData?.price_includes_gst ?? true, // Default to true as per request
         image_url: initialData?.image_url || "",
         is_published: initialData?.is_published ?? true,
         specifications: initialData?.specifications ? JSON.stringify(initialData.specifications, null, 2) : "{}",
@@ -75,6 +77,8 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
                 category: formData.category,
                 system_size_kw: parseFloat(formData.system_size_kw) || 0,
                 price: parseFloat(formData.price) || null,
+                gst_rate: parseFloat(formData.gst_rate) || 8.9,
+                price_includes_gst: formData.price_includes_gst,
                 image_url: formData.image_url || null,
                 is_published: formData.is_published,
                 specifications,
@@ -211,22 +215,49 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
             {/* Pricing */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Pricing</CardTitle>
-                    <CardDescription>Set product price</CardDescription>
+                    <CardTitle>Pricing & Tax</CardTitle>
+                    <CardDescription>Set product price and GST configuration</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <div className="max-w-xs space-y-2">
-                        <Label htmlFor="price">Price (₹) *</Label>
-                        <Input
-                            id="price"
-                            name="price"
-                            type="number"
-                            value={formData.price}
-                            onChange={handleChange}
-                            required
-                            placeholder="e.g., 250000"
-                            step="1"
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="price">Price (₹) *</Label>
+                            <Input
+                                id="price"
+                                name="price"
+                                type="number"
+                                value={formData.price}
+                                onChange={handleChange}
+                                required
+                                placeholder="e.g., 250000"
+                                step="1"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="gst_rate">GST Rate (%)</Label>
+                            <Input
+                                id="gst_rate"
+                                name="gst_rate"
+                                type="number"
+                                value={formData.gst_rate}
+                                onChange={handleChange}
+                                placeholder="8.9"
+                                step="0.1"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 pt-2">
+                        <Switch
+                            id="price_includes_gst"
+                            checked={formData.price_includes_gst}
+                            onCheckedChange={(checked) =>
+                                setFormData(prev => ({ ...prev, price_includes_gst: checked }))
+                            }
                         />
+                        <Label htmlFor="price_includes_gst">
+                            Price includes GST? (Reverse calculation will be applied if checked)
+                        </Label>
                     </div>
                 </CardContent>
             </Card>

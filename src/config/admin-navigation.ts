@@ -64,6 +64,11 @@ export const adminNavigation: NavigationItem[] = [
                 href: "/admin/solar-product-components",
                 icon: Boxes,
             },
+            {
+                name: "Subsidies",
+                href: "/admin/subsidies",
+                icon: DollarSign,
+            },
         ],
     },
     {
