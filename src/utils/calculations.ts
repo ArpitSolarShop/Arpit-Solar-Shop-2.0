@@ -79,13 +79,15 @@ export function convertBillRangeToNumber(range: string): number | null {
 }
 
 /**
- * Calculate subsidy amount based on system size
+ * Calculate subsidy amount based on system size (PM Surya Ghar tiered)
+ * Uses Math.floor for sanctioned load (whole kW) as per government scheme
  */
 export function calculateSubsidy(systemSizeKW: number): number {
-    if (systemSizeKW <= 2) {
-        return systemSizeKW * 30000; // ₹30,000 per kW up to 2 kW
-    } else if (systemSizeKW <= 3) {
-        return 60000 + (systemSizeKW - 2) * 18000; // ₹60,000 for first 2 kW + ₹18,000 per kW for next 1 kW
+    const kw = Math.floor(Math.max(0, systemSizeKW));
+    if (kw <= 2) {
+        return kw * 30000; // ₹30,000 per kW up to 2 kW
+    } else if (kw <= 3) {
+        return 60000 + (kw - 2) * 18000; // ₹60,000 for first 2 kW + ₹18,000 per kW for next 1 kW
     } else {
         return 78000; // Capped at ₹78,000 for systems > 3 kW
     }

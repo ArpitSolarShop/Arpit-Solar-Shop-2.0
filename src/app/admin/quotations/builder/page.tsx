@@ -30,6 +30,7 @@ import {
     calculateSavings,
     generateQuoteNumber,
     defaultComponents,
+    calculateCentralSubsidy,
 } from "@/lib/companyDetails";
 import type { QuotationComponent } from "@/types";
 
@@ -187,16 +188,18 @@ export default function QuotationBuilder() {
         setInverterModel(`${inverterCapacity} KW ${selectedSystemType} String`);
     }, [numCapacityKw, selectedSystemType]);
 
-    // Handle Subsidy Logic
+    // Handle Subsidy Logic — auto-calculate central subsidy based on requested capacity
     useEffect(() => {
         if (panelType === "NDCR" || selectedSystemType === "Off-grid") {
             setCentralSubsidy("0");
             setStateSubsidy("0");
         } else {
-            setCentralSubsidy(defaultSubsidy.central.toString());
+            const requestedKw = Math.floor(parseFloat(capacityKw) || 0);
+            const computedCentral = calculateCentralSubsidy(requestedKw);
+            setCentralSubsidy(computedCentral.toString());
             setStateSubsidy(defaultSubsidy.state.toString());
         }
-    }, [panelType, selectedSystemType]);
+    }, [panelType, selectedSystemType, capacityKw]);
 
     // Calculate extra costs
     const extraCosts = useMemo(() => {

@@ -62,10 +62,11 @@ export async function POST(req: NextRequest) {
             calculatedValues.gstAmount = metadata.gst_amount;
             calculatedValues.total = metadata.estimated_price;
             calculatedValues.grandTotal = metadata.estimated_price;
-            // Subsidy calc for calculator form
+            // Subsidy calc for calculator form — use requested (sanctioned) capacity, not panel-rounded
             const capacity = parseFloat(power_demand_kw);
-            if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
-            else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
+            const sanctionedKw = Math.floor(capacity); // PM Surya Ghar uses sanctioned load in whole kW
+            if (sanctionedKw <= 2) calculatedValues.centralSubsidy = sanctionedKw * 30000;
+            else if (sanctionedKw <= 3) calculatedValues.centralSubsidy = 60000 + (sanctionedKw - 2) * 18000;
             else calculatedValues.centralSubsidy = 78000;
             calculatedValues.stateSubsidy = 30000;
 
@@ -170,8 +171,9 @@ export async function POST(req: NextRequest) {
                 selectedProductData.capacity = systemSizeNum;
             }
 
-            // Dynamic Subsidy Calculation
-            const capacity = selectedProductData.capacity;
+            // Dynamic Subsidy Calculation — use requested (sanctioned) capacity, not panel-rounded
+            const requestedKw = parseFloat(power_demand_kw) || selectedProductData.capacity;
+            const capacity = Math.floor(requestedKw); // PM Surya Ghar uses sanctioned load in whole kW
 
             if (subsidies && subsidies.length > 0) {
                 let centralTotal = 0;
@@ -197,7 +199,8 @@ export async function POST(req: NextRequest) {
                             break;
 
                         case 'tiered_surya_ghar':
-                            // Logic: 30k/kW for first 2kW, 18k/kW for next 1kW (2-3kW), 0 for beyond. Cap at 78k.
+                            // Logic: 30k/kW for first 2kW, 18k/kW for next 1kW (2-3kW), capped at 78k.
+                            // Uses sanctioned (whole kW) capacity for accurate subsidy
                             if (capacity <= 2) {
                                 amount = capacity * 30000;
                             } else if (capacity <= 3) {
@@ -225,9 +228,9 @@ export async function POST(req: NextRequest) {
                 calculatedValues.stateSubsidy = stateTotal;
 
             } else {
-                // Legacy Fallback
-                if (capacity <= 2) calculatedValues.centralSubsidy = 30000 * capacity;
-                else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + 18000 * (capacity - 2);
+                // Legacy Fallback — uses sanctioned whole kW
+                if (capacity <= 2) calculatedValues.centralSubsidy = capacity * 30000;
+                else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + (capacity - 2) * 18000;
                 else calculatedValues.centralSubsidy = 78000;
                 calculatedValues.stateSubsidy = 30000;
             }
