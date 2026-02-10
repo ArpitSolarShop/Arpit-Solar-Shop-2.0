@@ -1,5 +1,4 @@
 import puppeteerCore from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs-extra';
@@ -19,13 +18,18 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
     try {
         console.log('🚀 Launching Puppeteer...');
 
-        // Determine environment and executable
         let executablePath: string | undefined;
-        let args: string[] = chromium.args;
+        let args: string[] = [];
 
+        // Determine environment and executable
         if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production') {
             console.log('☁️ Running in PRODUCTION (Vercel/Serverless)');
-            executablePath = await chromium.executablePath();
+            // Use chromium-min for production to save size
+            const chromium = require('@sparticuz/chromium-min');
+
+            // Standard Vercel/AWS Lambda config
+            executablePath = await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar');
+            args = chromium.args;
         } else {
             console.log('💻 Running in DEVELOPMENT (Local)');
 
@@ -45,42 +49,21 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
                         break;
                     }
                 }
-
-                if (!executablePath) {
-                    throw new Error('Chrome not found. Please install Google Chrome from https://www.google.com/chrome/');
-                }
             } else if (process.platform === 'darwin') {
                 executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-                console.log('🍎 Using macOS Chrome path:', executablePath);
             } else {
-                // Linux - try bundled Chromium from sparticuz, then fallback
-                try {
-                    executablePath = await chromium.executablePath();
-                    console.log('🐧 Using Chromium from sparticuz:', executablePath);
-                } catch (e) {
-                    console.log('⚠️ Chromium not available, trying system Chrome...');
-                    executablePath = '/usr/bin/google-chrome';
-                }
+                executablePath = '/usr/bin/google-chrome';
             }
         }
 
         console.log(`ℹ️ Final Executable Path: ${executablePath}`);
-        console.log(`ℹ️ Platform: ${process.platform}`);
-        console.log(`ℹ️ Node Environment: ${process.env.NODE_ENV || 'development'}`);
-
-        console.log('🚀 Attempting to launch browser with config:', {
-            args: [...args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-            executablePath,
-            headless: true,
-        });
 
         browser = await puppeteerCore.launch({
             args: [...args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
             defaultViewport: { width: 1920, height: 1080 },
             executablePath: executablePath,
             headless: true,
-            timeout: 120000, // Increased to 2 minutes
-            protocolTimeout: 120000, // Add protocol timeout
+            timeout: 60000,
         });
 
         console.log('✅ Puppeteer launched');
@@ -88,12 +71,11 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
 
         // Set content with faster loading strategy
         console.log('📄 Setting HTML content...');
-        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 60000 }); // Changed from networkidle0 to domcontentloaded for faster loading
+        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 30000 });
         console.log('✅ HTML content set');
 
-        // Reduced wait time - only 500ms is needed for CSS/fonts to apply
+        // Initial wait for fonts
         await new Promise(resolve => setTimeout(resolve, 500));
-        console.log('✅ Rendering wait complete');
 
         console.log('📄 Generating PDF...');
         const pdfBuffer = await page.pdf({
@@ -105,7 +87,7 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
                 left: '20px',
                 right: '20px'
             },
-            timeout: 60000, // Reduced to 60s - should be more than enough
+            timeout: 30000,
         });
 
         const tempPath = path.join(OUTPUT_DIR, `temp_${Date.now()}.pdf`);
@@ -115,29 +97,12 @@ export async function generatePdfFromHtml({ html }: PdfOptions): Promise<string>
         return tempPath;
     } catch (error: any) {
         console.error('❌ Puppeteer error:', error);
-        console.error('Error stack:', error.stack);
-
-        // Provide more specific error messages for common issues
-        if (error.message?.includes('Target closed') || error.message?.includes('Session closed')) {
-            throw new Error('PDF generation failed: Browser connection lost. This may be due to system resources. Please try again or contact support if the issue persists.');
-        } else if (error.message?.includes('timeout') || error.message?.includes('Timeout')) {
-            throw new Error('PDF generation timed out (>90s). The quote data may be too complex or the server is busy. Please try again.');
-        } else if (error.message?.includes('Protocol error')) {
-            throw new Error('Browser protocol error. Try again or use a simpler quote configuration.');
-        } else {
-            throw new Error(`Failed to generate PDF: ${error.message || error}`);
-        }
+        throw new Error(`Failed to generate PDF: ${error.message}`);
     } finally {
-        // Proper cleanup: close browser in try-catch to prevent cleanup errors from masking real issues
         if (browser) {
             try {
-                console.log('🧹 Closing browser...');
                 await browser.close();
-                console.log('✅ Browser closed successfully');
-            } catch (closeError) {
-                console.error('⚠️ Error closing browser (non-fatal):', closeError);
-                // Don't throw here - we want to preserve the original error if any
-            }
+            } catch (e) { console.error('Error closing browser', e); }
         }
     }
 }
