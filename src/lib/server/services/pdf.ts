@@ -4,9 +4,11 @@ import QRCode from 'qrcode';
 import fs from 'fs-extra';
 import path from 'path';
 
-// Output directory
-const OUTPUT_DIR = path.join(process.cwd(), 'public', 'output');
-fs.ensureDirSync(OUTPUT_DIR);
+import os from 'os';
+
+// Output directory - Use /tmp in production (Vercel) and local temp
+const OUTPUT_DIR = os.tmpdir();
+// fs.ensureDirSync(OUTPUT_DIR); // tmpdir always exists
 
 interface PdfOptions {
     html: string;
