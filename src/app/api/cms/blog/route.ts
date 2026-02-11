@@ -23,16 +23,18 @@ export async function GET(request: NextRequest) {
             query = query.order('created_at', { ascending: false });
         }
 
-        if (slug) {
-            query = query.eq('slug', slug).single();
-        }
-
+        // Apply filters BEFORE calling .single()
         if (status) {
             query = query.eq('status', status);
         }
 
         if (tag) {
             query = query.contains('tags', [tag]);
+        }
+
+        // Call .single() LAST if fetching by slug
+        if (slug) {
+            query = query.eq('slug', slug).single();
         }
 
         const { data, error } = await query;

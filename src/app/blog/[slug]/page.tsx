@@ -10,15 +10,18 @@ import { ShareButton } from "@/components/blog/ShareButton";
 export const dynamic = 'force-dynamic';
 
 interface BlogPostPageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
 // Fetch blog post data
 async function getBlogPost(slug: string) {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const port = process.env.PORT || 3000;
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${port}`;
+        console.log(`Fetching blog post from: ${baseUrl}/api/cms/blog?slug=${slug}&status=published`);
+
         const res = await fetch(`${baseUrl}/api/cms/blog?slug=${slug}&status=published`, {
             cache: 'no-store'
         });
@@ -36,7 +39,8 @@ async function getBlogPost(slug: string) {
 
 // Generate Metadata for SEO
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-    const post = await getBlogPost(params.slug);
+    const { slug } = await params;
+    const post = await getBlogPost(slug);
 
     if (!post) {
         return {
@@ -57,7 +61,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-    const blogPost = await getBlogPost(params.slug);
+    const { slug } = await params;
+    const blogPost = await getBlogPost(slug);
 
     if (!blogPost) {
         notFound();
