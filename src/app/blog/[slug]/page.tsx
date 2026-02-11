@@ -1,84 +1,66 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Calendar, Tag, ArrowLeft, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, Tag, ArrowLeft } from "lucide-react";
+import { ShareButton } from "@/components/blog/ShareButton";
 
-export default function BlogPostPage() {
-    const params = useParams();
-    const router = useRouter();
-    const [blogPost, setBlogPost] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [notFound, setNotFound] = useState(false);
+// Force dynamic rendering since we fetch data
+export const dynamic = 'force-dynamic';
 
-    useEffect(() => {
-        const fetchBlogPost = async () => {
-            try {
-                // Fetch all published posts and find by slug
-                const response = await fetch("/api/cms/blog?status=published");
-                if (!response.ok) throw new Error("Failed to fetch blog post");
-
-                const data = await response.json();
-                const post = data.data?.find((p: any) => p.slug === params.slug);
-
-                if (post) {
-                    setBlogPost(post);
-                } else {
-                    setNotFound(true);
-                }
-            } catch (error) {
-                console.error("Failed to load blog post:", error);
-                setNotFound(true);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (params.slug) {
-            fetchBlogPost();
-        }
-    }, [params.slug]);
-
-    const handleShare = () => {
-        if (navigator.share) {
-            navigator.share({
-                title: blogPost?.title,
-                text: blogPost?.excerpt || blogPost?.title,
-                url: window.location.href,
-            });
-        } else {
-            // Fallback: copy to clipboard
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied to clipboard!");
-        }
+interface BlogPostPageProps {
+    params: {
+        slug: string;
     };
+}
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
-            </div>
-        );
+// Fetch blog post data
+async function getBlogPost(slug: string) {
+    try {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const res = await fetch(`${baseUrl}/api/cms/blog?slug=${slug}&status=published`, {
+            cache: 'no-store'
+        });
+
+        if (!res.ok) return null;
+
+        const json = await res.json();
+        // API returns { data: { ...post } } when slug is used
+        return json.data || null;
+    } catch (error) {
+        console.error("Error fetching blog post:", error);
+        return null;
+    }
+}
+
+// Generate Metadata for SEO
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+    const post = await getBlogPost(params.slug);
+
+    if (!post) {
+        return {
+            title: 'Blog Post Not Found',
+        };
     }
 
-    if (notFound || !blogPost) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog Post Not Found</h1>
-                    <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist.</p>
-                    <Link href="/blog">
-                        <Button className="bg-blue-600 hover:bg-blue-700">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Back to Blog
-                        </Button>
-                    </Link>
-                </div>
-            </div>
-        );
+    return {
+        title: `${post.seo_title || post.title} | Arpit Solar Shop`,
+        description: post.seo_description || post.excerpt,
+        openGraph: {
+            title: post.seo_title || post.title,
+            description: post.seo_description || post.excerpt,
+            images: post.featured_image ? [{ url: post.featured_image }] : [],
+            type: 'article',
+        },
+    };
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+    const blogPost = await getBlogPost(params.slug);
+
+    if (!blogPost) {
+        notFound();
     }
 
     return (
@@ -91,7 +73,7 @@ export default function BlogPostPage() {
                         <span>/</span>
                         <Link href="/blog" className="hover:text-blue-600">Blog</Link>
                         <span>/</span>
-                        <span className="text-gray-900">{blogPost.title}</span>
+                        <span className="text-gray-900 line-clamp-1">{blogPost.title}</span>
                     </div>
                 </div>
             </div>
@@ -129,15 +111,10 @@ export default function BlogPostPage() {
                                 </div>
                             </div>
 
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleShare}
-                                className="flex items-center gap-2"
-                            >
-                                <Share2 className="w-4 h-4" />
-                                Share
-                            </Button>
+                            <ShareButton
+                                title={blogPost.title}
+                                text={blogPost.excerpt}
+                            />
                         </div>
 
                         {/* Tags */}

@@ -38,7 +38,7 @@ const ImageCarousel = () => {
   useEffect(() => {
     const interval = setInterval(
       () => setCurrent((prev) => (prev + 1) % images.length),
-      3000
+      3000,
     );
     return () => clearInterval(interval);
   }, []);
@@ -110,7 +110,7 @@ const WelcomeSection = () => {
           category="Shakti"
           config={{
             title: "Book Free Solar Assessment",
-            description: "Maximize your energy savings with Shakti Solar."
+            description: "Maximize your energy savings with Shakti Solar.",
           }}
         />
       )}
@@ -119,7 +119,17 @@ const WelcomeSection = () => {
 };
 
 // ---------------- Card ----------------
-const SolarSolutionCard = ({ title, image, features, benefits }: { title: string, image: string, features: string[], benefits: string[] }) => (
+const SolarSolutionCard = ({
+  title,
+  image,
+  features,
+  benefits,
+}: {
+  title: string;
+  image: string;
+  features: string[];
+  benefits: string[];
+}) => (
   <div className="bg-gray-100 rounded-xl p-6 shadow-md flex flex-col h-full transition hover:shadow-lg">
     <div className="w-full h-48 flex items-center justify-center mb-5">
       <img src={image} alt={title} className="max-h-full object-contain" />
@@ -175,7 +185,7 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
     },
     {
       q: "How do I know how much solar capacity my home requires to install?",
-      a: "Your solar capacity depends on your average monthly electricity consumption and available rooftop space. A typical household consuming around 300â€“400 units per month may need a 3 kW system.",
+      a: "Your solar capacity depends on your average monthly electricity consumption and available rooftop space. A typical household consuming around 300–400 units per month may need a 3 kW system.",
     },
     {
       q: "What is the lifespan of a solar rooftop system?",
@@ -192,9 +202,9 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
     {
       q: "What subsidies are provided under the scheme?",
       a: `Under the PM Surya Ghar Muft Bijli Yojana:
-1 kW â†’ â‚¹30,000
-2 kW â†’ â‚¹60,000
-3 kW or above â†’ â‚¹78,000 (max cap)`,
+1 kW → ₹30,000
+2 kW → ₹60,000
+3 kW or above → ₹78,000 (max cap)`,
     },
     {
       q: "How do I apply for the scheme?",
@@ -218,8 +228,6 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
-
-
       <main>
         <ImageCarousel />
         <WelcomeSection />
@@ -234,7 +242,7 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
               title="Solar PV Modules"
               image={ModuleImg.src}
               features={[
-                "Maximum Savings â€” Save up to 80% on electricity bills",
+                "Maximum Savings — Save up to 80% on electricity bills",
                 "Minimal Maintenance with quick service",
                 "Enhanced Safety with PV insulation protection",
                 "BIS-certified & ALMM-listed (DCR Cell Based)",
@@ -242,7 +250,7 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
               benefits={[
                 "Reliable energy production",
                 "Government initiative aligned",
-                "Fast return on investment (3â€“4 years)",
+                "Fast return on investment (3–4 years)",
               ]}
             />
             <SolarSolutionCard
@@ -299,42 +307,69 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
               Made in India. Made for India.
             </p>
             <p className="text-md text-gray-600 leading-relaxed max-w-4xl mx-auto mb-12">
-              Shakti Energy Solutions Ltd. (SESL) is at the forefront of transforming India's solar rooftop landscape for both homes and businesses. As a wholly owned subsidiary of Shakti Pumps (India) Limited, Shakti Energy Solutions is the only brand in the industry to offer all three critical components â€” Solar Modules, Inverters, and Module Mounting Structures â€” under one roof.
-              <br /><br />
-              This integrated approach ensures unmatched quality, seamless system compatibility, and long-lasting performance. Our customers benefit from greater reliability, faster delivery timelines, improved efficiency, and overall cost-effectiveness â€” making SESL the trusted partner for sustainable energy solutions.
+              Shakti Energy Solutions Ltd. (SESL) is at the forefront of
+              transforming India's solar rooftop landscape for both homes and
+              businesses. As a wholly owned subsidiary of Shakti Pumps (India)
+              Limited, Shakti Energy Solutions is the only brand in the industry
+              to offer all three critical components — Solar Modules, Inverters,
+              and Module Mounting Structures — under one roof.
+              <br />
+              <br />
+              This integrated approach ensures unmatched quality, seamless
+              system compatibility, and long-lasting performance. Our customers
+              benefit from greater reliability, faster delivery timelines,
+              improved efficiency, and overall cost-effectiveness — making SESL
+              the trusted partner for sustainable energy solutions.
             </p>
 
             <h3 className="text-2xl md:text-3xl font-bold text-green-700 mb-10">
               Why Choose SHAKTI SOLAR ROOFTOP?
             </h3>
             <p className="text-md text-gray-600 leading-relaxed max-w-3xl mx-auto mb-10">
-              Shakti Solar Rooftop, a dedicated solar subsidiary of Shakti Pumps, offers reliable and cost-effective rooftop solar systems tailored for Indian homes and businesses. Backed by decades of engineering expertise, we provide end-to-end solar solutions with high efficiency, trusted service, and seamless access to government subsidies.
+              Shakti Solar Rooftop, a dedicated solar subsidiary of Shakti
+              Pumps, offers reliable and cost-effective rooftop solar systems
+              tailored for Indian homes and businesses. Backed by decades of
+              engineering expertise, we provide end-to-end solar solutions with
+              high efficiency, trusted service, and seamless access to
+              government subsidies.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <Wrench className="w-12 h-12 text-blue-600 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Hassle-Free Installation</h4>
+                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                  Hassle-Free Installation
+                </h4>
               </div>
               <div className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <Package className="w-12 h-12 text-blue-600 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Pre-Assembled Kits For Quick Setup</h4>
+                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                  Pre-Assembled Kits For Quick Setup
+                </h4>
               </div>
               <div className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <Rocket className="w-12 h-12 text-blue-600 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Faster Deployment, Stronger Support</h4>
+                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                  Faster Deployment, Stronger Support
+                </h4>
               </div>
               <div className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <BookOpen className="w-12 h-12 text-blue-600 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Step-by-Step Guidance For Retailers</h4>
+                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                  Step-by-Step Guidance For Retailers
+                </h4>
               </div>
               <div className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <Headphones className="w-12 h-12 text-blue-600 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Dedicated After-Sales Service</h4>
+                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                  Dedicated After-Sales Service
+                </h4>
               </div>
               <div className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <TrendingUp className="w-12 h-12 text-blue-600 mb-4" />
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Higher Savings, Bigger Profits</h4>
+                <h4 className="text-xl font-semibold text-gray-800 mb-2">
+                  Higher Savings, Bigger Profits
+                </h4>
               </div>
             </div>
           </div>
@@ -345,60 +380,84 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
           <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-4">
               <Zap className="w-12 h-12 text-yellow-300" /> PM Surya Ghar{" "}
-              <span className="text-yellow-300">à¤®à¥à¤«à¥à¤¤ à¤¬à¤¿à¤œà¤²à¥€ à¤¯à¥‹à¤œà¤¨à¤¾</span>
+              <span className="text-yellow-300">
+                मुफ्त बिजली योजना
+              </span>
             </h2>
             <p className="text-xl md:text-2xl mb-8 flex items-center justify-center gap-2">
               <Tag className="w-8 h-8 text-green-300" /> Claim Your Subsidy
             </p>
             <p className="text-lg mb-12 max-w-3xl mx-auto">
-              Under the aegis of **PM Surya Ghar Muft Bijli Yojana**, any residential consumer can avail applicable subsidy on Solar Rooftop Systems.
+              Under the aegis of **PM Surya Ghar Muft Bijli Yojana**, any
+              residential consumer can avail applicable subsidy on Solar Rooftop
+              Systems.
             </p>
 
             <h3 className="text-3xl font-bold mb-8 flex items-center justify-center gap-3">
-              <Home className="w-10 h-10 text-red-300" /> BENEFITS: Subsidy for Residential Households
+              <Home className="w-10 h-10 text-red-300" /> BENEFITS: Subsidy for
+              Residential Households
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center justify-center">
-                <p className="text-4xl font-bold text-green-600 mb-2">â‚¹30,000</p>
-                <p className="text-lg font-semibold text-center">per kWp up to 2 kWp</p>
+                <p className="text-4xl font-bold text-green-600 mb-2">
+                  ₹30,000
+                </p>
+                <p className="text-lg font-semibold text-center">
+                  per kWp up to 2 kWp
+                </p>
               </div>
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center justify-center">
-                <p className="text-4xl font-bold text-green-600 mb-2">â‚¹18,000</p>
-                <p className="text-lg font-semibold text-center">per kWp for additional capacity up to 3 kWp</p>
+                <p className="text-4xl font-bold text-green-600 mb-2">
+                  ₹18,000
+                </p>
+                <p className="text-lg font-semibold text-center">
+                  per kWp for additional capacity up to 3 kWp
+                </p>
               </div>
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center justify-center">
-                <p className="text-4xl font-bold text-green-600 mb-2">â‚¹78,000</p>
-                <p className="text-lg font-semibold text-center">Total subsidy for systems larger than 3 kWp capped at</p>
+                <p className="text-4xl font-bold text-green-600 mb-2">
+                  ₹78,000
+                </p>
+                <p className="text-lg font-semibold text-center">
+                  Total subsidy for systems larger than 3 kWp capped at
+                </p>
               </div>
             </div>
 
             <h3 className="text-3xl font-bold mb-8 flex items-center justify-center gap-3">
-              <Zap className="w-10 h-10 text-yellow-300" /> Suitable Rooftop Solar Plant Capacity for Households
+              <Zap className="w-10 h-10 text-yellow-300" /> Suitable Rooftop
+              Solar Plant Capacity for Households
             </h3>
             <p className="text-md mb-8 flex items-center justify-center gap-2">
-              <MapPin className="w-6 h-6 text-orange-300" /> Check net metering facility for state. As per location, the generation may vary.
+              <MapPin className="w-6 h-6 text-orange-300" /> Check net metering
+              facility for state. As per location, the generation may vary.
             </p>
             <p className="text-md mb-8 font-semibold">
-              For special states, an additional 10% Subsidy will be applicable per kW.
+              For special states, an additional 10% Subsidy will be applicable
+              per kW.
             </p>
 
             <div className="overflow-x-auto rounded-lg shadow-lg mb-12">
               <table className="min-w-full bg-white text-gray-800">
                 <thead>
                   <tr className="bg-blue-600 text-white">
-                    <th className="py-3 px-4 text-left">Average Monthly Electricity Consumption (units)</th>
-                    <th className="py-3 px-4 text-left">Suitable Rooftop Solar Plant Capacity</th>
+                    <th className="py-3 px-4 text-left">
+                      Average Monthly Electricity Consumption (units)
+                    </th>
+                    <th className="py-3 px-4 text-left">
+                      Suitable Rooftop Solar Plant Capacity
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-gray-200 hover:bg-gray-50">
-                    <td className="py-3 px-4">0â€“150</td>
-                    <td className="py-3 px-4">1â€“2 kWp</td>
+                    <td className="py-3 px-4">0–150</td>
+                    <td className="py-3 px-4">1–2 kWp</td>
                   </tr>
                   <tr className="border-b border-gray-200 hover:bg-gray-50">
-                    <td className="py-3 px-4">150â€“300</td>
-                    <td className="py-3 px-4">2â€“3 kWp</td>
+                    <td className="py-3 px-4">150–300</td>
+                    <td className="py-3 px-4">2–3 kWp</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="py-3 px-4">300</td>
@@ -407,10 +466,8 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
                 </tbody>
               </table>
             </div>
-
           </div>
         </section>
-
 
         {/* Testimonials */}
         <section className="bg-white py-16">
@@ -453,14 +510,12 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
                   className="border rounded-lg overflow-hidden transition hover:shadow-md"
                 >
                   <button
-                    onClick={() =>
-                      setOpenIndex(openIndex === idx ? null : idx)
-                    }
+                    onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
                     className="w-full text-left px-4 py-3 font-medium flex justify-between items-center text-blue-900"
                   >
                     {item.q}
                     <span className="text-xl">
-                      {openIndex === idx ? "âˆ’" : "+"}
+                      {openIndex === idx ? "−" : "+"}
                     </span>
                   </button>
                   {openIndex === idx && (
@@ -474,11 +529,8 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
           </div>
         </section>
       </main>
-
-
     </div>
   );
 };
 
 export default ShaktiSolar;
-

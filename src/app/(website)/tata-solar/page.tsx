@@ -30,7 +30,7 @@
 
 //   return (
 //     <div className="min-h-screen bg-white text-gray-800">
-//       
+//
 //       <main>
 //         <section className="w-full bg-[#E6F3FF] py-16">
 //           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center px-4 gap-10">
@@ -82,20 +82,10 @@
 //           </div>
 //         </section>
 //       </main>
-//       
+//
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -143,7 +133,7 @@
 
 //   return (
 //     <div className="min-h-screen bg-white text-gray-800">
-//       
+//
 //       {/* Added pt-16 for navbar height */}
 //       <main className="pt-16">
 //         <section className="scroll-mt-16 w-full bg-[#E6F3FF] py-16">
@@ -269,25 +259,10 @@
 //           </div>
 //         </section>
 //       </main>
-//       
+//
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 "use client";
 
@@ -298,16 +273,22 @@ import TataSolarPricingPage from "@/assets/tata-solar"; // This path is now upda
 import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
 import { Zap } from "lucide-react";
 
-
-
 import tataPowerSolarImg from "@/assets/Tata Solar Content/Tata Power Solar.png";
 import tataModuleImg from "@/assets/Tata Solar Content/tata-module.png";
 import tataInverterImg from "@/assets/Tata Solar Content/tata-inverter.png";
 import tataMountingImg from "@/assets/Tata Solar Content/tata-mounting.png";
 
-
-
-const SolarSolutionCard = ({ title, image, features, benefits }: { title: string, image: string, features: string[], benefits: string[] }) => (
+const SolarSolutionCard = ({
+  title,
+  image,
+  features,
+  benefits,
+}: {
+  title: string;
+  image: string;
+  features: string[];
+  benefits: string[];
+}) => (
   <div className="bg-gray-100 rounded-xl p-6 shadow-md h-full">
     <div className="w-full h-48 flex items-center justify-center mb-5">
       <img src={image} alt={title} className="max-h-full object-contain" />
@@ -344,7 +325,6 @@ export default function TataSolar() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
-
       {/* Added pt-16 for navbar height */}
       <main>
         <section className="scroll-mt-16 w-full bg-[#E6F3FF] py-16">
@@ -380,7 +360,8 @@ export default function TataSolar() {
             category="Tata"
             config={{
               title: "Tata Power Solar Consultation",
-              description: "Get a free consultation from India's #1 Solar Rooftop Company."
+              description:
+                "Get a free consultation from India's #1 Solar Rooftop Company.",
             }}
           />
         )}
@@ -391,20 +372,44 @@ export default function TataSolar() {
             <SolarSolutionCard
               title="Solar PV Modules"
               image={tataModuleImg.src}
-              features={["High-Efficiency Mono PERC", "PID Resistant", "Durable Build"]}
-              benefits={["Maximize energy generation", "Reliable for 25+ years", "Great ROI"]}
+              features={[
+                "High-Efficiency Mono PERC",
+                "PID Resistant",
+                "Durable Build",
+              ]}
+              benefits={[
+                "Maximize energy generation",
+                "Reliable for 25+ years",
+                "Great ROI",
+              ]}
             />
             <SolarSolutionCard
               title="String Inverters"
               image={tataInverterImg.src}
-              features={["High Conversion Efficiency", "IP65 Rated", "Remote Monitoring"]}
-              benefits={["Optimize power output", "Safe operation", "Track performance"]}
+              features={[
+                "High Conversion Efficiency",
+                "IP65 Rated",
+                "Remote Monitoring",
+              ]}
+              benefits={[
+                "Optimize power output",
+                "Safe operation",
+                "Track performance",
+              ]}
             />
             <SolarSolutionCard
               title="Mounting Structures"
               image={tataMountingImg.src}
-              features={["Corrosion-Resistant GI", "High Wind Speed Design", "Quick Installation"]}
-              benefits={["Ensures panel safety", "Long lifespan", "Optimal orientation"]}
+              features={[
+                "Corrosion-Resistant GI",
+                "High Wind Speed Design",
+                "Quick Installation",
+              ]}
+              benefits={[
+                "Ensures panel safety",
+                "Long lifespan",
+                "Optimal orientation",
+              ]}
             />
           </div>
         </section>
@@ -417,19 +422,28 @@ export default function TataSolar() {
           <div className="max-w-7xl mx-auto px-4">
             <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-4">
               <Zap className="w-12 h-12 text-yellow-300" />
-              PM Surya Ghar <span className="text-yellow-300">à¤®à¥à¤«à¥à¤¤ à¤¬à¤¿à¤œà¤²à¥€ à¤¯à¥‹à¤œà¤¨à¤¾</span>
+              PM Surya Ghar{" "}
+              <span className="text-yellow-300">
+                मुफ्त बिजली योजना
+              </span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg">
-                <p className="text-4xl font-bold text-green-600 mb-2">â‚¹30,000</p>
+                <p className="text-4xl font-bold text-green-600 mb-2">
+                  ₹30,000
+                </p>
                 <p>per kWp up to 2 kWp</p>
               </div>
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg">
-                <p className="text-4xl font-bold text-green-600 mb-2">â‚¹18,000</p>
+                <p className="text-4xl font-bold text-green-600 mb-2">
+                  ₹18,000
+                </p>
                 <p>for additional capacity up to 3 kWp</p>
               </div>
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg">
-                <p className="text-4xl font-bold text-green-600 mb-2">â‚¹78,000</p>
+                <p className="text-4xl font-bold text-green-600 mb-2">
+                  ₹78,000
+                </p>
                 <p>Total subsidy for systems &gt; 3 kWp</p>
               </div>
             </div>
@@ -449,7 +463,7 @@ export default function TataSolar() {
                     className="w-full text-left p-4 font-medium flex justify-between items-center"
                   >
                     {item.q}
-                    <span>{openIndex === idx ? "âˆ’" : "+"}</span>
+                    <span>{openIndex === idx ? "−" : "+"}</span>
                   </button>
                   {openIndex === idx && (
                     <p className="p-4 pt-0 text-gray-600">{item.a}</p>
@@ -460,9 +474,6 @@ export default function TataSolar() {
           </div>
         </section>
       </main>
-
     </div>
   );
 }
-
-

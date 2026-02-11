@@ -58,7 +58,7 @@ const Reliance = () => {
         </p>
         <p>
           Our New Energy and New Materials business is uniquely positioned to address
-          Indiaâ€™s â€˜Energy trilemmaâ€™â€”affordability, sustainability, securityâ€”with the
+          India's 'Energy trilemma'—affordability, sustainability, security—with the
           production of Green Energy.
         </p>
         <p>
@@ -159,8 +159,8 @@ const Reliance = () => {
           </h3>
 
           {[
-            { title: "REC Solar Holdings AS (REC Group)", text: "RNEL has acquired REC Solar Holdings AS (REC Group), one of the worldâ€™s leading solar cells/panels and polysilicon manufacturing companies, for an enterprise value of USD 771 million.", link: "https://www.recgroup.com", img: RecGroupLogo },
-            { title: "SenseHawk", text: "Reliance has invested USD 32 million to acquire a majority stake in SenseHawk, an early-stage California-based developer of software-based management tools for the solar energy generation industry. Founded in 2018, SenseHawk helps accelerate solar projects from planning to production by helping companies streamline processes and use automation. SenseHawk has helped 140+ customers in 15 countries adopt new technology for their 600+ sites and assets totalling 100+ GW. SenseHawkâ€™s Solar Digital Platform offers end-to-end management of solar asset lifecycles.", link: "https://www.sensehawk.com", img: SenseHawkLogo }
+            { title: "REC Solar Holdings AS (REC Group)", text: "RNEL has acquired REC Solar Holdings AS (REC Group), one of the world's leading solar cells/panels and polysilicon manufacturing companies, for an enterprise value of USD 771 million.", link: "https://www.recgroup.com", img: RecGroupLogo },
+            { title: "SenseHawk", text: "Reliance has invested USD 32 million to acquire a majority stake in SenseHawk, an early-stage California-based developer of software-based management tools for the solar energy generation industry. Founded in 2018, SenseHawk helps accelerate solar projects from planning to production by helping companies streamline processes and use automation. SenseHawk has helped 140+ customers in 15 countries adopt new technology for their 600+ sites and assets totalling 100+ GW. SenseHawk's Solar Digital Platform offers end-to-end management of solar asset lifecycles.", link: "https://www.sensehawk.com", img: SenseHawkLogo }
           ].map((item, idx) => (
             <div key={idx} className="bg-white p-6 rounded-xl shadow flex flex-col md:flex-row items-center justify-between">
               <div className="flex-1">
@@ -194,7 +194,7 @@ const Reliance = () => {
 
           {[
             { title: "Sterling & Wilson Solar", text: "RNEL has acquired a 40% stake in Sterling & Wilson Solar, one of the largest EPC and O&M providers globally, to provide turnkey solutions in the New Energy value chain.", link: "https://www.sterlingandwilson.com", img: SterlingWilsonLogo },
-            { title: "NexWafe", text: "RNEL has invested USD 29 million (EUR 25 million) in Germanyâ€™s NexWafe and partnered with them for the joint technology development and commercialization of high-efficiency monocrystalline â€œgreen solar wafersâ€ . NexWafeâ€™s unique patented technology is expected to drastically lower costs and make solar photovoltaics the lowest-cost form of renewable energy available and build large-scale wafer manufacturing facilities in India.", link: "https://www.nexwafe.com", img: NexWafeLogo }
+            { title: "NexWafe", text: "RNEL has invested USD 29 million (EUR 25 million) in Germany's NexWafe and partnered with them for the joint technology development and commercialization of high-efficiency monocrystalline 'green solar wafers'. NexWafe's unique patented technology is expected to drastically lower costs and make solar photovoltaics the lowest-cost form of renewable energy available and build large-scale wafer manufacturing facilities in India.", link: "https://www.nexwafe.com", img: NexWafeLogo }
           ].map((item, idx) => (
             <div key={idx} className="bg-white text-gray-800 p-6 rounded-xl shadow flex flex-col md:flex-row items-center justify-between">
               <div className="flex-1">

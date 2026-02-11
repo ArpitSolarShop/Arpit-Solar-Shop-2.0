@@ -1,13 +1,31 @@
-﻿"use client"
+﻿"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 // import Navbar
 // import Footer
-import HybridSolarPricing from "@/assets/hybrid-solar"
-import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
-import { Zap, Battery, Sun, Moon, Clock, Shield, Settings, Check, LucideIcon } from "lucide-react"
+import HybridSolarPricing from "@/assets/hybrid-solar";
+import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
+import {
+  Zap,
+  Battery,
+  Sun,
+  Moon,
+  Clock,
+  Shield,
+  Settings,
+  Check,
+  LucideIcon,
+} from "lucide-react";
 
-const FeatureCard = ({ icon: Icon, title, description }: { icon: LucideIcon, title: string, description: string }) => (
+const FeatureCard = ({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}) => (
   <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 h-full">
     <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full mb-4 text-blue-600">
       <Icon className="h-6 w-6" />
@@ -15,28 +33,27 @@ const FeatureCard = ({ icon: Icon, title, description }: { icon: LucideIcon, tit
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
     <p className="text-gray-600">{description}</p>
   </div>
-)
+);
 
 export default function HybridSolar() {
-  const [isQuoteOpen, setIsQuoteOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("residential")
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("residential");
 
   const faqs = [
     {
       q: "What is a Hybrid Solar System?",
-      a: "A hybrid solar system combines solar panels with battery storage and can work with or without grid connection, providing reliable power 24/7."
+      a: "A hybrid solar system combines solar panels with battery storage and can work with or without grid connection, providing reliable power 24/7.",
     },
     {
       q: "How does battery backup work?",
-      a: "Excess solar energy charges the batteries during the day, which can be used at night or during power cuts, ensuring uninterrupted power supply."
-    }
-  ]
+      a: "Excess solar energy charges the batteries during the day, which can be used at night or during power cuts, ensuring uninterrupted power supply.",
+    },
+  ];
 
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen flex flex-col">
-
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20">
@@ -46,7 +63,9 @@ export default function HybridSolar() {
                 Hybrid Solar Systems
               </h1>
               <p className="text-xl text-blue-100 max-w-2xl">
-                Get the best of both worlds with our advanced hybrid solar solutions that combine solar power with battery storage for 24/7 energy independence.
+                Get the best of both worlds with our advanced hybrid solar
+                solutions that combine solar power with battery storage for 24/7
+                energy independence.
               </p>
               <div className="flex flex-wrap gap-4">
                 <button
@@ -77,9 +96,12 @@ export default function HybridSolar() {
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Why Choose Hybrid Solar?</h2>
+              <h2 className="text-3xl font-bold mb-4">
+                Why Choose Hybrid Solar?
+              </h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Our hybrid solar systems are designed to maximize your energy independence while reducing your electricity bills.
+                Our hybrid solar systems are designed to maximize your energy
+                independence while reducing your electricity bills.
               </p>
             </div>
 
@@ -128,17 +150,21 @@ export default function HybridSolar() {
         {/* FAQ Section */}
         <section className="py-16 bg-white">
           <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Frequently Asked Questions
+            </h2>
             <div className="space-y-4">
               {faqs.map((faq, index) => (
                 <div key={index} className="border rounded-lg overflow-hidden">
                   <button
-                    onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                    onClick={() =>
+                      setOpenFaqIndex(openFaqIndex === index ? null : index)
+                    }
                     className="w-full text-left p-4 font-medium flex justify-between items-center bg-gray-50 hover:bg-gray-100"
                   >
                     {faq.q}
                     <span className="text-blue-600">
-                      {openFaqIndex === index ? 'âˆ’' : '+'}
+                      {openFaqIndex === index ? "âˆ’" : "+"}
                     </span>
                   </button>
                   {openFaqIndex === index && (
@@ -161,14 +187,10 @@ export default function HybridSolar() {
           category="Hybrid"
           config={{
             title: "Hybrid Solar Quote",
-            description: "Get a quote for our advanced hybrid solar solutions."
+            description: "Get a quote for our advanced hybrid solar solutions.",
           }}
         />
       )}
-
-
     </div>
-  )
+  );
 }
-
-

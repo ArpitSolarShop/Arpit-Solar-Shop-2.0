@@ -12,11 +12,20 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const status = searchParams.get('status');
         const tag = searchParams.get('tag');
+        const slug = searchParams.get('slug');
 
-        let query = supabase
+        let query: any = supabase
             .from('blog_posts')
-            .select('*')
-            .order('created_at', { ascending: false });
+            .select('*');
+
+        // Order by created_at desc ONLY if we are fetching a list (no slug)
+        if (!slug) {
+            query = query.order('created_at', { ascending: false });
+        }
+
+        if (slug) {
+            query = query.eq('slug', slug).single();
+        }
 
         if (status) {
             query = query.eq('status', status);
