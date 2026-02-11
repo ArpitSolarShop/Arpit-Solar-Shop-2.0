@@ -11,6 +11,25 @@ import RecGroupLogo from "@/assets/Reliance New Energy/recgroup-logo.jpg";
 import SenseHawkLogo from "@/assets/Reliance New Energy/sensehawk-logo.jpg";
 import SterlingWilsonLogo from "@/assets/Reliance New Energy/sterlingandwilson-logo.jpg";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Reliance New Energy Solar Solutions | Arpit Solar Shop",
+  description: "Authorized Channel Partner for Reliance New Energy. Premium solar products, REC Group technology, and complete solar ecosystem solutions in Varanasi.",
+  keywords: [
+    "Reliance Solar Varanasi",
+    "Reliance New Energy",
+    "REC Solar Panels",
+    "Reliance Solar Dealership",
+    "Premium Solar Modules",
+  ],
+  openGraph: {
+    title: "Reliance New Energy Solar Solutions | Authorized Partner",
+    description: "World-class solar technology from Reliance New Energy. Authorized Partner in Varanasi.",
+    images: ["/Reliance New Energy/newenergy-banner.jpg"],
+  },
+};
+
 const Reliance = () => {
   return (
     <div className="min-h-screen bg-white">

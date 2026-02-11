@@ -6,13 +6,36 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Tag, ArrowLeft } from "lucide-react";
 import { ShareButton } from "@/components/blog/ShareButton";
 
-// Force dynamic rendering since we fetch data
-export const dynamic = 'force-dynamic';
+// Revalidate every hour
+export const revalidate = 3600;
+export const dynamicParams = true; // Allow new posts not yet generated
 
 interface BlogPostPageProps {
     params: Promise<{
         slug: string;
     }>;
+}
+
+// Generate static params for all published blog posts
+export async function generateStaticParams() {
+    try {
+        const port = process.env.PORT || 3000;
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${port}`;
+        const res = await fetch(`${baseUrl}/api/cms/blog?status=published`);
+
+        if (!res.ok) return [];
+
+        const { data } = await res.json();
+
+        if (!Array.isArray(data)) return [];
+
+        return data.map((post: any) => ({
+            slug: post.slug,
+        }));
+    } catch (error) {
+        console.error("Error generating static params:", error);
+        return [];
+    }
 }
 
 // Fetch blog post data
@@ -22,15 +45,20 @@ async function getBlogPost(slug: string) {
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${port}`;
         console.log(`Fetching blog post from: ${baseUrl}/api/cms/blog?slug=${slug}&status=published`);
 
+        // Use next: { revalidate } instead of cache: 'no-store'
         const res = await fetch(`${baseUrl}/api/cms/blog?slug=${slug}&status=published`, {
-            cache: 'no-store'
+            next: { revalidate: 3600 }
         });
 
         if (!res.ok) return null;
 
         const json = await res.json();
-        // API returns { data: { ...post } } when slug is used
-        return json.data || null;
+        const data = json.data;
+
+        // Ensure we have data
+        if (!data) return null;
+
+        return data;
     } catch (error) {
         console.error("Error fetching blog post:", error);
         return null;
@@ -48,6 +76,22 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
         };
     }
 
+    // JSON-LD for Article
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.seo_title || post.title,
+        description: post.seo_description || post.excerpt,
+        image: post.featured_image ? [post.featured_image] : [],
+        datePublished: post.published_at || post.created_at,
+        dateModified: post.updated_at || post.created_at,
+        author: {
+            '@type': 'Organization',
+            name: 'Arpit Solar Shop',
+            url: 'https://arpitsolarshop.com'
+        }
+    };
+
     return {
         title: `${post.seo_title || post.title} | Arpit Solar Shop`,
         description: post.seo_description || post.excerpt,
@@ -56,7 +100,12 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
             description: post.seo_description || post.excerpt,
             images: post.featured_image ? [{ url: post.featured_image }] : [],
             type: 'article',
+            publishedTime: post.published_at || post.created_at,
+            authors: ['Arpit Solar Shop'],
         },
+        other: {
+            'script:ld+json': JSON.stringify(jsonLd)
+        }
     };
 }
 
@@ -68,8 +117,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         notFound();
     }
 
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: blogPost.seo_title || blogPost.title,
+        description: blogPost.seo_description || blogPost.excerpt,
+        image: blogPost.featured_image ? [blogPost.featured_image] : [],
+        datePublished: blogPost.published_at || blogPost.created_at,
+        dateModified: blogPost.updated_at || blogPost.created_at,
+        author: {
+            '@type': 'Organization',
+            name: 'Arpit Solar Shop',
+            url: 'https://arpitsolarshop.com'
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Breadcrumbs */}
             <div className="bg-white border-b">
                 <div className="container mx-auto px-4 py-4">

@@ -5,6 +5,7 @@ import "./globals.css";
 import Providers from "@/components/providers/Providers";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import JsonLd from "@/components/analytics/JsonLd";
+import StructuredData from "@/components/analytics/StructuredData";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,6 +21,9 @@ import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
@@ -74,6 +78,7 @@ export default function RootLayout({
           {children}
           <FloatingChatButton />
           <JsonLd />
+          <StructuredData />
         </Providers>
       </body>
     </html>

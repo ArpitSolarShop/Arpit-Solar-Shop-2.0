@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { siteConfig, navItems } from "@/config/site";
 import locations from "@/data/locations.json";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const routes = navItems.map((item) => ({
         url: `${siteConfig.url}${item.href}`,
         lastModified: new Date(),
@@ -44,5 +44,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.7,
     }));
 
-    return [...routes, ...productRoutes, ...locationRoutes, ...extraRoutes];
+    // Fetch blog posts for sitemap
+    let blogRoutes: MetadataRoute.Sitemap = [];
+    try {
+        const port = process.env.PORT || 3000;
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${port}`;
+        const response = await fetch(`${baseUrl}/api/cms/blog?status=published`, {
+            cache: 'no-store'
+        });
+
+        if (response.ok) {
+            const { data } = await response.json();
+            if (Array.isArray(data)) {
+                blogRoutes = data.map((post: any) => ({
+                    url: `${siteConfig.url}/blog/${post.slug}`,
+                    lastModified: new Date(post.updated_at || post.created_at),
+                    changeFrequency: "weekly" as const,
+                    priority: 0.8,
+                }));
+            }
+        }
+    } catch (error) {
+        console.error("Failed to fetch blog posts for sitemap:", error);
+    }
+
+    return [...routes, ...productRoutes, ...locationRoutes, ...extraRoutes, ...blogRoutes];
 }
