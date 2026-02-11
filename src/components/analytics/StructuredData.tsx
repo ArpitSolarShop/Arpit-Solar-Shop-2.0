@@ -6,6 +6,7 @@ export default function StructuredData() {
         "@type": "LocalBusiness",
         "name": siteConfig.name,
         "image": `${siteConfig.url}${siteConfig.ogImage}`,
+        "@id": siteConfig.url,
         "url": siteConfig.url,
         "telephone": siteConfig.contact.phone,
         "email": siteConfig.contact.email,

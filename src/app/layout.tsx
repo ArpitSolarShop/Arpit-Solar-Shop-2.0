@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/providers/Providers";
 import FloatingChatButton from "@/components/FloatingChatButton";
-import JsonLd from "@/components/analytics/JsonLd";
 import StructuredData from "@/components/analytics/StructuredData";
 
 const geistSans = Geist({
@@ -77,7 +76,6 @@ export default function RootLayout({
         <Providers>
           {children}
           <FloatingChatButton />
-          <JsonLd />
           <StructuredData />
         </Providers>
       </body>
