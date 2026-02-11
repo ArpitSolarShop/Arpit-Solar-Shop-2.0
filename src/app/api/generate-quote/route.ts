@@ -109,8 +109,22 @@ export async function POST(req: NextRequest) {
 
             let systemData: any;
             if (products && products.length > 0) {
+                let filteredProducts = products;
+
+                // HUGE FIX: Filter by Variant for Hybrid (With Battery vs Without Battery)
+                // because multiple products exist with valid system_size_kw but different prices.
+                if (categoryFilter === 'Hybrid' && formData.additional_details?.variant) {
+                    const requestedVariant = formData.additional_details.variant;
+                    const variantMatches = products.filter((p: any) =>
+                        (p.specifications?.variant || 'WITH_BATTERY') === requestedVariant
+                    );
+                    if (variantMatches.length > 0) {
+                        filteredProducts = variantMatches;
+                    }
+                }
+
                 // Find closest match
-                systemData = products.find((p: any) =>
+                systemData = filteredProducts.find((p: any) =>
                     Math.abs(p.system_size_kw - Number(power_demand_kw)) < 0.1
                 );
                 if (!systemData) {
@@ -162,12 +176,24 @@ export async function POST(req: NextRequest) {
                 if (specs.inverter_kw) selectedProductData.inverterSize = specs.inverter_kw;
                 if (specs.technology) selectedProductData.panelType = specs.technology;
                 if (specs.brand) selectedProductData.panelBrand = specs.brand;
+                if (specs.variant) selectedProductData.variant = specs.variant;
 
             } else {
                 // Fallback
                 console.log('⚠️ No unified product found, using fallback estimation.');
                 const systemSizeNum = parseFloat(power_demand_kw) || 3;
-                calculatedValues.grandTotal = systemSizeNum * 45000;
+
+                // Hybrid systems are significantly more expensive (Batteries + Hybrid Inverter)
+                if (categoryFilter === 'Hybrid') {
+                    // Approx ₹90,000 - ₹1,00,000 per kW for Hybrid
+                    const ratePerKw = 95000;
+                    calculatedValues.grandTotal = systemSizeNum * ratePerKw;
+                    (calculatedValues as any).taxRate = 12; // Higher slab often applies or composite
+                } else {
+                    // Standard On-Grid
+                    calculatedValues.grandTotal = systemSizeNum * 45000;
+                }
+
                 selectedProductData.capacity = systemSizeNum;
             }
 
@@ -288,6 +314,19 @@ export async function POST(req: NextRequest) {
 
                 // --- DYNAMIC QUANTITY SCALING ---
                 const panelWattageNum = parseFloat(selectedProductData.panelWattage) || 550;
+
+                // HUGE FIX: Consistency Check
+                // If the selected product (which determined PRICE) is WOBB, or user requested WOBB,
+                // we MUST remove Battery/BMS from components to avoid misleading quotes.
+                const isWOBB = (formData.additional_details?.variant === 'WOBB') || (selectedProductData.variant === 'WOBB');
+
+                if (brandCategory === 'Hybrid' && isWOBB) {
+                    selectedComponents = selectedComponents.filter((c: any) =>
+                        !c.name.toLowerCase().includes('battery') &&
+                        !c.name.toLowerCase().includes('bms')
+                    );
+                }
+
                 // Calculate needed panels: (Capacity (kW) * 1000) / Wattage
                 const neededPanels = Math.ceil((selectedProductData.capacity * 1000) / panelWattageNum);
                 selectedProductData.panelCount = neededPanels;

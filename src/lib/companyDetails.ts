@@ -146,8 +146,7 @@ export const defaultComponents = {
     'Hybrid': [
         { name: 'Solar Photovoltaic Modules', description: '580Wp (NDCR) PV Modules', quantity: '9 Nos', make: 'Waaree/Adani/Premier', sort_order: 1 },
         { name: 'PCU / Inverter', description: 'Hybrid Inverter 3.6KW', quantity: '01 No', make: 'Servotech', sort_order: 2 },
-        { name: 'Lithium Ion Battery', description: '12.8V 100Ah 2000 Cycle', quantity: '02 Nos', make: 'Servotech', sort_order: 3 },
-        { name: 'BMS', description: 'Battery Management System', quantity: '01 No', make: 'Standard', sort_order: 4 },
+        // Battery removed from default (added dynamically if variant=WITH_BATTERY via DB)
         { name: 'AC Cable', description: 'Copper, 6Sq mm', quantity: 'As per actual', make: 'Standard', sort_order: 5 },
         { name: 'DC Interconnecting Cables', description: '4 Sq mm, UV Protected', quantity: '150 Mtrs', make: 'Standard', sort_order: 6 },
         { name: 'Module Mounting Structure', description: 'MMS in pre GI sheet', quantity: '01 Set', make: 'GI 80 Micron', sort_order: 7 },

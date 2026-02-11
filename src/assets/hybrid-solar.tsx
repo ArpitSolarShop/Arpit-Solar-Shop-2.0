@@ -438,6 +438,7 @@ export default function HybridSolarPricing() {
             systemSize: selectedSystem.capacity_kw,
             price: selectedSystem.price_inr,
             phase: selectedSystem.phase,
+            variant: selectedSystem.variant, // CRITICAL FIX: Pass variant to backend
             description: `${selectedSystem.technology} | ${selectedSystem.variant === 'WITH_BATTERY' ? 'With Battery' : 'No Battery'} | ${selectedSystem.module_count}x${selectedSystem.module_watt}Wp Modules | ${selectedSystem.battery_kwh ? selectedSystem.battery_kwh + 'kWh Battery' : ''}`
           } : undefined
         }
