@@ -13,6 +13,7 @@ import { generatePdfFromHtml } from '@/lib/server/services/pdf';
 import { sendWhatsAppMessage } from '@/lib/server/services/whatsapp';
 import { generateQuoteHtml } from '@/lib/quoteTemplate';
 import { defaultComponents } from '@/lib/companyDetails';
+import { pushLeadToCRM } from '@/lib/server/services/kit19-crm';
 
 export const maxDuration = 120;
 
@@ -412,10 +413,27 @@ export async function POST(req: NextRequest) {
         } catch (waError: any) {
             console.error('WhatsApp failed:', waError);
             whatsappResult.error = waError.message;
+            whatsappResult.error = waError.message;
+        }
+
+        // 9. Sync to CRM (Kit19)
+        try {
+            console.log('🔄 Syncing to Kit19 CRM...');
+            await pushLeadToCRM({
+                name: formData.name,
+                phone: formData.phone,
+                email: formData.email,
+                address: formData.address || 'N/A', // Matches project_location from frontend
+                source: "Website",
+                medium: "Quote API",
+                campaign: formData.product_category || "Solar Quote",
+                remarks: `Interested in ${formData.product_category} (${formData.power_demand_kw}kW) | Variant: ${formData.additional_details?.variant || 'Standard'}`
+            });
+        } catch (crmErr) {
+            console.error('CRM Sync Warning:', crmErr);
         }
 
         return NextResponse.json({ success: true, pdfUrl, whatsappResult });
-
     } catch (error: any) {
         console.error('❌ API Error:', error);
         return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
