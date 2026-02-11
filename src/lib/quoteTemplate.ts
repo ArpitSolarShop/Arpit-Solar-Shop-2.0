@@ -37,7 +37,7 @@ export const generateQuoteHtml = (data: any): string => {
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #333; background: white; }
-    .page { width: 210mm; min-height: 297mm; padding: 15mm; margin: 0 auto; }
+    .page { width: 210mm; min-height: 297mm; padding: 20mm; margin: 0 auto; background: white; }
     
     /* Header */
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #1e3a5f; }
@@ -120,7 +120,10 @@ export const generateQuoteHtml = (data: any): string => {
     .for-company { font-size: 13px; font-weight: 900; color: #1e3a5f; margin-bottom: 40px; text-decoration: underline; text-decoration-color: #eab308; text-underline-offset: 4px; }
     
     @page { size: A4; margin: 0; }
-    @media print { .page { padding: 10mm; } }
+    @media print { 
+      @page { size: A4; margin: 0; }
+      .page { padding: 20mm; margin: 0; width: 210mm; height: 297mm; } 
+    }
   </style>
 </head>
 <body>
