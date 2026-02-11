@@ -14,7 +14,7 @@ if (!supabaseUrl || !supabaseKey) {
   console.error('Supabase URL or Key is missing from environment variables.');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Enhanced fetchClosestRow with debug logs
 export async function fetchClosestRow(tableName: string, targetValue: number, columnName: string = 'system_size') {

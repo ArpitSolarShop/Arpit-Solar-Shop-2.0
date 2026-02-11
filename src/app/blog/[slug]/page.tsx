@@ -16,20 +16,13 @@ interface BlogPostPageProps {
     }>;
 }
 
+import { getPublishedPosts, getBlogPostBySlug } from "@/lib/server/services/blog-service";
+
 // Generate static params for all published blog posts
 export async function generateStaticParams() {
     try {
-        const port = process.env.PORT || 3000;
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${port}`;
-        const res = await fetch(`${baseUrl}/api/cms/blog?status=published`);
-
-        if (!res.ok) return [];
-
-        const { data } = await res.json();
-
-        if (!Array.isArray(data)) return [];
-
-        return data.map((post: any) => ({
+        const posts = await getPublishedPosts();
+        return posts.map((post: any) => ({
             slug: post.slug,
         }));
     } catch (error) {
@@ -38,37 +31,13 @@ export async function generateStaticParams() {
     }
 }
 
-// Fetch blog post data
-async function getBlogPost(slug: string) {
-    try {
-        const port = process.env.PORT || 3000;
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${port}`;
-        console.log(`Fetching blog post from: ${baseUrl}/api/cms/blog?slug=${slug}&status=published`);
+// Fetch blog post data - Helper function removed, use getBlogPostBySlug directly
 
-        // Use next: { revalidate } instead of cache: 'no-store'
-        const res = await fetch(`${baseUrl}/api/cms/blog?slug=${slug}&status=published`, {
-            next: { revalidate: 3600 }
-        });
-
-        if (!res.ok) return null;
-
-        const json = await res.json();
-        const data = json.data;
-
-        // Ensure we have data
-        if (!data) return null;
-
-        return data;
-    } catch (error) {
-        console.error("Error fetching blog post:", error);
-        return null;
-    }
-}
 
 // Generate Metadata for SEO
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
     const { slug } = await params;
-    const post = await getBlogPost(slug);
+    const post = await getBlogPostBySlug(slug);
 
     if (!post) {
         return {
@@ -111,7 +80,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const { slug } = await params;
-    const blogPost = await getBlogPost(slug);
+    const blogPost = await getBlogPostBySlug(slug);
 
     if (!blogPost) {
         notFound();
