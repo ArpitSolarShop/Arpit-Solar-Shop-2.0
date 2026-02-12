@@ -54,11 +54,7 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
     creator: "@arpitsolarshop",
   },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
-  },
+
   manifest: "/manifest.webmanifest",
 };
 
