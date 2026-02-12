@@ -8,7 +8,7 @@ import CleanEnergySolution from "@/components/sections/CleanEnergySolution";
 import FAQ from "@/components/sections/FAQ";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, MapPin } from "lucide-react";
 import LocationJsonLd from "@/components/analytics/LocationJsonLd";
 import RecentUpdates from "@/components/sections/RecentUpdates";
 
@@ -35,27 +35,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     return {
-        title: `Solar Panel Installation in ${location.name} | Best Solar Company`,
-        description: `Get expert solar panel installation in ${location.name}, ${location.state}. Best prices for Tata Power, Adani, and Shakti Solar systems. Subsidy available. Contact Arpit Solar Shop.`,
+        title: `Solar Panel Price & Installation in ${location.name} | Save ₹1,08,000 Subsidy`,
+        description: `Looking for solar panels in ${location.name}? Arpit Solar Shop offers premium installation with ₹1,08,000 subsidy under PM Surya Ghar Yojana. Get Tata & Reliance solar systems at best price in ${location.name}.`,
         keywords: [
+            `Solar Panel Price in ${location.name}`,
             `Solar Panel Installation ${location.name}`,
             `Solar Company in ${location.name}`,
             `Rooftop Solar ${location.name}`,
             `Solar Subsidy ${location.name}`,
+            `PM Surya Ghar Yojana Varanasi`,
             `Tata Power Solar ${location.name}`,
-            `Solar in ${location.name}`,
-            `Solar System in ${location.name}`,
-            `Number 1 Solar Company in ${location.name}`,
-            `Top Solar Company in ${location.name}`,
             `Best Solar Dealer in ${location.name}`,
-            `Solar Distributor in ${location.name}`,
+            `Solar System Installation ${location.name}`,
+            `Cheap Solar Panels ${location.name}`,
+            `Top Solar Company in Varanasi`,
             `Solar Shop in ${location.name}`,
-            `Solar Panel Price in ${location.name}`,
             `Commercial Solar Plant in ${location.name}`,
+            `Solar Rooftop Subsidy ${location.name}`,
         ],
         openGraph: {
-            title: `Solar Panel Installer in ${location.name} | Arpit Solar`,
-            description: `Trusted solar solutions in ${location.name}. Residential and commercial systems with installation and subsidy support.`,
+            title: `#1 Solar Panel Installer in ${location.name} | Arpit Solar Shop`,
+            description: `Get ₹1,08,000 Subsidy for Solar in ${location.name}. Trusted by 500+ families. Official Tata & Reliance Partner.`,
         },
         alternates: {
             canonical: `/solar-installation/${location.slug}`,
@@ -160,6 +160,23 @@ export default async function LocationPage({ params }: Props) {
                             </div>
                             <p className="text-xs text-gray-500 mt-2">* Subsidy valid for residential consumers under {location.discom}.</p>
                         </div>
+
+                        {/* Local Context - Landmarks & Key Areas */}
+                        {(location as any).landmarks && (
+                            <div className="mt-8 p-6 bg-slate-50 rounded-xl border border-slate-200">
+                                <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                                    <MapPin className="w-5 h-5 text-primary" />
+                                    Major Landmarks Near You
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    We provide solar installation services near {(location as any).landmarks}.
+                                </p>
+                                <h4 className="font-semibold text-gray-900 mb-2">Key Areas Covered:</h4>
+                                <p className="text-gray-600 text-sm leading-relaxed">
+                                    {(location as any).key_areas}
+                                </p>
+                            </div>
+                        )}
 
                         <div className="mt-8">
                             <Button asChild size="lg" className="bg-primary text-secondary hover:bg-primary/90 w-full md:w-auto text-lg py-6">

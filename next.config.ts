@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/solar-in-:city',
+        destination: '/solar-installation/:city',
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

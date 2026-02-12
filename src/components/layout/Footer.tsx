@@ -137,6 +137,18 @@ const Footer = () => {
                                 ))}
                             </ul>
                         </div>
+
+                        {/* Top Locations Column */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold">Top Locations</h3>
+                            <ul className="space-y-2">
+                                {[{ name: "Solar in Varanasi", href: "/solar-installation/varanasi" }, { name: "Solar in Mau", href: "/solar-installation/mau" }, { name: "Solar in Jaunpur", href: "/solar-installation/jaunpur" }].map((link) => (
+                                    <li key={link.name}>
+                                        <Link href={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 </div>
 

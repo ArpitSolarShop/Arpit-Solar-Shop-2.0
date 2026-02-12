@@ -7,9 +7,11 @@
     "state": "Uttar Pradesh",
     "pincode": "221010",
     "discom": "PuVVNL",
-    "subsidy": "108000"
+    "subsidy": "108000",
+    "landmarks": "Assi Ghat, Kashi Vishwanath Temple, BHU, Sarnath, Dashashwamedh Ghat",
+    "key_areas": "Lanka, Sigra, Shivpur, Rohaniya, Ashapur, Sarnath, Mahmoorganj"
   },
-   {
+  {
     "slug": "mau",
     "name": "Mau",
     "type": "Town",
