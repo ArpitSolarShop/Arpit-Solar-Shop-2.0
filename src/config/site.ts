@@ -30,6 +30,11 @@ export const siteConfig = {
         "Renewable Energy Varanasi",
         "Solar in Varanasi",
         "Solar System in Varanasi",
+        "Number 1 Solar Company in Varanasi",
+        "Top Solar Dealer Varanasi",
+        "Best Solar Distributor Varanasi",
+        "Solar Shop Varanasi",
+        "Solar Panel Shop Varanasi",
     ],
     authors: [
         {
