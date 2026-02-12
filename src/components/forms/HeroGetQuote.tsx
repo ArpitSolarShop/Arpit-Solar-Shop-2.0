@@ -165,49 +165,18 @@ function useProductCatalog() {
     return { catalog, loading, error }
 }
 
+import { submitHeroLead } from "@/app/actions/crm"
+
 // ---------------------------
-// KIT19: SEND LEAD ONLY ONCE — ON INITIAL FORM SUBMIT
+// KIT19: SEND LEAD VIA SERVER ACTION
 // ---------------------------
 const sendToKit19 = async (formData: QuoteFormData, estimateData: EstimateData, customerType: CustomerType) => {
-    const apiUrl = process.env.NEXT_PUBLIC_KIT19_API
-    const authKey = process.env.NEXT_PUBLIC_KIT19_AUTH
-
-    if (!apiUrl || !authKey) {
-        console.warn("Kit19: Missing env vars (VITE_KIT19_API or VITE_KIT19_AUTH)")
-        return
-    }
-
-    const payload = {
-        PersonName: formData.fullName.trim(),
-        CompanyName: customerType === "Commercial" ? (formData.companyName?.trim() || "") : "",
-        MobileNo: formData.whatsappNumber.replace(/\D/g, "").slice(-10),
-        MobileNo1: "", MobileNo2: "",
-        EmailID: "", EmailID1: "", EmailID2: "",
-        City: formData.city.trim() || "Varanasi",
-        State: "Uttar Pradesh",
-        Country: "India",
-        CountryCode: "+91", CountryCode1: "", CountryCode2: "",
-        PinCode: formData.pinCode.trim() || "221001",
-        ResidentialAddress: estimateData.fullAddress.trim() || "Not provided",
-        OfficeAddress: customerType === "Commercial" ? (estimateData.fullAddress.trim() || "Not provided") : "",
-        SourceName: "Website",
-        MediumName: "Solar Quote Form",
-        CampaignName: "Hero Get Quote",
-        InitialRemarks: `Customer Type: ${customerType}, Monthly Bill: ${formData.monthlyBill}, System Interest: Solar Rooftop`
-    }
-
+    // Wrapper to match existing signature or just replace call site.
+    // I'll replace call site, but for minimal diff, I can keep this function as wrapper.
     try {
-        await fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "kit19-Auth-Key": authKey,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-        })
-        // Kit19: Lead synced successfully
+        await submitHeroLead({ ...formData, city: formData.city || "Varanasi", monthlyBill: formData.monthlyBill }, customerType);
     } catch (err) {
-        console.warn("Kit19: Sync failed (non-critical)", err)
+        console.error("Kit19 Sync Failed", err);
     }
 }
 
