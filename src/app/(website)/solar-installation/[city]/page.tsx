@@ -43,6 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             `Rooftop Solar ${location.name}`,
             `Solar Subsidy ${location.name}`,
             `Tata Power Solar ${location.name}`,
+            `Solar in ${location.name}`,
+            `Solar System in ${location.name}`,
         ],
         openGraph: {
             title: `Solar Panel Installer in ${location.name} | Arpit Solar`,

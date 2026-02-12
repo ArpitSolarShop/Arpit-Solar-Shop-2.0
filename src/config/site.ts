@@ -28,6 +28,8 @@ export const siteConfig = {
         "Adani Solar Varanasi",
         "Arpit Solar Shop",
         "Renewable Energy Varanasi",
+        "Solar in Varanasi",
+        "Solar System in Varanasi",
     ],
     authors: [
         {
