@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
-    creator: "@arpitsolar",
+    creator: "@arpitsolarshop",
   },
 
   manifest: "/manifest.webmanifest",
