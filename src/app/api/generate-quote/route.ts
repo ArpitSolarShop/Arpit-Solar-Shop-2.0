@@ -179,12 +179,6 @@ export async function POST(req: NextRequest) {
                 if (specs.brand) selectedProductData.panelBrand = specs.brand;
                 if (specs.variant) selectedProductData.variant = specs.variant;
 
-                // FIX: Force Tata to use 580Wp DCR as per user requirement (overriding DB 550Wp)
-                if (product_category === 'Tata') {
-                    selectedProductData.panelWattage = '580';
-                    selectedProductData.panelType = 'DCR Monocrystalline';
-                }
-
             } else {
                 // Fallback
                 console.log('⚠️ No unified product found, using fallback estimation.');
