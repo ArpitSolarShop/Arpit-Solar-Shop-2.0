@@ -10,6 +10,9 @@ export const metadata: Metadata = {
         "Tata Solar Panels Price",
         "Best Solar Company Varanasi",
         "PM Surya Ghar Yojana Tata Solar",
+        "Number 1 Tata Solar Dealer Varanasi",
+        "Top Tata Solar Distributor",
+        "Tata Solar System in Varanasi",
     ],
     openGraph: {
         title: "Tata Power Solar Rooftop Solutions | Arpit Solar Shop",

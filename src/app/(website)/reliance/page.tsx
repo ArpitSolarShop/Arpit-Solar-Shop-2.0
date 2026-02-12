@@ -22,6 +22,8 @@ export const metadata: Metadata = {
     "REC Solar Panels",
     "Reliance Solar Dealership",
     "Premium Solar Modules",
+    "Number 1 Reliance Solar Partner Varanasi",
+    "Top Reliance Solar Dealer",
   ],
   openGraph: {
     title: "Reliance New Energy Solar Solutions | Authorized Partner",

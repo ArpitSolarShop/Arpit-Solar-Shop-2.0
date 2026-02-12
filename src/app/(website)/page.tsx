@@ -19,6 +19,12 @@ export const metadata: Metadata = {
     "Solar Panel Price Varanasi",
     "Best Solar Installation UP",
     "PM Surya Ghar Yojana Dealer",
+    "Solar in Varanasi",
+    "Solar System in Varanasi",
+    "Number 1 Solar Company in Varanasi",
+    "Top Solar Dealer Varanasi",
+    "Best Solar Distributor Varanasi",
+    "Solar Shop Varanasi",
   ],
   openGraph: {
     title: "Arpit Solar Shop | Rate #1 Solar Company in Varanasi",

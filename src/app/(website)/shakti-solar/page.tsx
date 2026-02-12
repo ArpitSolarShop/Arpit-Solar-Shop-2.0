@@ -11,6 +11,8 @@ export const metadata: Metadata = {
         "Rooftop Solar Subsidy Varanasi",
         "Shakti Energy Solutions",
         "PM Surya Ghar Yojana Varanasi",
+        "Number 1 Shakti Solar Dealer Varanasi",
+        "Top Solar Pump Distributor",
     ],
     openGraph: {
         title: "Shakti Solar Pumps & Rooftop Solutions | Arpit Solar Shop",
