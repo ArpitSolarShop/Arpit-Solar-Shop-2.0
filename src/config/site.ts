@@ -5,12 +5,12 @@
 export const siteConfig = {
     name: "Arpit Solar Shop",
     description: "Premium solar solutions for residential and commercial properties in Varanasi. Top-rated rooftop solar installer offering expert installation and maintenance.",
-    url: "https://arpitsolarshop.com",
+    url: "https://www.arpitsolar.com",
     ogImage: "/og-image.jpg",
     links: {
-        twitter: "https://twitter.com/arpitsolarshop",
-        facebook: "https://facebook.com/arpitsolarshop",
-        instagram: "https://instagram.com/arpitsolarshop",
+        twitter: "https://twitter.com/arpitsolar",
+        facebook: "https://facebook.com/arpitsolar",
+        instagram: "https://instagram.com/arpitsolar",
     },
     contact: {
         email: "info@arpitsolar.com",
