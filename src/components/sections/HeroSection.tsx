@@ -128,7 +128,7 @@ const HeroSection = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
-              Transform your energy costs with premium solar solutions.{" "}
+              Varanasi's most trusted solar partner. Transform your energy costs with premium solar solutions.{" "}
               <span className="font-bold text-solar-orange">Save up to 90% on your electricity bills.</span> Join
               thousands of satisfied customers who've made the switch to clean, renewable energy.
             </p>

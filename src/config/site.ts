@@ -13,9 +13,9 @@ export const siteConfig = {
         instagram: "https://instagram.com/arpitsolarshop",
     },
     contact: {
-        email: "info@arpitsolarshop.com",
-        phone: "+91-XXXXXXXXXX",
-        address: "Varanasi, Uttar Pradesh, India",
+        email: "info@arpitsolar.com",
+        phone: "+91-9005770466",
+        address: "Sh16/114-25-K-2, Sharvodayanagar, Kadipur, Shivpur, Varanasi 221003 (UP)",
     },
     keywords: [
         "Solar Panel Installation Varanasi",

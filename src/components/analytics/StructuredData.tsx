@@ -12,7 +12,7 @@ export default function StructuredData() {
         "email": siteConfig.contact.email,
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Varanasi",
+            "streetAddress": siteConfig.contact.address,
             "addressLocality": "Varanasi",
             "addressRegion": "Uttar Pradesh",
             "postalCode": "221001",
