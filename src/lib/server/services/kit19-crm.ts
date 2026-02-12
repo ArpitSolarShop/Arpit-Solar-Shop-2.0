@@ -1,13 +1,16 @@
 
-const CRM_API_URL = 'https://sipapi.kit19.com/Enquiry/Add';
-// Key provided by user
-const CRM_AUTH_KEY = '4e7bb26557334f91a21e56a4ea9c8752';
+const CRM_API_URL = process.env.NEXT_PUBLIC_KIT19_API || 'https://sipapi.kit19.com/Enquiry/Add';
+const CRM_AUTH_KEY = process.env.NEXT_PUBLIC_KIT19_AUTH || '';
 
 export interface CRMLead {
     name: string;
     phone: string;
     email: string;
-    address: string; // Used for City/ResidentialAddress
+    address: string; // Used for City/ResidentialAddress if not specific
+    city?: string;
+    state?: string;
+    pincode?: string;
+    companyName?: string;
     source?: string;
     medium?: string;
     campaign?: string;
@@ -15,19 +18,31 @@ export interface CRMLead {
 }
 
 export async function pushLeadToCRM(lead: CRMLead) {
+    if (!CRM_AUTH_KEY) {
+        console.warn("⚠️ CRM Auth Key missing. Skipping Kit19 sync.");
+        return null;
+    }
+
     try {
-        // Construct payload as per Kit19 requirements
+        // Construct payload strictly matching user request
         const payload = {
             "PersonName": lead.name,
+            "CompanyName": lead.companyName || "",
             "MobileNo": lead.phone,
+            "MobileNo1": "",
+            "MobileNo2": "",
             "EmailID": lead.email,
-            "City": lead.address, // Mapping project_location to City
-            "State": "",          // Not captured in current form
+            "EmailID1": "",
+            "EmailID2": "",
+            "City": lead.city || lead.address,
+            "State": lead.state || "",
             "Country": "India",
             "CountryCode": "+91",
-            "PinCode": "",
+            "CountryCode1": "",
+            "CountryCode2": "",
+            "PinCode": lead.pincode || "",
             "ResidentialAddress": lead.address,
-            "OfficeAddress": "",
+            "OfficeAddress": lead.companyName ? lead.address : "", // Use address as Office Address if Commercial?
             "SourceName": lead.source || "Website",
             "MediumName": lead.medium || "Solar Shop Quote",
             "CampaignName": lead.campaign || "Lead Form",

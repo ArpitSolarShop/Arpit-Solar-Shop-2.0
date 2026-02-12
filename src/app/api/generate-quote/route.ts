@@ -423,7 +423,10 @@ export async function POST(req: NextRequest) {
                 name: formData.name,
                 phone: formData.phone,
                 email: formData.email,
-                address: formData.address || 'N/A', // Matches project_location from frontend
+                address: formData.address || 'N/A', // Matches project_location
+                city: formData.city,
+                state: formData.state,
+                pincode: formData.pin_code || formData.pincode, // Check both keys
                 source: "Website",
                 medium: "Quote API",
                 campaign: formData.product_category || "Solar Quote",
