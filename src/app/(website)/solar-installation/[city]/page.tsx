@@ -109,7 +109,7 @@ export default async function LocationPage({ params }: Props) {
                             <h3 className="font-bold text-xl mb-4 text-[#0a2351]">Contact Us</h3>
                             <div className="space-y-2">
                                 <p className="text-gray-700"><strong>Phone:</strong> <a href="tel:+919044555572" className="hover:text-primary">+91-9044555572</a></p>
-                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:info@arpitsolarshop.com" className="hover:text-primary">info@arpitsolarshop.com</a></p>
+                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:info@arpitsolar.com" className="hover:text-primary">info@arpitsolar.com</a></p>
                                 <p className="text-gray-700"><strong>Service Area:</strong> {location.name}, {location.discom} Region</p>
                             </div>
                         </div>
@@ -200,7 +200,7 @@ export default async function LocationPage({ params }: Props) {
                             .map((area) => (
                                 <Link
                                     key={area.slug}
-                                    href={`/solar-installation/${area.slug}`}
+                                    href={`https://www.arpitsolar.com/solar-installation/${area.slug}`}
                                     className="px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full text-sm text-gray-600 hover:text-primary transition-colors"
                                 >
                                     📍 {area.name}

@@ -32,7 +32,7 @@ export const siteConfig = {
     authors: [
         {
             name: "Arpit Solar Shop",
-            url: "https://arpitsolarshop.com",
+            url: "https://www.arpitsolar.com",
         },
     ],
     creator: "Arpit Solar Shop",

@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
         author: {
             '@type': 'Organization',
             name: 'Arpit Solar Shop',
-            url: 'https://arpitsolarshop.com'
+            url: 'https://www.arpitsolar.com'
         }
     };
 
@@ -97,7 +97,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         author: {
             '@type': 'Organization',
             name: 'Arpit Solar Shop',
-            url: 'https://arpitsolarshop.com'
+            url: 'https://www.arpitsolar.com'
         }
     };
 
