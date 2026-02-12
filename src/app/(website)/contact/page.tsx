@@ -92,7 +92,7 @@ export default function Contact() {
                         <CardContent className="p-0">
                             <div className="w-full" style={{ height: 450 }}>
                                 <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3605.536770874559!2d82.94755207516889!3d25.35332077761076!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398e2db16a9c907f%3A0xe094345c3bcc59c2!2sArpit%20Solar%20Shop!5e0!3m2!1sen!2sin!4v1754655482123!5m2!1sen!2sin"
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3605.5367708745584!2d82.94755207538691!3d25.353320777610783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398e2db16a9c907f%3A0xe094345c3bcc59c2!2sArpit%20Solar%20Shop!5e0!3m2!1sen!2sin!4v1770877829868!5m2!1sen!2sin"
                                     width="100%"
                                     height="450"
                                     style={{ border: 0 }}
