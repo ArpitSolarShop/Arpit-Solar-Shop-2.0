@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { siteConfig, navItems } from "@/config/site";
 import locations from "@/data/locations.json";
+import { createClient } from "@supabase/supabase-js";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const routes = navItems.map((item) => ({
@@ -44,19 +45,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
     }));
 
-    // Fetch blog posts for sitemap
+    // Fetch blog posts for sitemap (Direct DB call with isolated client)
     let blogRoutes: MetadataRoute.Sitemap = [];
     try {
-        const port = process.env.PORT || 3000;
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${port}`;
-        const response = await fetch(`${baseUrl}/api/cms/blog?status=published`, {
-            cache: 'no-store'
-        });
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-        if (response.ok) {
-            const { data } = await response.json();
-            if (Array.isArray(data)) {
-                blogRoutes = data.map((post: any) => ({
+        if (supabaseUrl && supabaseKey) {
+            const supabase = createClient(supabaseUrl, supabaseKey);
+
+            const { data: posts } = await supabase
+                .from('blog_posts')
+                .select('slug, updated_at, created_at')
+                .eq('status', 'published')
+                .order('created_at', { ascending: false });
+
+            if (posts && Array.isArray(posts)) {
+                blogRoutes = posts.map((post: any) => ({
                     url: `${siteConfig.url}/blog/${post.slug}`,
                     lastModified: new Date(post.updated_at || post.created_at),
                     changeFrequency: "weekly" as const,
