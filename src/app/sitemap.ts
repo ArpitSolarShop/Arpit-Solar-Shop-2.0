@@ -26,13 +26,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.9,
     }));
 
-    // Generate location routes from locations.json
-    const locationRoutes = locations.map((location) => ({
-        url: `${siteConfig.url}/solar-installation/${location.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: 0.8,
-    }));
+    // Generate location routes from locations.json (Standard + Competitive slugs)
+    const locationRoutes = locations.flatMap((location) => ([
+        {
+            url: `${siteConfig.url}/solar-installation/${location.slug}`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+        },
+        {
+            url: `${siteConfig.url}/solar-in-${location.slug}`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+        }
+    ]));
 
     // Add other static routes that might not be in nav (hardcoded for now as example)
     // You can also crawl your file system here if needed
