@@ -11,7 +11,7 @@ export const companyDetails = {
     // Contact
     phone: "+91 9005770466",
     alternatePhone: "9044555572",
-    email: "arpitsolarshop@gmail.com",
+    email: "info@arpitsolar.com",
 
     // Bank Details
     bank: {

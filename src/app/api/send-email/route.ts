@@ -43,7 +43,7 @@ EFFECTIVE COST: ₹${new Intl.NumberFormat("en-IN").format(effectiveCost || 0)}
 ARPIT SOLAR SHOP
 GSTIN: 09APKPM6299L1ZW
 Contact: +91 9005770466
-Email: arpitsolarshop@gmail.com
+Email: info@arpitsolar.com
 
 This quotation is valid for 7 days.`;
 
@@ -151,7 +151,7 @@ This quotation is valid for 7 days.`;
     <div class="footer">
       <p><strong>ARPIT SOLAR SHOP</strong> | GSTIN: 09APKPM6299L1ZW</p>
       <p>Registered Office: Ballia, UP | Head Office: Varanasi, UP</p>
-      <p>Contact: +91 9005770466 | Email: arpitsolarshop@gmail.com</p>
+      <p>Contact: +91 9005770466 | Email: info@arpitsolar.com</p>
     </div>
   </div>
 </body>
