@@ -1,20 +1,4 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// **Logo Sizing Changes:**
-
-// - **Transparent state**: Increased from `w-20 h-20 sm:w-24 sm:h-24` to `w-32 h-24 sm:w-40 sm:h-28` with negative margins `-my-2 sm:-my-3`
-// - **Solid state**: Increased from `w-18 h-18 sm:w-20 sm:h-20` to `w-28 h-20 sm:w-32 sm:h-24` with negative margins `-my-2`
-
-
-// **Hover Reliability Fixes:**
-
-// - Added `logoRestricted` state to control logo size when mega menus are open
-// - Added direct `onMouseEnter` handlers to menu buttons
-// - Reduced close delay from 300ms to 150ms for better responsiveness
-// - Logo automatically restricts size when any mega menu is active to prevent cutting
-
-
-
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import Link from "next/link"
@@ -39,6 +23,7 @@ import {
   Building,
   Newspaper,
   Lock,
+  LucideIcon
 } from "lucide-react"
 
 // Pinterest Icon Component (inline to avoid import issues)
@@ -54,14 +39,14 @@ type DropdownItem = {
   href: string
   description: string
   image?: string
-  icon?: any
+  icon?: LucideIcon
   iconClassName?: string
   recommended?: string
 }
 
 type NavigationItem = {
   name: string
-  icon: any
+  icon: LucideIcon
   iconClassName?: string
   href?: string
   dropdown?: DropdownItem[]

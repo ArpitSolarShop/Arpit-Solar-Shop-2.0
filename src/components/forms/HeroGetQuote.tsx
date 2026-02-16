@@ -94,6 +94,9 @@ function Stepper({ current, total }: { current: number; total: number }) {
 // ---------------------------
 // Hook: useProductCatalog
 // ---------------------------
+// ---------------------------
+// Hook: useProductCatalog
+// ---------------------------
 function useProductCatalog() {
     const [catalog, setCatalog] = useState<ProductCatalog | null>(null)
     const [loading, setLoading] = useState(true)
@@ -115,18 +118,37 @@ function useProductCatalog() {
                 if (relianceRes.error) throw relianceRes.error
                 if (relianceLargeRes.error) throw relianceLargeRes.error
 
-                const tataProducts: ProductSystem[] = (tataRes.data || []).map((p: any) => ({ brand: 'Tata', size: Number(p.system_size), phase: p.phase, price: Number(p.total_price) }))
-                const shaktiProducts: ProductSystem[] = (shaktiRes.data || []).map((p: any) => ({ brand: 'Shakti', size: Number(p.system_size), phase: p.phase, price: Number(p.pre_gi_elevated_price) }))
-                const relianceProducts: ProductSystem[] = (relianceRes.data || []).map((p: any) => ({ brand: 'Reliance', size: Number(p.system_size), phase: p.phase, price: Number(p.hdg_elevated_price) }))
+                const tataProducts: ProductSystem[] = (tataRes.data || []).map((p) => ({
+                    brand: 'Tata',
+                    size: Number(p.system_size),
+                    phase: p.phase,
+                    price: Number(p.total_price)
+                }))
+
+                const shaktiProducts: ProductSystem[] = (shaktiRes.data || []).map((p) => ({
+                    brand: 'Shakti',
+                    size: Number(p.system_size),
+                    phase: p.phase,
+                    price: Number(p.pre_gi_elevated_price)
+                }))
+
+                const relianceProducts: ProductSystem[] = (relianceRes.data || []).map((p) => ({
+                    brand: 'Reliance',
+                    size: Number(p.system_size),
+                    phase: p.phase,
+                    price: Number(p.hdg_elevated_price)
+                }))
 
                 const relianceLargeProducts: ProductSystem[] = []
-                    ; (relianceLargeRes.data || []).forEach((p: any) => {
+                    ; (relianceLargeRes.data || []).forEach((p) => {
                         const size = Number(p.system_size_kwp)
                         const phase = p.phase
                         const getPrice = (totalField: string, perWattField: string): number => {
-                            let totalPrice = Number(p[totalField])
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            let totalPrice = Number((p as any)[totalField])
                             if (isNaN(totalPrice) || totalPrice <= 0) {
-                                const perWatt = Number(p[perWattField])
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                const perWatt = Number((p as any)[perWattField])
                                 totalPrice = perWatt > 0 && size > 0 ? Math.round(perWatt * size * 1000) : 0
                             }
                             return totalPrice
@@ -150,9 +172,9 @@ function useProductCatalog() {
 
                 if (mounted) setCatalog({ residential, commercial })
 
-            } catch (err: any) {
-                console.error(err)
-                if (mounted) setError(err?.message || "Failed to load product catalog")
+            } catch (err) {
+                // console.error(err) // Silent failure for production
+                if (mounted) setError("Failed to load product catalog")
             } finally {
                 if (mounted) setLoading(false)
             }

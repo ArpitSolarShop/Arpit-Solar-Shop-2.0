@@ -1,4 +1,4 @@
-// Database Types - Auto-generated from Supabase schema
+import { Address, Variant } from './common';
 
 export interface Database {
     public: {
@@ -42,7 +42,7 @@ export interface Database {
                     name: string;
                     code: string;
                     type: 'text' | 'number' | 'select' | 'multiselect' | 'boolean';
-                    options: any[];
+                    options: string[] | Record<string, any>[];
                     is_required: boolean;
                     is_filterable: boolean;
                     display_order: number;
@@ -64,7 +64,7 @@ export interface Database {
                     category_id: string | null;
                     brand_id: string | null;
                     attributes: Record<string, any>;
-                    variants: any[];
+                    variants: Variant[];
                     tags: string[];
                     images: string[];
                     is_published: boolean;
@@ -137,8 +137,8 @@ export interface Database {
                     discount: number;
                     total: number;
                     currency: string;
-                    shipping_address: any;
-                    billing_address: any;
+                    shipping_address: Address;
+                    billing_address: Address;
                     notes: string | null;
                     created_at: string;
                     updated_at: string;
