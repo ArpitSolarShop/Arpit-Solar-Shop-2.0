@@ -9,7 +9,37 @@
     "discom": "PuVVNL",
     "subsidy": "108000",
     "landmarks": "Assi Ghat, Kashi Vishwanath Temple, BHU, Sarnath, Dashashwamedh Ghat",
-    "key_areas": "Lanka, Sigra, Shivpur, Rohaniya, Ashapur, Sarnath, Mahmoorganj"
+    "key_areas": "Sigra, Mahmoorganj, Lanka, Assi Ghat, Durgakund, Bhelupur, Maidagin, Godowlia, Cantonment, Sarnath, Shivpur, Pandeypur, Lahartara, Manduadih, Kakarmatta, Kandwa, DLW, BHU, Ramnagar, Ashapur, Ayar, Bangali Tola, Basani Bazaar, Bazardiha, Bhagwanpur, Bhelupura, Bhikhampur, Bhulanpur PSC, Birapatti, Chandpur Industrial Estate, Chetganj, Dafi, Daranagar, Dashaswmedh Road, Dheerendra Mahila Maha Vidyalaya, Gai Ghat, Hanumaan Ghat, Harhua, Ishwargangi Pokhra, Jaitpura, Jansa Bazar, Kamachha Road, Kandawa Chauraha, Kedar Ghat, Khajuri Road, Luxa Road, Maheshpur, Murdaha Bazar, Nagar Mahapalika Hospital, Narayanpur, Naya Ghat, Newada, Om Nagar Colony, Paharia, Phulpur, Pindra, Piyari, Rajpur, Ramaipatti, Ramapura Luxa, Rameshwar, Shivala, Shivraj nagar, Shri Kashi Vishwanath Temple, Sidhgiribagh, Sikraul, Sindhora, Singhpur, Sunderpur, Susuwahi Road, Tapovan Ashram, Vidyapeeth Road, Chandauli, Mirzapur, Jaunpur, Ghazipur, Mughalsarai, Bhadohi",
+    "keywords": [
+      "Solar Panel Installation Varanasi",
+      "Solar Panel Price in Varanasi",
+      "PM Surya Ghar Yojana Varanasi",
+      "Solar Subsidy Uttar Pradesh",
+      "Best Solar Company in Varanasi",
+      "Tata Power Solar Dealer Varanasi",
+      "Solar System for Home Varanasi",
+      "Commercial Solar Plant Varanasi",
+      "Solar Inverter Price Varanasi",
+      "Solar Battery Price Varanasi",
+      "Off-grid Solar System Varanasi",
+      "On-grid Solar System Varanasi",
+      "Hybrid Solar System Varanasi",
+      "Solar EPC Company Varanasi",
+      "Solar Installation Cost Varanasi",
+      "3kW Solar System Price Varanasi",
+      "5kW Solar System Price Varanasi",
+      "10kW Solar System Cost Varanasi",
+      "Solar EMI Options Varanasi",
+      "Solar Consultation Varanasi",
+      "Solar Company in BHU Varanasi",
+      "Solar in Ramnagar Varanasi",
+      "Solar in Chandauli",
+      "Solar in Mirzapur",
+      "Solar in Jaunpur",
+      "Solar in Ghazipur",
+      "Solar in Mughalsarai",
+      "Solar in Bhadohi"
+    ]
   },
   {
     "slug": "mau",
@@ -858,6 +888,556 @@
     "city": "Sonbhadra",
     "state": "Uttar Pradesh",
     "pincode": "231210",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "assi-ghat-varanasi",
+    "name": "Assi Ghat",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ayar-varanasi",
+    "name": "Ayar",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bangali-tola-varanasi",
+    "name": "Bangali Tola",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "basani-bazaar-varanasi",
+    "name": "Basani Bazaar",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bazardiha-varanasi",
+    "name": "Bazardiha",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhagwanpur-varanasi",
+    "name": "Bhagwanpur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhelupur-varanasi",
+    "name": "Bhelupur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhelupura-varanasi",
+    "name": "Bhelupura",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhikhampur-varanasi",
+    "name": "Bhikhampur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "bhulanpur-psc-varanasi",
+    "name": "Bhulanpur PSC",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "birapatti-varanasi",
+    "name": "Birapatti",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chandpur-industrial-estate-varanasi",
+    "name": "Chandpur Industrial Estate",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "chetganj-varanasi",
+    "name": "Chetganj",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "dafi-varanasi",
+    "name": "Dafi",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "daranagar-varanasi",
+    "name": "Daranagar",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "dashaswmedh-road-varanasi",
+    "name": "Dashaswmedh Road",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "dheerendra-mahila-maha-vidyalaya-varanasi",
+    "name": "Dheerendra Mahila Maha Vidyalaya",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "durgakund-varanasi",
+    "name": "DurgaKund",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "gai-ghat-varanasi",
+    "name": "Gai Ghat",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "hanumaan-ghat-varanasi",
+    "name": "Hanumaan Ghat",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "harhua-varanasi",
+    "name": "Harhua",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ishwargangi-pokhra-varanasi",
+    "name": "Ishwargangi Pokhra",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "jaitpura-varanasi",
+    "name": "Jaitpura",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "jansa-bazar-varanasi",
+    "name": "Jansa Bazar",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kamachha-road-varanasi",
+    "name": "Kamachha Road",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kandawa-chauraha-varanasi",
+    "name": "Kandawa Chauraha",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "kedar-ghat-varanasi",
+    "name": "Kedar Ghat",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "khajuri-road-varanasi",
+    "name": "Khajuri Road",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "lahartara-varanasi",
+    "name": "Lahartara",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "luxa-road-varanasi",
+    "name": "Luxa Road",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "maheshpur-varanasi",
+    "name": "Maheshpur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "mahmoorganj-varanasi",
+    "name": "Mahmoorganj",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "murdaha-bazar-varanasi",
+    "name": "Murdaha Bazar",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "nagar-mahapalika-hospital-varanasi",
+    "name": "Nagar Mahapalika Hospital",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "naya-ghat-varanasi",
+    "name": "Naya Ghat",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "newada-varanasi",
+    "name": "Newada",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "om-nagar-colony-varanasi",
+    "name": "Om Nagar Colony",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "paharia-varanasi",
+    "name": "Paharia",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "pandeypur-varanasi",
+    "name": "Pandeypur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "phulpur-varanasi",
+    "name": "Phulpur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "piyari-varanasi",
+    "name": "Piyari",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "rajpur-varanasi",
+    "name": "Rajpur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ramaipatti-varanasi",
+    "name": "Ramaipatti",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "ramapura-luxa-varanasi",
+    "name": "Ramapura Luxa",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "shivala-varanasi",
+    "name": "Shivala",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "shivraj-nagar-varanasi",
+    "name": "Shivraj nagar",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "shri-kashi-vishwanath-temple-varanasi",
+    "name": "Shri Kashi Vishwanath Temple",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sidhgiribagh-varanasi",
+    "name": "Sidhgiribagh",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sigra-varanasi",
+    "name": "Sigra",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sikraul-varanasi",
+    "name": "Sikraul",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "singhpur-varanasi",
+    "name": "Singhpur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "sunderpur-varanasi",
+    "name": "Sunderpur",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "susuwahi-road-varanasi",
+    "name": "Susuwahi Road",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "tapovan-ashram-varanasi",
+    "name": "Tapovan Ashram",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
+    "discom": "PuVVNL",
+    "subsidy": "108000"
+  },
+  {
+    "slug": "vidyapeeth-road-varanasi",
+    "name": "Vidyapeeth Road",
+    "type": "Locality",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "pincode": "221001",
     "discom": "PuVVNL",
     "subsidy": "108000"
   }

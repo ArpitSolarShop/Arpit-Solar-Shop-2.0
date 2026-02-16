@@ -52,6 +52,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             `Solar Shop in ${location.name}`,
             `Commercial Solar Plant in ${location.name}`,
             `Solar Rooftop Subsidy ${location.name}`,
+            // New High-Intent Keywords
+            `3kW Solar System Price ${location.name}`,
+            `5kW Solar System Price ${location.name}`,
+            `10kW Solar System Cost ${location.name}`,
+            `Solar EMI Options ${location.name}`,
+            `Solar Consultation ${location.name}`,
+            `Solar EPC Company ${location.name}`,
+            `Off-grid Solar System ${location.name}`,
+            `Hybrid Solar System ${location.name}`
         ],
         openGraph: {
             title: `#1 Solar Panel Installer in ${location.name} | Arpit Solar Shop`,
@@ -123,17 +132,69 @@ export default async function LocationPage({ params }: Props) {
                             </div>
                         </div>
 
-                        {/* Subsidy Table */}
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                            <h3 className="font-bold text-lg mb-3 text-yellow-800">☀️ Subsidy Structure in {location.state}</h3>
+                        {/* ☀️ Solar Panel Price & Subsidy Section */}
+                        <div className="mt-12 bg-white border border-solar-orange/20 rounded-2xl p-6 md:p-8 shadow-sm">
+                            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
+                                Solar Panel Price in <span className="text-solar-orange">{location.name}</span> (2025)
+                            </h2>
+                            <p className="text-gray-600 mb-6">
+                                The price of a solar panel system in {location.name} depends on the capacity and brand (Tata, Reliance, or Shakti). Below is the estimated price list including the <strong>PM Surya Ghar Yojana Subsidy</strong>.
+                            </p>
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-slate-50 border-b border-slate-200">
+                                            <th className="px-4 py-3 font-bold text-gray-700">System Size</th>
+                                            <th className="px-4 py-3 font-bold text-gray-700">Market Price</th>
+                                            <th className="px-4 py-3 font-bold text-solar-orange">Total Subsidy</th>
+                                            <th className="px-4 py-3 font-bold text-green-700">Effective Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        <tr>
+                                            <td className="px-4 py-4 font-medium">2 kW System</td>
+                                            <td className="px-4 py-4 text-gray-600">₹1,45,000</td>
+                                            <td className="px-4 py-4 text-solar-orange font-semibold">₹90,000</td>
+                                            <td className="px-4 py-4 text-green-700 font-bold text-lg">₹55,000*</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="px-4 py-4 font-medium">3 kW System</td>
+                                            <td className="px-4 py-4 text-gray-600">₹1,95,000</td>
+                                            <td className="px-4 py-4 text-solar-orange font-semibold">₹1,08,000</td>
+                                            <td className="px-4 py-4 text-green-700 font-bold text-lg">₹87,000*</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="px-4 py-4 font-medium">5 kW System</td>
+                                            <td className="px-4 py-4 text-gray-600">₹3,10,000</td>
+                                            <td className="px-4 py-4 text-solar-orange font-semibold">₹1,08,000</td>
+                                            <td className="px-4 py-4 text-green-700 font-bold text-lg">₹2,02,000*</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="px-4 py-4 font-medium">10 kW System</td>
+                                            <td className="px-4 py-4 text-gray-600">₹5,80,000</td>
+                                            <td className="px-4 py-4 text-solar-orange font-semibold">₹1,08,000</td>
+                                            <td className="px-4 py-4 text-green-700 font-bold text-lg">₹4,72,000*</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-4 leading-relaxed">
+                                * Prices are indicative and including GST. Effective cost is calculated after deducting Central (₹78k) and State (₹30k) subsidies for residential consumers in {location.state}. Actual price depends on component selection and site conditions.
+                            </p>
+                        </div>
+
+                        {/* Subsidy Structure Table (Restored) */}
+                        <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                            <h3 className="font-bold text-lg mb-4 text-yellow-800">☀️ Detailed Subsidy Structure in {location.state}</h3>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm text-left">
                                     <thead className="text-xs text-gray-700 uppercase bg-yellow-100">
                                         <tr>
                                             <th className="px-3 py-2 rounded-l-lg">Capacity</th>
-                                            <th className="px-3 py-2">Central</th>
-                                            <th className="px-3 py-2">State</th>
-                                            <th className="px-3 py-2 rounded-r-lg">Total Off</th>
+                                            <th className="px-3 py-2">Central Subsidy</th>
+                                            <th className="px-3 py-2">State Subsidy</th>
+                                            <th className="px-3 py-2 rounded-r-lg">Total Benefit</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -158,7 +219,7 @@ export default async function LocationPage({ params }: Props) {
                                     </tbody>
                                 </table>
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">* Subsidy valid for residential consumers under {location.discom}.</p>
+                            <p className="text-xs text-gray-500 mt-3">* Valid for residential consumers with a valid electricity bill from {location.discom}.</p>
                         </div>
 
                         {/* Local Context - Landmarks & Key Areas */}

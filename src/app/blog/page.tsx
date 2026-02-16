@@ -22,6 +22,7 @@ export default function BlogPage() {
             if (!response.ok) throw new Error("Failed to fetch blog posts");
 
             const data = await response.json();
+            console.log("Blog API Response:", data); // Debugging
             setBlogPosts(data.data || []);
         } catch (error) {
             console.error("Failed to load blog posts:", error);

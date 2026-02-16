@@ -234,21 +234,11 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
                             height: 500,
                             menubar: false,
                             plugins: [
-                                // Core editing features
-                                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-                                // Premium features (free trial until Feb 23, 2026)
-                                'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'ai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+                                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount', 'fullscreen', 'preview', 'help'
                             ],
-                            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat | fullscreen preview',
                             tinycomments_mode: 'embedded',
-                            tinycomments_author: 'Author name',
-                            mergetags_list: [
-                                { value: 'First.Name', title: 'First Name' },
-                                { value: 'Email', title: 'Email' },
-                            ],
-                            ai_request: (request: any, respondWith: any) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
-                            uploadcare_public_key: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY,
-                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                            tinycomments_author: 'Arpit Solar',
                             branding: false,
                         }}
                         initialValue={initialData?.content || "<p>Start writing your blog post here...</p>"}
