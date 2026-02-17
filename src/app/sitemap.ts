@@ -12,19 +12,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
 
-    // Manually mapped product routes based on existing folders/seed data
-    const productRoutes = [
-        "/shakti-solar",
-        "/tata-solar",
-        "/reliance",
-        "/integrated",
-        "/hybrid-solar"
-    ].map((slug) => ({
-        url: `${siteConfig.url}${slug}`,
-        lastModified: new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.9,
-    }));
+    // Dynamic Product Routes
+    let productRoutes: MetadataRoute.Sitemap = [];
+    try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+
+        if (supabaseUrl && supabaseKey) {
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            const { data: products } = await supabase
+                .from('products')
+                .select('slug, updated_at')
+                .eq('is_published', true);
+
+            if (products && Array.isArray(products)) {
+                productRoutes = products.map((product) => ({
+                    url: `${siteConfig.url}/product/${product.slug}`,
+                    lastModified: new Date(product.updated_at || new Date()),
+                    changeFrequency: "weekly" as const,
+                    priority: 0.9,
+                }));
+            }
+        }
+    } catch (e) {
+        console.error("Failed to fetch products for sitemap", e);
+    }
 
     // Generate location routes from locations.json (Standard + Competitive slugs)
     const locationRoutes = locations.flatMap((location) => ([

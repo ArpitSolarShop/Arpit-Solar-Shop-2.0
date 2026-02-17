@@ -36,18 +36,50 @@ export default function StructuredData() {
             "opens": "09:00",
             "closes": "20:00"
         },
+        "priceRange": "₹₹",
+        "hasMap": "https://maps.app.goo.gl/your-google-maps-link",
         "sameAs": [
             siteConfig.links.twitter,
             siteConfig.links.facebook,
             siteConfig.links.instagram
-        ],
-        "priceRange": "₹₹"
+        ]
+    };
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": siteConfig.url
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Products",
+                "item": `${siteConfig.url}/products`
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Contact",
+                "item": `${siteConfig.url}/contact`
+            }
+        ]
     };
 
     return (
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
+        </>
     );
 }

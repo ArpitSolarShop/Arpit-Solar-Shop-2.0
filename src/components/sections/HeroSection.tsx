@@ -200,8 +200,8 @@ const HeroSection = () => {
             >
               ✕
             </button>
-            <h2 className="text-2xl font-bold text-solar-orange mb-4 text-center">Solar Savings Calculator</h2>
-            <div className="space-y-4">
+            <h2 id="calculator-title" className="text-2xl font-bold text-solar-orange mb-4 text-center">Solar Savings Calculator</h2>
+            <div className="space-y-4" aria-labelledby="calculator-title">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">Monthly Electricity Consumption (units/kWh)</label>
                 <input

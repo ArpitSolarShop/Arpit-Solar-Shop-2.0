@@ -4,6 +4,20 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 import { faqs } from "@/data/faqs";
+import Script from "next/script";
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -14,6 +28,10 @@ const FAQ = () => {
 
   return (
     <section className="py-20 bg-gradient-to-b from-white to-gray-50 text-gray-800">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="container mx-auto px-4 max-w-4xl">
         <h2 className="text-4xl font-bold text-center mb-4">
           <span className="text-black">Frequently Asked</span> <span className="text-amber-500">Questions</span>
