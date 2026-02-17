@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     creator: "@arpitsolarshop",
   },
 
-  manifest: "/manifest.webmanifest",
+
 };
 
 export default function RootLayout({

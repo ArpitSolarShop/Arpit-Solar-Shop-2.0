@@ -105,39 +105,33 @@ export async function POST(request: Request) {
             upiLink,
         });
 
-        // Launch Chromium appropriately for the environment
-        let browser: any;
-        if (process.env.NODE_ENV === 'production') {
-            const chromium = require('@sparticuz/chromium-min');
-            const puppeteerCore = require('puppeteer-core');
+        // Generate PDF using shared service
+        // We need to import generatePdfFromHtml from '@/lib/server/services/pdf'
+        // And ensure the htmlContent is passed correctly.
 
-            browser = await puppeteerCore.launch({
-                args: chromium.args,
-                defaultViewport: chromium.defaultViewport,
-                executablePath: await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar'),
-                headless: chromium.headless,
-            });
-        } else {
-            const { default: puppeteer } = await import('puppeteer');
-            browser = await puppeteer.launch({
-                headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            });
-        }
-        let pdfBuffer: Buffer | Uint8Array;
-        try {
-            const page = await browser.newPage();
-            await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-            await page.emulateMediaType('screen');
-            pdfBuffer = await page.pdf({
-                format: 'A4',
-                printBackground: true,
-                margin: { top: '10mm', right: '10mm', bottom: '12mm', left: '10mm' }
-            });
-        } finally {
-            try { await browser.close(); } catch { }
-        }
+        // Note: generatePdfFromHtml writes to disk and returns path, 
+        // unlike the previous code which kept it in buffer.
+        // We needto adapt: read the file back into buffer to upload to supabase, 
+        // OR update upload logic to take a stream/path.
 
+        // Looking at generate-quote/route.ts:
+        // const pdfPath = await generatePdfFromHtml({ html });
+        // const pdfUrl = await uploadToBucket(pdfPath);
+
+        // Here we are manually uploading to supabase using explicit bucket.
+        // Let's use generatePdfFromHtml, then fs.readFile to get buffer (to keep existing upload logic minimal change)
+
+        const { generatePdfFromHtml } = await import('@/lib/server/services/pdf');
+        const pdfPath = await generatePdfFromHtml({ html: htmlContent });
+        const pdfBuffer = await fs.readFile(pdfPath);
+
+        // Clean up the temp file after reading (optional, as the service handles cleanup on next run, 
+        // but explicit cleanup is nice) - actually pdf.ts cleans up DIRECTORY on next run. 
+        // We can just leave it or delete it.
+        // Let's keep it simple.
+
+        // We want to upload with the CUSTOMER name.
+        // So we read the content from pdfPath, and upload it with our params.
         const fileName = `quotation-${quoteData.customerInfo.name.replace(/\s+/g, '-')}-${Date.now()}.pdf`;
 
         // Create Supabase client now that envs are validated
