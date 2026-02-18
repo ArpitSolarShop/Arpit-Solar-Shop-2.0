@@ -487,6 +487,7 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
                         onInit={(evt, editor) => {
                             editorRef.current = editor;
                         }}
+                        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                         init={{
                             height: 500,
                             menubar: false,

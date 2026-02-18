@@ -1,8 +1,6 @@
-
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
   serverExternalPackages: ["handlebars", "puppeteer"],
   async redirects() {
     return [
@@ -18,6 +16,19 @@ const nextConfig: NextConfig = {
       {
         source: '/solar-in-:city',
         destination: '/solar-installation/:city',
+      },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Referrer-Policy',
+            value: 'origin',
+          },
+        ],
       },
     ];
   },
