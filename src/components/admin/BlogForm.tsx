@@ -145,7 +145,24 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
     }, [formData.excerpt, mode, touched.seo_description]);
 
     const handleChange = (field: string, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
+        setFormData(prev => {
+            const updated = { ...prev, [field]: value };
+
+            // Auto-generate slug from title (immediate, no useEffect delay)
+            if (field === "title" && !touched.slug) {
+                updated.slug = value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/(^-|-$)/g, "");
+            }
+
+            // Auto-generate SEO title from title
+            if (field === "title" && !touched.seo_title) {
+                updated.seo_title = value;
+            }
+
+            return updated;
+        });
 
         // Mark as touched if user manually edits these fields
         if (["slug", "excerpt", "seo_title", "seo_description"].includes(field)) {
