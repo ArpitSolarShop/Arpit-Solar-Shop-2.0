@@ -132,6 +132,7 @@ const TVCard: React.FC = () => {
             onEnded={handleVideoEnd}
             autoPlay
             muted={isMuted}
+            preload="none"
           >
             <source src={videos[currentIndex]} type="video/mp4" />
             Your browser does not support the video tag.

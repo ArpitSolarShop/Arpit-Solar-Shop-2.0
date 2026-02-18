@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Zap,
@@ -100,17 +101,19 @@ const HeroSection = () => {
             muted
             loop
             playsInline
+            preload="metadata"
             onError={() => setVideoError(true)}
             className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover scale-125 md:scale-110"
           >
             <source src="/Solar_Video_Ready_Arpit_Solar.mp4" type="video/mp4" />
           </video>
         ) : (
-          <img
+          <Image
             src="/enhance-quality.png"
             alt="Fallback: solar house"
-            className="w-full h-full object-cover"
-            loading="lazy"
+            fill
+            className="object-cover"
+            priority={false}
           />
         )}
         <div className="absolute inset-0 bg-black/50 z-10"></div>

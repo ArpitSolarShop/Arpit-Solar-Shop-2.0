@@ -5,6 +5,7 @@ import { useState } from "react"; // Import useState for managing modal state
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"; // Import Dialog components
+import Image from "next/image";
 import { MapPin, Phone, Mail, Facebook, Linkedin, Instagram } from "lucide-react";
 
 // Inline Pinterest Icon to match your Navbar component
@@ -83,9 +84,11 @@ const Footer = () => {
                         <div className="space-y-4">
                             <Link href="/" className="inline-block">
                                 <div className="bg-white rounded-md shadow-md transition-shadow duration-200 hover:shadow-lg">
-                                    <img
-                                        src="/logo.png"
+                                    <Image
+                                        src="/logo.webp"
                                         alt="Arpit Solar Logo"
+                                        width={120}
+                                        height={56}
                                         className="h-14 w-auto p-2 md:p-3"
                                     />
                                 </div>

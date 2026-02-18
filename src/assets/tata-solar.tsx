@@ -570,11 +570,6 @@ export default function TataSolarPricingPage() {
 
   // Handle row click to open quote form
   const handleRowClick = (product: GridTieSystemData) => {
-    console.log("Selected product:", {
-      systemSize: product.systemSize,
-      phase: product.phase,
-      slNo: product.slNo,
-    })
     setSelectedProduct(product);
     setIsLargeSystem(false);
     setIsFormOpen(true);
@@ -582,7 +577,6 @@ export default function TataSolarPricingPage() {
 
   // Handle large system contact request
   const handleLargeSystemClick = () => {
-    console.log("Large system selected, defaulting phase to Three")
     setSelectedProduct(null);
     setIsLargeSystem(true);
     setIsFormOpen(true);

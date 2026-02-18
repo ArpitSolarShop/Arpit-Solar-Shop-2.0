@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { notFound } from "next/navigation";
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import locationsData from "@/data/locations.json";
 
 import Navbar from "@/components/layout/Navbar";
@@ -11,14 +13,14 @@ import { Button } from "@/components/ui/button";
 import { PhoneCall, MapPin } from "lucide-react";
 import { HeroGetQuote } from "@/components/forms/HeroGetQuote";
 
-/* ===== Home Sections ===== */
-import CleanEnergySolution from "@/components/sections/CleanEnergySolution";
-import HowItWorks from "@/components/sections/HowItWorks";
-import TrustedPartnersSection from "@/components/sections/TrustedPartnersSection";
-import ProjectHighlights from "@/components/sections/ProjectHighlights";
-import TVCard from "@/components/sections/TVCard";
-import Certifications from "@/components/sections/Certifications";
-import FAQ from "@/components/sections/FAQ";
+/* ===== Home Sections (lazy loaded) ===== */
+const CleanEnergySolution = dynamic(() => import('@/components/sections/CleanEnergySolution'));
+const HowItWorks = dynamic(() => import('@/components/sections/HowItWorks'));
+const TrustedPartnersSection = dynamic(() => import('@/components/sections/TrustedPartnersSection'));
+const ProjectHighlights = dynamic(() => import('@/components/sections/ProjectHighlights'), { ssr: false });
+const TVCard = dynamic(() => import('@/components/sections/TVCard'), { ssr: false });
+const Certifications = dynamic(() => import('@/components/sections/Certifications'));
+const FAQ = dynamic(() => import('@/components/sections/FAQ'));
 
 /* ================= TYPES ================= */
 export interface LocationData {
@@ -58,11 +60,12 @@ const CityPageClient: React.FC<CityPageClientProps> = ({ location, formattedSubs
                     {/* Background */}
                     <div className="absolute inset-0">
                         {!imageError ? (
-                            <img
-                                src="/city-solar-bg.png"
+                            <Image
+                                src="/city-solar-bg.webp"
                                 alt={`Solar panel installation in ${location.name}`}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
+                                fill
+                                className="object-cover"
+                                priority
                                 onError={() => setImageError(true)}
                             />
                         ) : (
@@ -194,9 +197,11 @@ const CityPageClient: React.FC<CityPageClientProps> = ({ location, formattedSubs
                                         <p>
                                             Rated <b className="text-white">4.9 ★</b> on
                                         </p>
-                                        <img
-                                            src="/google.png"
+                                        <Image
+                                            src="/google.webp"
                                             alt="Google Reviews"
+                                            width={80}
+                                            height={27}
                                             className="w-20 mt-1"
                                         />
                                     </div>

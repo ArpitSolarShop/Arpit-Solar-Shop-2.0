@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
@@ -133,14 +134,14 @@ const Navbar = () => {
           {
             name: "Waree | Adani",
             href: "/integrated",
-            image: "/Integrated.png",
+            image: "/Integrated.webp",
             description: "All-in-one integrated solar solutions",
             recommended: "Integrated"
           },
           {
             name: "Hybrid Solar Systems",
             href: "/hybrid-solar",
-            image: "/Hybrid.png",
+            image: "/Hybrid.webp",
             description: "Smart solar solutions with battery backup",
             recommended: "Perfect for areas with power fluctuations"
           },
@@ -471,14 +472,16 @@ const Navbar = () => {
               <div className="flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center pl-2 sm:pl-4">
-                  <img
-                    src="/logo.png"
+                  <Image
+                    src="/logo.webp"
                     alt="Arpit Solar Logo"
+                    width={160}
+                    height={112}
                     className={`object-contain transition-all duration-300 ${logoRestricted
-                      ? "w-24 h-16 sm:w-28 sm:h-20 -my-1 sm:-my-2" // Restricted size when mega menu open
-                      : "w-32 h-24 sm:w-40 sm:h-28 -my-2 sm:-my-3" // Full size when no mega menu
+                      ? "w-24 h-16 sm:w-28 sm:h-20 -my-1 sm:-my-2"
+                      : "w-32 h-24 sm:w-40 sm:h-28 -my-2 sm:-my-3"
                       }`}
-                    loading="eager"
+                    priority
                   />
                 </Link>
 
@@ -566,14 +569,16 @@ const Navbar = () => {
               <div className="flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center pl-2 sm:pl-4">
-                  <img
-                    src="/logo.png"
+                  <Image
+                    src="/logo.webp"
                     alt="Arpit Solar Logo"
+                    width={128}
+                    height={96}
                     className={`object-contain transition-all duration-300 ${logoRestricted
-                      ? "w-20 h-14 sm:w-24 sm:h-16 -my-1" // Restricted size when mega menu open
-                      : "w-28 h-20 sm:w-32 sm:h-24 -my-1 sm:-my-2" // Full size when no mega menu
+                      ? "w-20 h-14 sm:w-24 sm:h-16 -my-1"
+                      : "w-28 h-20 sm:w-32 sm:h-24 -my-1 sm:-my-2"
                       }`}
-                    loading="eager"
+                    priority
                   />
                 </Link>
 

@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated output files (quotes PDFs)
+public/output/
+
+# build logs
+*.log
+build_*.log
+build_*.txt
+tsc_errors*.log

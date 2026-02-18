@@ -20,6 +20,7 @@ const LocationHero = ({ city, state }: LocationHeroProps) => {
                     muted
                     loop
                     playsInline
+                    preload="metadata"
                     className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover scale-105"
                 >
                     <source src="/Solar_Video_Ready_Arpit_Solar.mp4" type="video/mp4" />

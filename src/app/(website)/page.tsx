@@ -1,11 +1,14 @@
+import dynamic from 'next/dynamic';
 import HeroSection from "@/components/sections/HeroSection";
-import HowItWorks from "@/components/sections/HowItWorks";
-import ProjectHighlights from "@/components/sections/ProjectHighlights";
-import Certifications from "@/components/sections/Certifications";
-import TVCard from "@/components/sections/TVCard";
-import FAQ from "@/components/sections/FAQ";
-import CleanEnergySolution from "@/components/sections/CleanEnergySolution";
-import TrustedPartnersSection from "@/components/sections/TrustedPartnersSection";
+
+// Below-the-fold sections: lazy-loaded for faster initial page load
+const CleanEnergySolution = dynamic(() => import('@/components/sections/CleanEnergySolution'));
+const HowItWorks = dynamic(() => import('@/components/sections/HowItWorks'));
+const TrustedPartnersSection = dynamic(() => import('@/components/sections/TrustedPartnersSection'));
+const ProjectHighlights = dynamic(() => import('@/components/sections/ProjectHighlights'));
+const TVCard = dynamic(() => import('@/components/sections/TVCard'));
+const Certifications = dynamic(() => import('@/components/sections/Certifications'));
+const FAQ = dynamic(() => import('@/components/sections/FAQ'));
 
 import { Metadata } from "next";
 

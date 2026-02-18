@@ -105,20 +105,6 @@ export default function HybridSolarPricing() {
           }
         });
 
-        // Debug: Log unique categories and technologies to verify data
-        const uniqueCategories = [...new Set(mappedData.map(r => r.category))]
-        const uniqueTechnologies = [...new Set(mappedData.map(r => r.technology))]
-        console.log('Hybrid Solar Data Loaded:', {
-          total: mappedData.length,
-          categories: uniqueCategories,
-          technologies: uniqueTechnologies,
-          categoryCounts: {
-            DCR: mappedData.filter(r => r.category === 'DCR').length,
-            NON_DCR: mappedData.filter(r => r.category === 'NON_DCR').length,
-            NDCR: mappedData.filter(r => r.category === 'NDCR').length,
-          }
-        })
-
         setPricingData(mappedData);
       } else {
         console.warn('No data found in hybrid_solar_pricing table');

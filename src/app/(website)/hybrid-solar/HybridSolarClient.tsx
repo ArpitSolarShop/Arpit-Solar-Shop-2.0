@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import Image from "next/image";
 // import Navbar
 // import Footer
 import HybridSolarPricing from "@/assets/hybrid-solar";
@@ -83,9 +84,11 @@ export default function HybridSolarClient() {
               </div>
             </div>
             <div className="flex-1 flex justify-center">
-              <img
-                src="/Hybrid.png"
+              <Image
+                src="/Hybrid.webp"
                 alt="Hybrid Solar System"
+                width={448}
+                height={448}
                 className="w-full max-w-md object-contain"
               />
             </div>
