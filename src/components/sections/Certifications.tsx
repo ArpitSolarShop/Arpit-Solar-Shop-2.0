@@ -40,7 +40,6 @@
 import React from "react";
 import relianceCert from "@/assets/Reliance Solar Certificate.jpg";
 import shaktiCert from "@/assets/Shkti Solar Certificate.jpg";
-import servotecCert from "../../public/servotec.jpg";
 
 const Certifications = () => {
   return (
@@ -69,7 +68,7 @@ const Certifications = () => {
             loading="lazy"
           />
           <img
-            src={servotecCert.src}
+            src="/servotec.jpg"
             alt="Servotech Certificate"
             className="rounded-xl shadow-lg w-full max-w-md object-contain"
             loading="lazy"
