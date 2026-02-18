@@ -2,7 +2,7 @@
     "installCommand": "npm install --legacy-peer-deps",
     "headers": [
         {
-            "source": "/(.*)\\.(?:webp|jpg|jpeg|png|svg|ico|gif|mp4|woff|woff2|ttf|eot)",
+            "source": "/(.*)\\.(webp|jpg|jpeg|png|svg|ico|gif|mp4|woff|woff2|ttf|eot)",
             "headers": [
                 {
                     "key": "Cache-Control",
