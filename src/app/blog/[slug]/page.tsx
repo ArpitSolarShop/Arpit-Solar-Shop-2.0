@@ -3,12 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Tag, ArrowLeft } from "lucide-react";
+import { Calendar, Tag, ArrowLeft, Clock, User } from "lucide-react";
 import { ShareButton } from "@/components/blog/ShareButton";
 
 // Revalidate every hour
 export const revalidate = 3600;
-export const dynamicParams = true; // Allow new posts not yet generated
+export const dynamicParams = true;
 
 interface BlogPostPageProps {
     params: Promise<{
@@ -31,8 +31,12 @@ export async function generateStaticParams() {
     }
 }
 
-// Fetch blog post data - Helper function removed, use getBlogPostBySlug directly
-
+// Calculate reading time
+function getReadingTime(html: string): number {
+    const text = html.replace(/<[^>]*>/g, '');
+    const words = text.split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.ceil(words / 200));
+}
 
 // Generate Metadata for SEO
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
@@ -45,7 +49,6 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
         };
     }
 
-    // JSON-LD for Article
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'Article',
@@ -86,6 +89,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         notFound();
     }
 
+    const readingTime = getReadingTime(blogPost.content || '');
+    const publishDate = new Date(blogPost.published_at || blogPost.created_at).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'Article',
@@ -102,91 +112,176 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+        <div className="min-h-screen bg-gray-50">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
+
             {/* Breadcrumbs */}
             <div className="bg-white border-b">
-                <div className="container mx-auto px-4 py-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Link href="/" className="hover:text-blue-600">Home</Link>
-                        <span>/</span>
-                        <Link href="/blog" className="hover:text-blue-600">Blog</Link>
-                        <span>/</span>
-                        <span className="text-gray-900 line-clamp-1">{blogPost.title}</span>
+                <div className="container mx-auto px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+                        <span className="text-gray-300">/</span>
+                        <Link href="/blog" className="hover:text-blue-600 transition-colors">Blog</Link>
+                        <span className="text-gray-300">/</span>
+                        <span className="text-gray-700 font-medium line-clamp-1">{blogPost.title}</span>
                     </div>
                 </div>
             </div>
 
-            {/* Featured Image */}
+            {/* Hero Section with Featured Image */}
             {blogPost.featured_image && (
-                <div className="w-full h-96 relative">
+                <div className="w-full h-[28rem] relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={blogPost.featured_image}
                         alt={blogPost.title}
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                    {/* Title Overlay on Image */}
+                    <div className="absolute bottom-0 left-0 right-0 p-8">
+                        <div className="container mx-auto max-w-4xl">
+                            {blogPost.tags && blogPost.tags.length > 0 && (
+                                <div className="flex items-center gap-2 flex-wrap mb-4">
+                                    {blogPost.tags.slice(0, 3).map((tag: string, index: number) => (
+                                        <Badge key={index} className="bg-blue-600 text-white border-0 text-xs">
+                                            {tag}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            )}
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+                                {blogPost.title}
+                            </h1>
+                        </div>
+                    </div>
                 </div>
             )}
 
             {/* Article Content */}
-            <div className="container mx-auto px-4 py-12 pb-24">
-                <article className="max-w-4xl mx-auto">
-                    {/* Header */}
-                    <div className={`bg-white rounded-lg shadow-lg p-8 mb-8 ${blogPost.featured_image ? '-mt-24 relative z-10' : ''}`}>
-                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                            {blogPost.title}
-                        </h1>
+            <div className="container mx-auto px-4 py-8 pb-16">
+                <div className="max-w-4xl mx-auto">
 
-                        <div className="flex items-center justify-between flex-wrap gap-4 mb-6 pb-6 border-b">
-                            <div className="flex items-center gap-4 text-gray-600">
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="w-5 h-5" />
-                                    <span>{new Date(blogPost.created_at).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    })}</span>
+                    {/* Article Card */}
+                    <article className={`bg-white rounded-xl shadow-sm border border-gray-100 ${blogPost.featured_image ? '-mt-16 relative z-10' : ''}`}>
+
+                        {/* Meta Bar */}
+                        <div className="px-8 py-5 border-b border-gray-100">
+                            <div className="flex items-center justify-between flex-wrap gap-4">
+                                <div className="flex items-center gap-5 text-sm text-gray-500">
+                                    {/* Author */}
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center">
+                                            <User className="w-4 h-4 text-white" />
+                                        </div>
+                                        <span className="font-medium text-gray-700">Arpit Solar</span>
+                                    </div>
+                                    {/* Date */}
+                                    <div className="flex items-center gap-1.5">
+                                        <Calendar className="w-4 h-4" />
+                                        <span>{publishDate}</span>
+                                    </div>
+                                    {/* Reading Time */}
+                                    <div className="flex items-center gap-1.5">
+                                        <Clock className="w-4 h-4" />
+                                        <span>{readingTime} min read</span>
+                                    </div>
+                                </div>
+
+                                <ShareButton
+                                    title={blogPost.title}
+                                    text={blogPost.excerpt}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Title (shown if no featured image) */}
+                        {!blogPost.featured_image && (
+                            <div className="px-8 pt-8">
+                                {blogPost.tags && blogPost.tags.length > 0 && (
+                                    <div className="flex items-center gap-2 flex-wrap mb-4">
+                                        <Tag className="w-4 h-4 text-gray-400" />
+                                        {blogPost.tags.map((tag: string, index: number) => (
+                                            <Badge key={index} variant="secondary" className="text-xs">
+                                                {tag}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                )}
+                                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
+                                    {blogPost.title}
+                                </h1>
+                            </div>
+                        )}
+
+                        {/* Excerpt / TL;DR Box */}
+                        {blogPost.excerpt && (
+                            <div className="mx-8 mt-6">
+                                <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-100 rounded-xl p-6">
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <span className="text-blue-600 font-bold text-sm">TL;DR</span>
+                                        </div>
+                                        <p className="text-gray-700 leading-relaxed">{blogPost.excerpt}</p>
+                                    </div>
                                 </div>
                             </div>
+                        )}
 
-                            <ShareButton
-                                title={blogPost.title}
-                                text={blogPost.excerpt}
+                        {/* Main Content */}
+                        <div className="px-8 py-8">
+                            <div
+                                className="blog-content"
+                                dangerouslySetInnerHTML={{ __html: blogPost.content }}
                             />
                         </div>
 
-                        {/* Tags */}
+                        {/* Tags Footer */}
                         {blogPost.tags && blogPost.tags.length > 0 && (
-                            <div className="flex items-center gap-2 flex-wrap mb-6">
-                                <Tag className="w-5 h-5 text-gray-400" />
-                                {blogPost.tags.map((tag: string, index: number) => (
-                                    <Badge key={index} variant="secondary" className="text-sm">
-                                        {tag}
-                                    </Badge>
-                                ))}
+                            <div className="px-8 pb-8">
+                                <div className="border-t border-gray-100 pt-6">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <Tag className="w-4 h-4 text-gray-400" />
+                                        <span className="text-sm text-gray-500 mr-1">Tags:</span>
+                                        {blogPost.tags.map((tag: string, index: number) => (
+                                            <Badge key={index} variant="outline" className="text-xs hover:bg-blue-50 transition-colors cursor-pointer">
+                                                {tag}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         )}
+                    </article>
 
-                        {/* Excerpt */}
-                        {blogPost.excerpt && (
-                            <div className="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
-                                <p className="text-lg text-gray-700 italic">{blogPost.excerpt}</p>
-                            </div>
-                        )}
-
-                        {/* Content */}
-                        <div
-                            className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900"
-                            dangerouslySetInnerHTML={{ __html: blogPost.content }}
-                        />
+                    {/* CTA Section */}
+                    <div className="mt-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-xl p-8 text-white text-center">
+                        <h3 className="text-2xl font-bold mb-3">
+                            Ready to Go Solar?
+                        </h3>
+                        <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+                            Get a free consultation and customized quote for your rooftop solar installation. Save up to 90% on your electricity bills!
+                        </p>
+                        <div className="flex items-center justify-center gap-4 flex-wrap">
+                            <Link href="/get-quote">
+                                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8">
+                                    Get Free Quote
+                                </Button>
+                            </Link>
+                            <Link href="/contact">
+                                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-8">
+                                    Contact Us
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Back to Blog Button */}
-                    <div className="text-center mt-12">
+                    <div className="text-center mt-8">
                         <Link href="/blog">
                             <Button variant="outline" size="lg" className="gap-2">
                                 <ArrowLeft className="w-5 h-5" />
@@ -194,7 +289,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             </Button>
                         </Link>
                     </div>
-                </article>
+                </div>
             </div>
         </div>
     );
