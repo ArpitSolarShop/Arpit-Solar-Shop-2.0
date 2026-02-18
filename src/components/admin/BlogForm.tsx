@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, ChangeEvent, DragEvent } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Editor } from "@tinymce/tinymce-react";
+import RichTextEditor from "@/components/ui/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,7 +32,6 @@ interface BlogFormProps {
 export default function BlogForm({ initialData, mode = "create" }: BlogFormProps) {
     const { toast } = useToast();
     const router = useRouter();
-    const editorRef = useRef<any>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [loading, setLoading] = useState(false);
@@ -150,8 +149,8 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
         setLoading(true);
 
         try {
-            // Get content from TinyMCE - the editor instance is accessed via editorRef.current
-            const content = editorRef.current ? editorRef.current.getContent() : "";
+            // Get content directly from state
+            const content = formData.content;
 
             // Prepare payload
             const payload = {
@@ -483,26 +482,12 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
                     <CardTitle>Content</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Editor
-                        onInit={(evt, editor) => {
-                            editorRef.current = editor;
-                        }}
-                        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                        init={{
-                            height: 500,
-                            menubar: false,
-                            plugins: [
-                                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount', 'fullscreen', 'preview', 'help'
-                            ],
-                            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat | fullscreen preview',
-                            tinycomments_mode: 'embedded',
-                            tinycomments_author: 'Arpit Solar',
-                            branding: false,
-                        }}
-                        onEditorChange={(content: string, editor: any) => {
+                    <RichTextEditor
+                        value={formData.content}
+                        onChange={(content) => {
                             setFormData(prev => ({ ...prev, content }));
                         }}
-                        initialValue={initialData?.content || "<p>Start writing your blog post here...</p>"}
+                        placeholder="Start writing your blog post here..."
                     />
                 </CardContent>
             </Card>
