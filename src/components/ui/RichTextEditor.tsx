@@ -36,8 +36,8 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
 
             // Handle Change
             quillInstance.current.on('text-change', () => {
-                const html = editorRef.current?.children[0].innerHTML;
-                if (html && html !== '<p><br></p>') { // Ignore empty default
+                const html = quillInstance.current.root.innerHTML;
+                if (html && html !== '<p><br></p>') {
                     onChange(html);
                 } else {
                     onChange('');
