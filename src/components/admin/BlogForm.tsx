@@ -278,7 +278,7 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
 
         setDeleting(true);
         try {
-            const response = await fetch(`/ api / cms / blog ? id = ${initialData?.id} `, {
+            const response = await fetch(`/api/cms/blog?id=${initialData?.id}`, {
                 method: "DELETE",
             });
 
