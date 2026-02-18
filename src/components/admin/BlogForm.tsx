@@ -67,13 +67,22 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
             if (savedDraft) {
                 try {
                     const parsed = JSON.parse(savedDraft);
-                    // Ask user if they want to restore? For now, just restore if title is empty
-                    if (!formData.title && parsed.title) {
-                        setFormData(prev => ({ ...prev, ...parsed }));
-                        toast({
-                            title: "Draft Restored",
-                            description: "Restored your unsaved blog post draft.",
-                        });
+                    if (parsed.title) {
+                        // Ask user if they want to restore the previous draft
+                        const restore = window.confirm(
+                            `You have an unsaved draft: "${parsed.title}". Do you want to restore it?`
+                        );
+                        if (restore) {
+                            setFormData(prev => ({ ...prev, ...parsed }));
+                            toast({
+                                title: "Draft Restored",
+                                description: "Restored your unsaved blog post draft.",
+                            });
+                        } else {
+                            // Clear the old draft so it doesn't keep asking
+                            localStorage.removeItem("blog_post_draft");
+                            localStorage.removeItem("blog_post_touched");
+                        }
                     }
                 } catch (e) {
                     console.error("Failed to parse draft", e);
