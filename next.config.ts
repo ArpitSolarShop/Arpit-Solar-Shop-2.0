@@ -2,10 +2,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // @ts-expect-error - eslint config is valid but types might be missing in this version
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+
   serverExternalPackages: ["handlebars", "puppeteer"],
   async redirects() {
     return [
