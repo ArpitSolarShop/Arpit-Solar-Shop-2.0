@@ -77,22 +77,6 @@ const TrustedPartnersSection = () => {
               Driving innovation in various sectors, including renewable energy.
             </p>
           </div>
-
-          {/* Partner Logo 4: Servotech */}
-          <div className="bg-white p-6 rounded-xl shadow-lg border border-yellow-200 flex flex-col items-center justify-center text-center">
-            <div className="relative h-16 w-full mb-4">
-              <Image
-                src="/servotec.jpg"
-                alt="Servotech Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800">Servotech</h3>
-            <p className="text-gray-600 text-sm mt-2">
-              Leading provider of solar solutions and EV charging infrastructure.
-            </p>
-          </div>
         </div>
       </div>
     </section>

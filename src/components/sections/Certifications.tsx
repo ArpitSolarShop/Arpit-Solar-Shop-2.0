@@ -40,6 +40,7 @@
 import React from "react";
 import relianceCert from "@/assets/Reliance Solar Certificate.jpg";
 import shaktiCert from "@/assets/Shkti Solar Certificate.jpg";
+import servotecCert from "../../public/servotec.jpg";
 
 const Certifications = () => {
   return (
@@ -54,7 +55,7 @@ const Certifications = () => {
           ensuring reliability, trust, and excellence in our solutions.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           <img
             src={relianceCert.src}
             alt="Reliance Solar Certificate"
@@ -64,6 +65,12 @@ const Certifications = () => {
           <img
             src={shaktiCert.src}
             alt="Shakti Solar Certificate"
+            className="rounded-xl shadow-lg w-full max-w-md object-contain"
+            loading="lazy"
+          />
+          <img
+            src={servotecCert.src}
+            alt="Servotech Certificate"
             className="rounded-xl shadow-lg w-full max-w-md object-contain"
             loading="lazy"
           />
