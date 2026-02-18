@@ -6,6 +6,8 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/cms/blog - Get all blog posts
 export async function GET(request: NextRequest) {
     try {
