@@ -2,12 +2,12 @@
 import Script from "next/script";
 
 export default function DoubleTick() {
-    return (
-        <Script
-            id="doubletick-widget"
-            strategy="lazyOnload"
-            dangerouslySetInnerHTML={{
-                __html: `
+  return (
+    <Script
+      id="doubletick-widget"
+      strategy="afterInteractive"
+      dangerouslySetInnerHTML={{
+        __html: `
         (function (w, d, s, o, f, js, fjs) {
           w[o] = w[o] || function () { (w[o].q = w[o].q || []).push(arguments); };
           (js = d.createElement(s)), (fjs = d.getElementsByTagName(s)[0]);
@@ -21,6 +21,6 @@ export default function DoubleTick() {
           phoneNumber: "919044555572"
         });
       `}}
-        />
-    );
+    />
+  );
 }
