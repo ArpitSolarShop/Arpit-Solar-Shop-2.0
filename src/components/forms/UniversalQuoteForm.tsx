@@ -171,27 +171,9 @@ const UniversalQuoteForm = ({
                 // We continue to CRM even if PDF fails? Yes, lead capture is priority.
             }
 
-            // 5. Send to CRM (Kit19)
-            try {
-                const crmPayload = {
-                    PersonName: formData.name,
-                    MobileNo: formData.phone,
-                    EmailID: formData.email || "",
-                    City: formData.project_location,
-                    SourceName: dbPayload.source,
-                    CampaignName: dbPayload.product_name,
-                    InitialRemarks: `Category: ${category} | Size: ${formData.power_demand_kw}kW | Phase: ${formData.phase}`,
-                    CountryCode: '+91'
-                };
-
-                await fetch('https://sipapi.kit19.com/Enquiry/Add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'kit19-Auth-Key': '4e7bb26557334f91a21e56a4ea9c8752' },
-                    body: JSON.stringify(crmPayload)
-                });
-            } catch (crmErr) {
-                console.error("CRM Error:", crmErr);
-            }
+            // 5. Send to CRM (Kit19) - Handled by /api/generate-quote now
+            // Client-side call removed to prevent duplicates and API key exposure
+            console.log("Submitting to API (which handles Kit19 internally)");
 
             // Success UI
             toast({

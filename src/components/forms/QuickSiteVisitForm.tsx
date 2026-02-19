@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, MapPin, Phone, User, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { submitSiteVisit } from "@/app/actions/crm";
 
 interface QuickSiteVisitFormProps {
     city: string;
@@ -42,26 +43,19 @@ export function QuickSiteVisitForm({ city, children }: QuickSiteVisitFormProps) 
                 // We typically continue to try Kit19 even if Supabase fails (as per HeroGetQuote logic)
             }
 
-            // 2. Send to Kit19 API via Proxy Server (Standardized)
+            // 2. Send to Kit19 API via Server Action
             try {
                 const payload = {
                     name: formData.name,
                     phone: formData.phone,
-                    project_location: formData.location,
-                    address: formData.location || 'N/A',
-                    source: `Quick Site Visit - ${city}`,
-                    customer_type: "residential",
-                    solution_classification: "Residential", // Default
-                    product_category: "General", // Default
+                    location: formData.location || city,
+                    address: formData.location || city, // Ensure address maps
+                    city: formData.location || city
                 };
 
-                await fetch('/api/generate-quote', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                });
+                await submitSiteVisit(payload);
             } catch (err) {
-                console.warn("Secondary server submission failed:", err);
+                console.warn("Kit19 submission failed:", err);
             }
 
             setSuccess(true);

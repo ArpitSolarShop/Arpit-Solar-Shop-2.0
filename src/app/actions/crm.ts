@@ -22,6 +22,49 @@ export async function submitHeroLead(formData: any, customerType: string) {
         return { success: true };
     } catch (error) {
         console.error("Failed to submit hero lead:", error);
-        return { success: false };
+    }
+}
+
+export async function submitContactForm(formData: any) {
+    try {
+        const lead: CRMLead = {
+            name: formData.name,
+            phone: formData.phone,
+            email: formData.email,
+            address: "Contact Page Inquiry",
+            city: formData.city || "Varanasi",
+            source: "Website Contact Page",
+            medium: "Contact Form",
+            campaign: "Organic Website Traffic",
+            remarks: `Message: ${formData.message}`
+        };
+
+        await pushLeadToCRM(lead);
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to submit contact form:", error);
+        return { success: false, error: "Failed to submit" };
+    }
+}
+
+export async function submitSiteVisit(formData: any) {
+    try {
+        const lead: CRMLead = {
+            name: formData.name,
+            phone: formData.phone,
+            email: "",
+            address: formData.address || formData.location || "N/A",
+            city: formData.city || formData.location, // Use location as city if city not provided
+            source: "Quick Site Visit",
+            medium: "Site Visit Popup",
+            campaign: `Site Visit - ${formData.location}`,
+            remarks: `Requested Site Visit in ${formData.location}`
+        };
+
+        await pushLeadToCRM(lead);
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to submit site visit:", error);
+        return { success: false, error: "Failed to submit" };
     }
 }
