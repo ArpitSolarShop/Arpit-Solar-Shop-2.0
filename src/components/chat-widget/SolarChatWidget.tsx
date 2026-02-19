@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useReducer, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sun, Send, Shield, Phone, Home, Building, MapPin, Ruler, Lightbulb, Users, Calendar, Mail, User, UserCheck, X } from "lucide-react";
+import { Sun, Send, Shield, Phone, Home, Building, MapPin, Ruler, Lightbulb, Users, Calendar, Mail, User, UserCheck, X, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -379,7 +379,18 @@ const ChatHeader = ({ onClose }: { onClose: () => void }) => (
             <h2 className="text-white font-semibold text-lg">Yami</h2>
             <p className="text-blue-100 text-sm">Solar Assistant • Online</p>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose} className="text-white hover:bg-white/20"><X className="w-5 h-5" /></Button>
+        <div className="flex gap-2">
+            <Button
+                variant="ghost"
+                size="sm"
+                className="text-white hover:bg-white/20"
+                onClick={() => window.open('https://wa.me/919044555572?text=Hi%20Arpit%20Solar,%20I%20want%20to%20know%20more%20about%20solar', '_blank')}
+                title="Chat on WhatsApp"
+            >
+                <MessageCircle className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onClose} className="text-white hover:bg-white/20"><X className="w-5 h-5" /></Button>
+        </div>
     </div>
 );
 
@@ -503,6 +514,14 @@ const ChatInput = ({ step, onAnswer }: { step: any, onAnswer: (data: Partial<Use
                     <Label>Email (optional – for a detailed PDF backup)</Label>
                     <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your.email@example.com" />
                     <Button onClick={handleContactSubmit} className="w-full bg-gradient-to-r from-solar-orange to-solar-gold text-white">Continue</Button>
+                    <div className="mt-2 text-center">
+                        <button
+                            onClick={() => window.open('https://wa.me/919044555572?text=Hi%20Arpit%20Solar,%20I%20want%20to%20know%20more%20about%20solar', '_blank')}
+                            className="text-xs text-green-600 hover:text-green-700 font-medium flex items-center justify-center gap-1 mx-auto"
+                        >
+                            <MessageCircle className="w-3 h-3" /> Or chat with us on WhatsApp generally
+                        </button>
+                    </div>
                 </div>
             )}
             {step.type === 'referral_contact' && (
