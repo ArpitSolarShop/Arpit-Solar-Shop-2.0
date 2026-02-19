@@ -1,5 +1,6 @@
 import {
     LayoutDashboard,
+    Inbox,
     Package,
     ShoppingCart,
     Users,
@@ -43,6 +44,11 @@ export const adminNavigation: NavigationItem[] = [
         name: "Dashboard",
         href: "/admin",
         icon: LayoutDashboard,
+    },
+    {
+        name: "Leads",
+        href: "/admin/leads",
+        icon: Inbox,
     },
     {
         name: "Product Management",

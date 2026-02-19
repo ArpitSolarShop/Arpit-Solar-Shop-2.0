@@ -1,31 +1,62 @@
 'use server'
 
-import { pushLeadToCRM, CRMLead } from '@/lib/server/services/kit19-crm';
+import { pushLeadToCRM, CRMLead } from "@/lib/server/services/kit19-crm";
+import { insertQuoteRequest } from "@/lib/server/services/supabase";
 
-export async function submitHeroLead(formData: any, customerType: string) {
+export async function submitHeroLead(formData: any, customerType: string = "residential") {
+    // 1. Log to Local DB (Redundancy)
+    try {
+        await insertQuoteRequest({
+            name: formData.name,
+            phone: formData.phone,
+            source: "Hero Section",
+            customer_type: customerType || "residential",
+            project_location: "Varanasi (Hero Default)", // or parse if available
+            remarks: `Initial Interest. Category: ${formData.category}`
+        });
+    } catch (dbErr) {
+        console.error("Home DB Log failed:", dbErr);
+    }
+
+    // 2. Push to Kit19
     try {
         const lead: CRMLead = {
-            name: formData.fullName,
-            companyName: formData.companyName,
-            phone: formData.whatsappNumber,
-            email: "", // Hero form Step 1 doesn't capture email
-            address: formData.city || "Varanasi",
-            city: formData.city,
-            pincode: formData.pinCode,
-            source: "Website Hero",
-            medium: "Quick Estimate Form",
-            campaign: "Hero Section Lead",
-            remarks: `Customer Type: ${customerType}, Monthly Bill: ${formData.monthlyBill}`
+            name: formData.name,
+            phone: formData.phone,
+            email: "",
+            address: "Varanasi",
+            city: "Varanasi",
+            source: "Website Hero Section",
+            medium: "Organic",
+            campaign: "Hero Lead Form",
+            remarks: `Interested in ${formData.category}`
         };
 
         await pushLeadToCRM(lead);
         return { success: true };
     } catch (error) {
         console.error("Failed to submit hero lead:", error);
+        return { success: false };
     }
 }
 
 export async function submitContactForm(formData: any) {
+    // 1. Log to Local DB (Redundancy)
+    try {
+        await insertQuoteRequest({
+            name: formData.name,
+            phone: formData.phone,
+            email: formData.email,
+            project_location: formData.city,
+            source: "Contact Page",
+            customer_type: "residential",
+            remarks: `Message: ${formData.message}`
+        });
+    } catch (dbErr) {
+        console.error("Contact DB Log failed:", dbErr);
+    }
+
+    // 2. Push to Kit19
     try {
         const lead: CRMLead = {
             name: formData.name,
@@ -48,6 +79,21 @@ export async function submitContactForm(formData: any) {
 }
 
 export async function submitSiteVisit(formData: any) {
+    // 1. Log to Local DB (Redundancy)
+    try {
+        await insertQuoteRequest({
+            name: formData.name,
+            phone: formData.phone,
+            project_location: formData.location || formData.city,
+            source: "Quick Site Visit",
+            customer_type: "residential",
+            remarks: `Requested visit for: ${formData.location}`
+        });
+    } catch (dbErr) {
+        console.error("Site Visit DB Log failed:", dbErr);
+    }
+
+    // 2. Push to Kit19
     try {
         const lead: CRMLead = {
             name: formData.name,

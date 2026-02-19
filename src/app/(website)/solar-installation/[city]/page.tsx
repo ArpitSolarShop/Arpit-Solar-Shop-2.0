@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import { siteConfig } from "@/config/site";
 import locations from "@/data/locations.json";
 import LocationHero from "@/components/sections/LocationHero";
@@ -251,10 +252,12 @@ export default async function LocationPage({ params }: Props) {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 flex items-end p-6">
                             <p className="text-white font-bold text-xl">Powering {location.city} since 2013</p>
                         </div>
-                        <img
-                            src="https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop"
+                        <Image
+                            src="/city-solar-bg.webp"
                             alt={`Solar Installation in ${location.name}`}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, 50vw"
                         />
                     </div>
                 </div>
