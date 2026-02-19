@@ -1,7 +1,7 @@
-/* eslint-disable react-refresh/only-export-components */
-import type { Metadata } from "next";
+
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/providers/Providers";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import DoubleTick from "@/components/analytics/DoubleTick";
@@ -69,6 +69,7 @@ export default function RootLayout({
           {children}
           {/* <FloatingChatButton /> */}
           <DoubleTick />
+          <Analytics />
           <StructuredData />
         </Providers>
       </body>
