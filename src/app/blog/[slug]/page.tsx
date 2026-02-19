@@ -67,6 +67,9 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     return {
         title: `${post.seo_title || post.title} | Arpit Solar Shop`,
         description: post.seo_description || post.excerpt,
+        alternates: {
+            canonical: `/blog/${slug}`,
+        },
         openGraph: {
             title: post.seo_title || post.title,
             description: post.seo_description || post.excerpt,
@@ -96,27 +99,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         day: 'numeric'
     });
 
-    const jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: blogPost.seo_title || blogPost.title,
-        description: blogPost.seo_description || blogPost.excerpt,
-        image: blogPost.featured_image ? [blogPost.featured_image] : [],
-        datePublished: blogPost.published_at || blogPost.created_at,
-        dateModified: blogPost.updated_at || blogPost.created_at,
-        author: {
-            '@type': 'Organization',
-            name: 'Arpit Solar Shop',
-            url: 'https://www.arpitsolar.com'
-        }
-    };
-
     return (
         <div className="min-h-screen bg-gray-50">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
 
             {/* Breadcrumbs */}
             <div className="bg-white border-b">
