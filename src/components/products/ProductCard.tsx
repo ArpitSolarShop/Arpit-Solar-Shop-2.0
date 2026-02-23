@@ -21,6 +21,8 @@ interface ProductCardProps {
         system_configurations?: any;
         specifications?: any;
         product_type?: string;
+        price_includes_gst?: boolean;
+        gst_rate?: number;
     };
 }
 
@@ -133,7 +135,9 @@ export function ProductCard({ product }: ProductCardProps) {
                                 <span className="text-2xl font-bold text-gray-900">
                                     {formatPrice(product.price)}
                                 </span>
-                                <span className="text-xs text-gray-500">+ GST</span>
+                                <span className="text-xs text-gray-500">
+                                    {product.price_includes_gst ? "Incl. GST" : "+ GST"}
+                                </span>
                             </div>
                         </div>
                     ) : (
@@ -173,7 +177,9 @@ export function ProductCard({ product }: ProductCardProps) {
                     name: product.name,
                     description: product.description,
                     brand: product.brand,
-                    price: product.price
+                    price: product.price,
+                    price_includes_gst: product.price_includes_gst,
+                    gst_rate: product.gst_rate
                 }}
                 config={{
                     title: `Quote for ${product.name}`,

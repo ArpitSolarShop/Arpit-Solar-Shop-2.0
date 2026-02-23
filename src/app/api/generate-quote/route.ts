@@ -27,7 +27,18 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
         const formData = body;
-        const { product_category, power_demand_kw, phone, source, metadata, phase, name, address } = formData;
+        const {
+            product_category,
+            power_demand_kw,
+            phone,
+            source,
+            metadata,
+            phase,
+            name,
+            address,
+            price_includes_gst: reqPriceIncludesGst, // Allow passing from frontend
+            gst_rate: reqGstRate // Allow passing from frontend
+        } = formData;
 
         // 1. Calculations & Data Fetching
         let tempVars: any = { ...formData };
@@ -88,12 +99,16 @@ export async function POST(req: NextRequest) {
                 .eq('is_active', true);
 
             // Unified Fetch from solar_products
-            let categoryFilter = product_category;
-            if (['Tata', 'Shakti', 'Reliance', 'Hybrid', 'Integrated'].includes(product_category)) {
-                categoryFilter = product_category;
-            } else {
-                categoryFilter = 'Tata'; // Default
-            }
+            // FIX: Robust source mapping - handle "Tata Power Solar", "Shakti Solar" etc.
+            let categoryFilter = 'Tata';
+            const catLower = (product_category || '').toLowerCase();
+            if (catLower.includes('tata')) categoryFilter = 'Tata';
+            else if (catLower.includes('shakti')) categoryFilter = 'Shakti';
+            else if (catLower.includes('reliance')) categoryFilter = 'Reliance';
+            else if (catLower.includes('hybrid')) categoryFilter = 'Hybrid';
+            else if (catLower.includes('integrated')) categoryFilter = 'Integrated';
+            else if (catLower.includes('adani') || catLower.includes('waree')) categoryFilter = 'Integrated';
+            else categoryFilter = product_category || 'Tata';
 
             console.log(`🔎 Searching solar_products for ${categoryFilter}, Size: ${power_demand_kw}`);
 
@@ -113,7 +128,6 @@ export async function POST(req: NextRequest) {
                 let filteredProducts = products;
 
                 // HUGE FIX: Filter by Variant for Hybrid (With Battery vs Without Battery)
-                // because multiple products exist with valid system_size_kw but different prices.
                 if (categoryFilter === 'Hybrid' && formData.additional_details?.variant) {
                     const requestedVariant = formData.additional_details.variant;
                     const variantMatches = products.filter((p: any) =>
@@ -124,23 +138,43 @@ export async function POST(req: NextRequest) {
                     }
                 }
 
-                // Find closest match
-                systemData = filteredProducts.find((p: any) =>
-                    Math.abs(p.system_size_kw - Number(power_demand_kw)) < 0.1
-                );
+                // Find closest match — prefer exact match by kW AND price (from frontend) to disambiguate duplicate kW entries
+                const frontendPrice = formData.additional_details?.price ? Number(formData.additional_details.price) : null;
+
+                // Step 1: Try exact kW + price match (handles duplicate kW products like two 5.04kW at different prices)
+                if (frontendPrice) {
+                    systemData = filteredProducts.find((p: any) =>
+                        Math.abs(p.system_size_kw - Number(power_demand_kw)) < 0.1 &&
+                        Math.abs(Number(p.price) - frontendPrice) < 100 // Allow small rounding differences
+                    );
+                }
+
+                // Step 2: Fall back to kW-only match
                 if (!systemData) {
-                    systemData = products.reduce((prev: any, curr: any) =>
+                    systemData = filteredProducts.find((p: any) =>
+                        Math.abs(p.system_size_kw - Number(power_demand_kw)) < 0.1
+                    );
+                }
+
+                // Step 3: Fall back to closest kW match
+                if (!systemData) {
+                    systemData = filteredProducts.reduce((prev: any, curr: any) =>
                         Math.abs(curr.system_size_kw - Number(power_demand_kw)) < Math.abs(prev.system_size_kw - Number(power_demand_kw)) ? curr : prev
                     );
                 }
+
+                console.log('✅ Matched product:', systemData?.name, '| Price:', systemData?.price, '| Frontend price hint:', frontendPrice);
             }
 
+            let initialPrice = 0;
+            let gstRate = 8.9;
+            let priceIncludesGst = true;
+
             if (systemData) {
-                let initialPrice = Number(systemData.price);
+                initialPrice = Number(systemData.price);
                 const specs = systemData.specifications || {};
 
                 // Handle Reliance Special Pricing (Structure)
-                // This adds to/replaces the base price. We assume this "structure price" follows the same GST rule as the main product.
                 if (product_category === 'Reliance' && specs.structure_prices) {
                     if (formData.mounting_type === 'Tin Shed') initialPrice = Number(specs.structure_prices.tin_shed || initialPrice);
                     else if (formData.mounting_type === 'RCC Elevated') initialPrice = Number(specs.structure_prices.rcc_elevated || specs.structure_prices.hdg_elevated || initialPrice);
@@ -149,25 +183,8 @@ export async function POST(req: NextRequest) {
                 }
 
                 // Dynamic GST Calculation
-                const gstRate = systemData.gst_rate ?? 8.9; // Default 8.9%
-                const priceIncludesGst = systemData.price_includes_gst ?? true; // Default to Inclusive
-
-                if (priceIncludesGst) {
-                    // Reverse Calc: Total = Base * (1 + Rate/100) -> Base = Total / (1 + Rate/100)
-                    calculatedValues.basePrice = Math.round(initialPrice / (1 + gstRate / 100));
-                    calculatedValues.gstAmount = initialPrice - calculatedValues.basePrice;
-                    calculatedValues.total = initialPrice;
-                } else {
-                    // Forward Calc: Total = Base + (Base * Rate/100)
-                    calculatedValues.basePrice = initialPrice;
-                    calculatedValues.gstAmount = Math.round(initialPrice * (gstRate / 100));
-                    calculatedValues.total = initialPrice + calculatedValues.gstAmount;
-                }
-
-                // Add rate to values for display
-                (calculatedValues as any).taxRate = gstRate;
-
-                calculatedValues.grandTotal = calculatedValues.total; // + extraCosts if any
+                gstRate = systemData.gst_rate ?? 8.9;
+                priceIncludesGst = systemData.price_includes_gst ?? true;
 
                 // Product Data Population
                 selectedProductData.capacity = systemData.system_size_kw;
@@ -180,23 +197,44 @@ export async function POST(req: NextRequest) {
                 if (specs.variant) selectedProductData.variant = specs.variant;
 
             } else {
-                // Fallback
+                // Fallback Estimation
                 console.log('⚠️ No unified product found, using fallback estimation.');
                 const systemSizeNum = parseFloat(power_demand_kw) || 3;
 
-                // Hybrid systems are significantly more expensive (Batteries + Hybrid Inverter)
                 if (categoryFilter === 'Hybrid') {
-                    // Approx ₹90,000 - ₹1,00,000 per kW for Hybrid
-                    const ratePerKw = 95000;
-                    calculatedValues.grandTotal = systemSizeNum * ratePerKw;
-                    (calculatedValues as any).taxRate = 12; // Higher slab often applies or composite
+                    initialPrice = systemSizeNum * 95000;
+                    gstRate = 12;
                 } else {
-                    // Standard On-Grid
-                    calculatedValues.grandTotal = systemSizeNum * 45000;
+                    initialPrice = systemSizeNum * 45000;
+                    gstRate = 8.9;
                 }
-
+                priceIncludesGst = true; // Default fallbacks are inclusive
                 selectedProductData.capacity = systemSizeNum;
             }
+
+            // OVERRIDE with request values if provided (helpful for custom manual quotes or frontends that know the rate)
+            if (reqPriceIncludesGst !== undefined) priceIncludesGst = reqPriceIncludesGst;
+            if (reqGstRate !== undefined) gstRate = Number(reqGstRate);
+
+            // FINAL GST CALCULATION (Unified for both matched and fallback)
+            // DO NOT apply if it's from the generic Calculator which already provided exact math in metadata
+            if (source !== 'Calculator Quote Form') {
+                if (priceIncludesGst) {
+                    // Reverse Calc: Total = Base * (1 + Rate/100) -> Base = Total / (1 + Rate/100)
+                    calculatedValues.basePrice = Math.round(initialPrice / (1 + gstRate / 100));
+                    calculatedValues.gstAmount = initialPrice - calculatedValues.basePrice;
+                    calculatedValues.total = initialPrice;
+                } else {
+                    // Forward Calc: Total = Base + (Base * Rate/100)
+                    calculatedValues.basePrice = Math.round(initialPrice);
+                    calculatedValues.gstAmount = Math.round(initialPrice * (gstRate / 100));
+                    calculatedValues.total = initialPrice + calculatedValues.gstAmount;
+                }
+                calculatedValues.grandTotal = calculatedValues.total;
+            }
+
+            (calculatedValues as any).taxRate = gstRate;
+            (calculatedValues as any).priceIncludesGst = priceIncludesGst;
 
             // Dynamic Subsidy Calculation — use requested (sanctioned) capacity, not panel-rounded
             const requestedKw = parseFloat(power_demand_kw) || selectedProductData.capacity;

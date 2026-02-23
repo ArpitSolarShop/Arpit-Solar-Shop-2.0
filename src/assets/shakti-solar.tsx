@@ -19,6 +19,8 @@ type GridTieSystemData = {
   phase: string
   preGiElevatedWithGst: number
   preGiElevatedPrice: number
+  priceIncludesGst?: boolean
+  gstRate?: number
 }
 
 // Components
@@ -126,7 +128,12 @@ function GridTieSystemTable({ data, onRowClick }: { data: GridTieSystemData[]; o
                 </TableCell>
                 <TableCell className="font-medium">₹{item.preGiElevatedWithGst.toFixed(2)}</TableCell>
                 <TableCell className="font-bold text-green-600">
-                  ₹{item.preGiElevatedPrice.toLocaleString("en-IN")}
+                  <div className="flex flex-col">
+                    <span>₹{item.preGiElevatedPrice.toLocaleString("en-IN")}</span>
+                    <span className="text-xs text-gray-500 font-normal">
+                      {item.priceIncludesGst ? "Incl. GST" : "+ GST"}
+                    </span>
+                  </div>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -179,6 +186,8 @@ export default function ShaktiSolar() {
             phase: r.phase || '1Ph',
             preGiElevatedWithGst: Number(specs.price_per_kw || 0),
             preGiElevatedPrice: Number(r.price),
+            priceIncludesGst: r.price_includes_gst,
+            gstRate: r.gst_rate,
           };
         }))
       }
@@ -297,6 +306,8 @@ export default function ShaktiSolar() {
               systemSize: selectedProduct.systemSize === 0 ? null : selectedProduct.systemSize,
               price: selectedProduct.preGiElevatedPrice,
               phase: selectedProduct.phase,
+              price_includes_gst: selectedProduct.priceIncludesGst,
+              gst_rate: selectedProduct.gstRate,
               description: selectedProduct.systemSize === 0
                 ? 'Commercial/Industrial Large Scale System'
                 : `Inverter: ${selectedProduct.inverterCapacity}kW | Modules: ${selectedProduct.noOfModules} x DCR RIL 535 Wp`

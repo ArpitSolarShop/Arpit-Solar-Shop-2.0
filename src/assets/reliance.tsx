@@ -475,7 +475,7 @@ const SolarQuoteCalculator = ({ gridData, largeData, loading }: SolarQuoteCalcul
                     <span className="font-semibold text-gray-900">₹{result.basePrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm sm:text-md">
-                    <span className="text-gray-600">GST @ 8.9%:</span>
+                    <span className="text-gray-600">GST @ 13.8%:</span>
                     <span className="font-semibold text-gray-900">₹{result.gstAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                   </div>
                 </div>
@@ -601,6 +601,9 @@ export default function Reliance() {
             name: selectedProduct?.systemSize === 0 || selectedProduct?.systemSizeKWp === 0 ? `Large Scale System (Above ${commercialLimit} kWp)` : selectedProduct ? getProductName(selectedProduct, selectedCommercialType || productType) : "Reliance Solar Product",
             description: productType,
             systemSize: Number(productType === "commercial" ? selectedProduct?.systemSizeKWp || 0 : selectedProduct?.systemSize || selectedProduct?.systemSizeKW || 0),
+            price: selectedProduct?.hdgElevatedPrice || selectedProduct?.total || undefined,
+            price_includes_gst: false, // Reliance is listed as excluding GST
+            gst_rate: 13.8, // Reliance standard is 13.8%
             mountingType: (() => {
               if (!selectedCommercialType) return undefined;
               if (selectedCommercialType.includes("tin-shed")) return "Tin Shed";

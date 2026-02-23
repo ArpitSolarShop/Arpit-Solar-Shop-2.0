@@ -32,6 +32,8 @@ interface Product {
     specifications?: any;
     product_type?: string;
     is_published: boolean;
+    price_includes_gst?: boolean;
+    gst_rate?: number;
 }
 
 const formatPrice = (price: number) => {
@@ -192,7 +194,9 @@ export default function ProductDetailPage() {
                                         <span className="text-4xl font-bold text-gray-900">
                                             {formatPrice(product.price)}
                                         </span>
-                                        <span className="text-sm text-gray-600">+ GST</span>
+                                        <span className="text-sm text-gray-600">
+                                            {product.price_includes_gst ? "Incl. GST" : "+ GST"}
+                                        </span>
                                     </div>
                                     <p className="text-sm text-gray-600 mt-2">
                                         Inclusive of all charges
@@ -294,7 +298,9 @@ export default function ProductDetailPage() {
                     name: product.name,
                     description: product.description,
                     brand: product.brand,
-                    price: product.price
+                    price: product.price,
+                    price_includes_gst: product.price_includes_gst,
+                    gst_rate: product.gst_rate
                 }}
                 config={{
                     title: `Quote for ${product.name}`,

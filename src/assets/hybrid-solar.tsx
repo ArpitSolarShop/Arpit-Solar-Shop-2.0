@@ -31,6 +31,8 @@ type HybridSystemData = {
   earthing_wire_mtr: number | null
   created_at: string | null
   updated_at: string | null
+  price_includes_gst?: boolean
+  gst_rate?: number
 }
 
 type TechnologyFilter = 'all' | 'TOPCON' | 'MONO_BIFACIAL' | 'TOPCON_NDCR'
@@ -100,6 +102,8 @@ export default function HybridSolarPricing() {
             ac_wire_mtr: compQtys.ac_wire_mtr ? Number(compQtys.ac_wire_mtr) : 10,
             dc_wire_mtr: compQtys.dc_wire_mtr ? Number(compQtys.dc_wire_mtr) : 20,
             earthing_wire_mtr: compQtys.earthing_wire_mtr ? Number(compQtys.earthing_wire_mtr) : 90,
+            price_includes_gst: r.price_includes_gst,
+            gst_rate: r.gst_rate,
             created_at: r.created_at,
             updated_at: r.updated_at,
           }
@@ -365,7 +369,12 @@ export default function HybridSolarPricing() {
                   <td className="p-3 border-r text-slate-700">{system.module_watt} W</td>
                   <td className="p-3 border-r text-slate-700">{system.module_count} Nos</td>
                   <td className="p-3 border-r font-semibold text-blue-700">
-                    ₹{system.price_inr.toLocaleString('en-IN')}
+                    <div className="flex flex-col">
+                      <span>₹{system.price_inr.toLocaleString('en-IN')}</span>
+                      <span className="text-xs text-slate-500 font-normal mt-1">
+                        {system.price_includes_gst ? "Incl. GST" : "+ GST"}
+                      </span>
+                    </div>
                   </td>
                   <td className="p-3">
                     <Button
@@ -425,6 +434,8 @@ export default function HybridSolarPricing() {
             price: selectedSystem.price_inr,
             phase: selectedSystem.phase,
             variant: selectedSystem.variant, // CRITICAL FIX: Pass variant to backend
+            price_includes_gst: selectedSystem.price_includes_gst,
+            gst_rate: selectedSystem.gst_rate,
             description: `${selectedSystem.technology} | ${selectedSystem.variant === 'WITH_BATTERY' ? 'With Battery' : 'No Battery'} | ${selectedSystem.module_count}x${selectedSystem.module_watt}Wp Modules | ${selectedSystem.battery_kwh ? selectedSystem.battery_kwh + 'kWh Battery' : ''}`
           } : undefined
         }

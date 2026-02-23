@@ -28,6 +28,8 @@ interface Product {
     specifications: any;
     product_type?: string;
     image_url?: string;
+    price_includes_gst?: boolean;
+    gst_rate?: number;
 }
 
 export default function ProductsPage() {
@@ -70,6 +72,8 @@ export default function ProductsPage() {
                 is_published: p.is_published ?? true,
                 specifications: p.specifications,
                 image_url: p.image_url,
+                price_includes_gst: p.price_includes_gst,
+                gst_rate: p.gst_rate,
             }));
             setProducts(loadedProducts);
 

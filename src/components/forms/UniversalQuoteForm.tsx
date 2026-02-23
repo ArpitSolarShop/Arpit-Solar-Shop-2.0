@@ -36,6 +36,9 @@ interface UniversalQuoteFormProps {
         // Reliance specific
         mountingType?: string;
         dcCables?: string;
+        // GST Preferences
+        price_includes_gst?: boolean;
+        gst_rate?: number;
     };
     config?: {
         title?: string;
@@ -145,21 +148,22 @@ const UniversalQuoteForm = ({
             }
             */
 
-            // 3. Construct API Payload (Richer data)
-            const apiPayload = {
-                ...dbPayload,
-                // Enriched fields for API / PDF
-                address: formData.project_location || 'N/A',
-                phase: formData.phase, // Important for Tata
-                brand: productDetails?.brand, // Important for Integrated
-                cables: formData.cables,
-                additional_details: {
-                    ...productDetails
-                }
-            }
-
             // 4. Send to API Endpoint
             try {
+                const apiPayload = {
+                    ...dbPayload,
+                    // Enriched fields for API / PDF
+                    address: formData.project_location || 'N/A',
+                    phase: formData.phase, // Important for Tata
+                    brand: productDetails?.brand, // Important for Integrated
+                    cables: formData.cables,
+                    price_includes_gst: productDetails?.price_includes_gst,
+                    gst_rate: productDetails?.gst_rate,
+                    additional_details: {
+                        ...productDetails
+                    }
+                }
+
                 const res = await fetch('/api/generate-quote', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

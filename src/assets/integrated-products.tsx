@@ -29,6 +29,8 @@ type IntegratedRow = {
   earthing_wire_brand?: string
   earthing_wire_length_mtr?: number
   lighting_arrestor_qty?: number
+  price_includes_gst?: boolean
+  gst_rate?: number
 }
 
 type ModuleTypeFilter = 'all' | 'Mono Bifacial' | 'TopCon'
@@ -84,6 +86,8 @@ export default function IntegratedPriceData() {
               earthing_wire_brand: wireBrands.earthing || 'AL Wire',
               earthing_wire_length_mtr: compQtys.earthing_wire_mtr ? Number(compQtys.earthing_wire_mtr) : 90,
               lighting_arrestor_qty: compQtys.lightning_arrester ? Number(compQtys.lightning_arrester) : 1,
+              price_includes_gst: r.price_includes_gst,
+              gst_rate: r.gst_rate,
             };
           }))
         }
@@ -240,7 +244,12 @@ export default function IntegratedPriceData() {
                         </Badge>
                       </td>
                       <td className="p-3 border-r font-semibold text-blue-700">
-                        ₹{row.price.toLocaleString('en-IN')}
+                        <div className="flex flex-col">
+                          <span>₹{row.price.toLocaleString('en-IN')}</span>
+                          <span className="text-xs text-slate-500 font-normal mt-1">
+                            {row.price_includes_gst ? "Incl. GST" : "+ GST"}
+                          </span>
+                        </div>
                       </td>
                       <td className="p-3 border-r text-slate-700">{row.inverter_capacity_kw} kW</td>
                       <td className="p-3 border-r text-slate-700">{row.module_watt} W</td>
@@ -285,6 +294,8 @@ export default function IntegratedPriceData() {
             phase: selectedProduct.phase,
             brand: selectedProduct.brand,
             module_type: selectedProduct.module_type || 'N/A',
+            price_includes_gst: selectedProduct.price_includes_gst,
+            gst_rate: selectedProduct.gst_rate,
             description: `${selectedProduct.no_of_modules} Modules | ${selectedProduct.inverter_capacity_kw}kW Inverter | ${selectedProduct.module_watt}Wp Modules`
           } : undefined
         }

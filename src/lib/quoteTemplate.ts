@@ -8,14 +8,17 @@ export const generateQuoteHtml = (data: any): string => {
 
   // Safe number extraction
   const n = (v: any) => (typeof v === 'number' && isFinite(v) ? v : 0);
-  const basePrice = n(calculations?.basePrice) || n(calculations?.subtotal);
-  const extraCosts = n(calculations?.extraCosts);
-  const gstAmount = n(calculations?.gstAmount);
-  const total = n(calculations?.total) || n(calculations?.grandTotal);
-  const centralSubsidy = n(calculations?.centralSubsidy);
-  const stateSubsidy = n(calculations?.stateSubsidy);
-  const effectiveCost = n(calculations?.effectiveCost);
-  const gstRate = n(calculations?.taxRate) || n(data?.taxRate) * 100 || 8.9;
+  const { basePrice: rawBasePrice, gstAmount: rawGstAmount, total: rawTotal, centralSubsidy: rawCentralSubsidy, stateSubsidy: rawStateSubsidy, effectiveCost: rawEffectiveCost, extraCosts: rawExtraCosts, taxRate: rawTaxRate, priceIncludesGst: rawPriceIncludesGst } = calculations || {};
+
+  const basePrice = n(rawBasePrice) || n(calculations?.subtotal);
+  const extraCosts = n(rawExtraCosts);
+  const gstAmount = n(rawGstAmount);
+  const total = n(rawTotal) || n(calculations?.grandTotal);
+  const centralSubsidy = n(rawCentralSubsidy);
+  const stateSubsidy = n(rawStateSubsidy);
+  const effectiveCost = n(rawEffectiveCost);
+  const gstRate = n(rawTaxRate) || n(data?.taxRate) * 100 || 8.9;
+  const priceIncludesGst = rawPriceIncludesGst ?? true;
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('en-IN').format(Math.round(val));
   const currentDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -229,9 +232,16 @@ export const generateQuoteHtml = (data: any): string => {
       
       <div class="investment-box">
         <div class="info-title">Investment Summary</div>
-        <div class="system-row" style="justify-content: space-between;"><span>Base Price:</span> <span>₹ ${formatCurrency(basePrice - extraCosts)}</span></div>
-        ${extraCosts > 0 ? `<div class="system-row" style="color: #d97706; justify-content: space-between;"><span>+ Extra Costs:</span> <span>₹ ${formatCurrency(extraCosts)}</span></div>` : ''}
-        <div class="system-row" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 5px; justify-content: space-between;"><span>GST (@ ${gstRate}%):</span> <span>₹ ${formatCurrency(gstAmount)}</span></div>
+        ${priceIncludesGst ? `
+          <div class="system-row" style="justify-content: space-between;"><span>Base Price:</span> <span>₹ ${formatCurrency(basePrice)}</span></div>
+          ${extraCosts > 0 ? `<div class="system-row" style="color: #d97706; justify-content: space-between;"><span>+ Extra Costs:</span> <span>₹ ${formatCurrency(extraCosts)}</span></div>` : ''}
+          <div class="system-row" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 5px; justify-content: space-between;"><span>GST (@ ${gstRate}%):</span> <span>₹ ${formatCurrency(gstAmount)}</span></div>
+        ` : `
+          <div class="system-row" style="justify-content: space-between;"><span>Base System Price:</span> <span>₹ ${formatCurrency(basePrice - extraCosts)}</span></div>
+          ${extraCosts > 0 ? `<div class="system-row" style="color: #d97706; justify-content: space-between;"><span>+ Extra Costs:</span> <span>₹ ${formatCurrency(extraCosts)}</span></div>` : ''}
+          <div class="system-row" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 5px; justify-content: space-between;"><span>+ GST (@ ${gstRate}%):</span> <span>₹ ${formatCurrency(gstAmount)}</span></div>
+        `}
+        
         <div class="system-row" style="font-size: 16px; font-weight: 900; color: #1e3a5f; padding-top: 5px; justify-content: space-between;"><span style="font-size: 11px; text-transform: uppercase;">Total Amount:</span> <span style="color: #1e40af;">₹ ${formatCurrency(total)}</span></div>
         <div class="effective-box" style="margin-top: 10px; padding: 10px; background-color: #dbeafe; border: 1px solid #93c5fd; border-radius: 6px; text-align: center;">
           <div class="effective-label" style="font-size: 9px; color: #1e40af; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px;">${(centralSubsidy + stateSubsidy) > 0 ? 'Effective Cost After Subsidy' : 'Effective Cost'}</div>

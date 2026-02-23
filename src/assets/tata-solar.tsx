@@ -329,6 +329,8 @@ type GridTieSystemData = {
   phase: string;
   pricePerKwp: number;
   totalPrice: number;
+  priceIncludesGst?: boolean;
+  gstRate?: number;
 };
 
 // GridTieSystemTable component for rendering the table
@@ -471,7 +473,12 @@ function GridTieSystemTable({
                     })}
                   </TableCell>
                   <TableCell className="font-bold text-green-600">
-                    ₹{item.totalPrice.toLocaleString("en-IN")}
+                    <div className="flex flex-col">
+                      <span>₹{item.totalPrice.toLocaleString("en-IN")}</span>
+                      <span className="text-xs text-gray-500 font-normal">
+                        {item.priceIncludesGst ? "Incl. GST" : "+ GST"}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <Button
@@ -531,6 +538,8 @@ export default function TataSolarPricingPage() {
                 phase: r.phase || '1Ph',
                 pricePerKwp: specs.price_per_kw || (r.price / r.system_size_kw),
                 totalPrice: Number(r.price),
+                priceIncludesGst: r.price_includes_gst,
+                gstRate: r.gst_rate,
               };
             })
           );
@@ -635,6 +644,8 @@ export default function TataSolarPricingPage() {
               systemSize: isLargeSystem ? 15 : selectedProduct!.systemSize,
               phase: isLargeSystem ? "Three" : selectedProduct!.phase,
               price: isLargeSystem ? undefined : selectedProduct!.totalPrice,
+              price_includes_gst: isLargeSystem ? true : selectedProduct?.priceIncludesGst,
+              gst_rate: isLargeSystem ? 8.9 : selectedProduct?.gstRate,
               description: isLargeSystem
                 ? "Commercial Grade Solar Solution"
                 : `${selectedProduct!.noOfModules} Modules | ${selectedProduct!.phase} Phase`
