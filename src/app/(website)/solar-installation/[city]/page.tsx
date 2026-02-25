@@ -142,8 +142,8 @@ export default async function LocationPage({ params }: Props) {
                                 The price of a solar panel system in {location.name} depends on the capacity and brand (Tata, Reliance, or Shakti). Below is the estimated price list including the <strong>PM Surya Ghar Yojana Subsidy</strong>.
                             </p>
 
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
+                            <div className="overflow-x-auto pb-4 -mx-6 px-6 sm:mx-0 sm:px-0">
+                                <table className="w-full min-w-[500px] text-left border-collapse">
                                     <thead>
                                         <tr className="bg-slate-50 border-b border-slate-200">
                                             <th className="px-4 py-3 font-bold text-gray-700">System Size</th>

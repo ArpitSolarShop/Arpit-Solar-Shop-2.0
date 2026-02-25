@@ -4,13 +4,15 @@
 
 export const siteConfig = {
     name: "Arpit Solar Shop",
-    description: "Premium solar solutions for residential and commercial properties in Varanasi. Top-rated rooftop solar installer offering expert installation and maintenance.",
+    description: "Arpit Solar Shop is Varanasi's leading Solar EPC company. Authorized partners for Tata Power Solar, Reliance New Energy, and Shakti Pumps. Get a free quote!",
     url: "https://www.arpitsolar.com",
     ogImage: "/og-image.jpg",
     links: {
         twitter: "https://twitter.com/arpitsolar",
         facebook: "https://facebook.com/arpitsolar",
         instagram: "https://instagram.com/arpitsolar",
+        linkedin: "https://linkedin.com/company/arpitsolar",
+        youtube: "https://youtube.com/@arpitsolar",
     },
     contact: {
         email: "info@arpitsolar.com",

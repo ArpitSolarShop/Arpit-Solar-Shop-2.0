@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"; // Import Dialog components
 import Image from "next/image";
-import { MapPin, Phone, Mail, Facebook, Linkedin, Instagram } from "lucide-react";
+import { MapPin, Phone, Mail, Facebook, Linkedin, Instagram, Youtube } from "lucide-react";
 
 // Inline Pinterest Icon to match your Navbar component
 const PinterestIcon = () => (
@@ -97,11 +97,38 @@ const Footer = () => {
                                 Leading the transition to clean, renewable energy with cutting-edge solar solutions.
                                 Powering homes and businesses across India with sustainable energy.
                             </p>
-                            <div className="flex space-x-3">
-                                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10" onClick={() => window.open('https://www.facebook.com/@arpitsolar', '_blank')}> <Facebook className="w-4 h-4" /> </Button>
-                                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10" onClick={() => window.open('https://www.linkedin.com/in/arpit-solar-shop', '_blank')}> <Linkedin className="w-4 h-4" /> </Button>
-                                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10" onClick={() => window.open('https://www.instagram.com/arpitsolarweb/', '_blank')}> <Instagram className="w-4 h-4" /> </Button>
-                                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10" onClick={() => window.open('https://in.pinterest.com/arpitsolar/', '_blank')}> <PinterestIcon /> </Button>
+
+                            <div className="text-sm text-gray-300 space-y-2 mt-2">
+                                <p className="flex items-start gap-2">
+                                    <MapPin className="w-4 h-4 shrink-0 text-solar-orange mt-0.5" />
+                                    <span>Sh16/114-25-K-2, Sharvodayanagar, Kadipur, Shivpur, Varanasi 221003 (UP), India</span>
+                                </p>
+                                <p className="flex items-center gap-2">
+                                    <Phone className="w-4 h-4 text-solar-orange" />
+                                    <span>+91-9005770466</span>
+                                </p>
+                                <p className="flex items-center gap-2">
+                                    <Mail className="w-4 h-4 text-solar-orange" />
+                                    <span>info@arpitsolar.com</span>
+                                </p>
+                            </div>
+
+                            <div className="flex space-x-3 mt-4">
+                                <Button asChild variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10">
+                                    <a href="https://www.facebook.com/@arpitsolar" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Facebook className="w-4 h-4" /></a>
+                                </Button>
+                                <Button asChild variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10">
+                                    <a href="https://www.linkedin.com/in/arpit-solar-shop" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin className="w-4 h-4" /></a>
+                                </Button>
+                                <Button asChild variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10">
+                                    <a href="https://www.instagram.com/arpitsolarweb/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram className="w-4 h-4" /></a>
+                                </Button>
+                                <Button asChild variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10">
+                                    <a href="https://in.pinterest.com/arpitsolar/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><PinterestIcon /></a>
+                                </Button>
+                                <Button asChild variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-white/10">
+                                    <a href="https://youtube.com/@arpitsolar" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Youtube className="w-4 h-4" /></a>
+                                </Button>
                             </div>
                         </div>
 
@@ -157,13 +184,13 @@ const Footer = () => {
 
                 {/* UPDATED Bottom Bar */}
                 <div className="border-t border-white/10 bg-solar-navy/90">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                        <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-                            <p className="text-gray-400 text-sm"> © {currentYear} Arpit Solar Shop. All rights reserved. </p>
-                            <div className="flex space-x-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                            <p className="text-gray-400 text-sm order-2 md:order-1"> © {currentYear} Arpit Solar Shop. All rights reserved. </p>
+                            <div className="flex flex-wrap justify-center md:justify-end gap-3 sm:gap-6 order-1 md:order-2">
                                 {/* These are now buttons that trigger the modal */}
                                 <button onClick={() => handlePolicyClick('privacy')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Privacy Policy </button>
-                                <button onClick={() => handlePolicyClick('terms')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Terms of Service </button>
+                                <button onClick={() => handlePolicyClick('terms')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Terms </button>
                                 <button onClick={() => handlePolicyClick('cookies')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Cookie Policy </button>
                                 <Link href="/admin/login" className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200">Admin</Link>
                             </div>

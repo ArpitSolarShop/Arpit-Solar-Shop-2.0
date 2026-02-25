@@ -33,8 +33,7 @@
 //     <div className="w-full flex flex-col items-center p-8">
 //       <div className="w-full max-w-7xl">
 //         <div
-//           className="relative group rounded-lg overflow-hidden border-4 border-gray-300 shadow-md bg-transparent"
-//           style={{ aspectRatio: "16/9" }}
+//           className="relative group rounded-lg overflow-hidden border-4 border-gray-300 shadow-md bg-transparent aspect-video"
 //         >
 //           <video
 //             ref={videoRef}
@@ -121,8 +120,7 @@ const TVCard: React.FC = () => {
     <div className="w-full flex flex-col items-center p-8">
       <div className="w-full max-w-7xl">
         <div
-          className="relative group rounded-lg overflow-hidden border-4 border-gray-300 shadow-md bg-transparent"
-          style={{ aspectRatio: "16/9" }}
+          className="relative group rounded-lg overflow-hidden border-4 border-gray-300 shadow-md bg-transparent aspect-video"
         >
           <video
             ref={videoRef}

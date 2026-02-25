@@ -85,8 +85,8 @@ const CityPageClient: React.FC<CityPageClientProps> = ({ location, formattedSubs
                                 </h1>
 
                                 {/* SUBSIDY TABLE */}
-                                <div className="bg-white rounded-lg shadow-lg mb-3 max-w-xl text-xs md:text-sm text-gray-800 overflow-hidden border border-gray-200">
-                                    <table className="w-full">
+                                <div className="bg-white rounded-lg shadow-lg mb-3 max-w-xl text-xs md:text-sm text-gray-800 overflow-x-auto border border-gray-200">
+                                    <table className="w-full min-w-[450px]">
                                         <thead className="bg-[#AEC90B] text-black">
                                             <tr>
                                                 <th className="px-3 py-2 text-left font-bold">Capacity</th>

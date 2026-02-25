@@ -157,8 +157,8 @@ export default function Contact() {
                                     <p className="text-gray-500">Fill out the form below and our team will get back to you within 24 hours.</p>
                                 </CardHeader>
                                 <CardContent>
-                                    <form onSubmit={handleSubmit} className="space-y-4">
-                                        <div className="space-y-2">
+                                    <form onSubmit={handleSubmit} className="space-y-5 md:space-y-4">
+                                        <div className="space-y-1.5 md:space-y-2">
                                             <Label htmlFor="name">Full Name <span className="text-red-500">*</span></Label>
                                             <Input
                                                 id="name"
@@ -167,11 +167,12 @@ export default function Contact() {
                                                 required
                                                 value={formData.name}
                                                 onChange={handleChange}
+                                                className="h-11 md:h-10"
                                             />
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
+                                            <div className="space-y-1.5 md:space-y-2">
                                                 <Label htmlFor="phone">Phone Number <span className="text-red-500">*</span></Label>
                                                 <Input
                                                     id="phone"
@@ -182,9 +183,10 @@ export default function Contact() {
                                                     pattern="[0-9]{10}"
                                                     value={formData.phone}
                                                     onChange={handleChange}
+                                                    className="h-11 md:h-10"
                                                 />
                                             </div>
-                                            <div className="space-y-2">
+                                            <div className="space-y-1.5 md:space-y-2">
                                                 <Label htmlFor="city">City / Location</Label>
                                                 <Input
                                                     id="city"
@@ -192,11 +194,12 @@ export default function Contact() {
                                                     placeholder="Your city"
                                                     value={formData.city}
                                                     onChange={handleChange}
+                                                    className="h-11 md:h-10"
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="space-y-2">
+                                        <div className="space-y-1.5 md:space-y-2">
                                             <Label htmlFor="email">Email Address</Label>
                                             <Input
                                                 id="email"
@@ -205,16 +208,17 @@ export default function Contact() {
                                                 placeholder="your@email.com (Optional)"
                                                 value={formData.email}
                                                 onChange={handleChange}
+                                                className="h-11 md:h-10"
                                             />
                                         </div>
 
-                                        <div className="space-y-2">
+                                        <div className="space-y-1.5 md:space-y-2">
                                             <Label htmlFor="message">Message</Label>
                                             <Textarea
                                                 id="message"
                                                 name="message"
                                                 placeholder="How can we help you?"
-                                                className="min-h-[120px]"
+                                                className="min-h-[120px] resize-y"
                                                 value={formData.message}
                                                 onChange={handleChange}
                                             />

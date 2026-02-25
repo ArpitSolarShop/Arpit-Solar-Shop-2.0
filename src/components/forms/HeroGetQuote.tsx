@@ -46,11 +46,11 @@ const convertBillRangeToNumber = (range: string): number | null => {
 // ---------------------------
 // Small UI Helpers/styles
 // ---------------------------
-const inputBase = "w-full rounded-md border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#0a2351] px-3 py-2 text-sm"
+const inputBase = "w-full rounded-md border bg-background text-base sm:text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#0a2351] px-3 py-2 h-11 md:h-10"
 const buttonBase = "inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a2351] disabled:opacity-50 disabled:pointer-events-none"
 const buttonPrimary = `${buttonBase} bg-gradient-to-r from-[#0a2351] to-[#0d2e67] text-white hover:opacity-90`
 const buttonOutline = `${buttonBase} border hover:bg-muted`
-const chip = "rounded-full border px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
+const chip = "rounded-full border px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
 
 // ---------------------------
 // Inline toast (self-contained)
@@ -440,7 +440,7 @@ export function HeroGetQuote() {
                                 <form onSubmit={handleSubmitDetails} className="space-y-5">
                                     <div className="bg-muted/40 rounded-full p-1 grid grid-cols-2 gap-1">
                                         {(["Residential", "Commercial"] as CustomerType[]).map((type) => (
-                                            <button key={type} type="button" onClick={() => { setCustomerType(type); setFormData({ fullName: "", whatsappNumber: "", pinCode: "", companyName: "", city: "", monthlyBill: "" }) }} className={`h-9 rounded-full text-sm font-semibold transition-colors ${customerType === type ? "bg-[#0a2351] text-white" : "text-muted-foreground hover:bg-muted"}`} aria-pressed={customerType === type}>{type}</button>
+                                            <button key={type} type="button" onClick={() => { setCustomerType(type); setFormData({ fullName: "", whatsappNumber: "", pinCode: "", companyName: "", city: "", monthlyBill: "" }) }} className={`h-11 sm:h-10 rounded-full text-sm font-semibold transition-colors ${customerType === type ? "bg-[#0a2351] text-white" : "text-muted-foreground hover:bg-muted"}`} aria-pressed={customerType === type}>{type}</button>
                                         ))}
                                     </div>
 

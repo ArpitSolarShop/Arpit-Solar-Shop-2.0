@@ -13,8 +13,12 @@ const FAQ = dynamic(() => import('@/components/sections/FAQ'));
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Arpit Solar Shop | Best Solar Company in Varanasi | Official Tata & Reliance Partner",
-  description: "Arpit Solar Shop is Varanasi's leading Solar EPC company. Authorized partners for Tata Power Solar, Reliance New Energy, and Shakti Pumps. Get a free quote today!",
+  alternates: {
+    canonical: "https://www.arpitsolar.com",
+    languages: {
+      "en-IN": "https://www.arpitsolar.com",
+    },
+  },
   keywords: [
     "Solar Company Varanasi",
     "Tata Power Solar Dealer Varanasi",

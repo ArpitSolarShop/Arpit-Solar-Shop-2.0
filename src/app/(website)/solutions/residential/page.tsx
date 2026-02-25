@@ -34,7 +34,7 @@ interface ResidentialSystem {
 // Reusable Card Component for Benefits Sections
 const BenefitCard = ({ title, description, Icon }: { title: string; description: string; Icon: LucideIcon }) => (
   <motion.div
-    className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 border-t-4 border-green-500"
+    className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-4 sm:p-6 border-t-4 border-green-500"
     whileHover={{ scale: 1.05 }}
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -453,7 +453,7 @@ export default function Residential() {
 
       {/* Hero Section */}
       <section className="relative bg-cover bg-center h-[70vh] pt-20" style={{ backgroundImage: `url(${heroImage.src})` }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30 flex items-center justify-center">
           <motion.div className="text-center text-white px-4" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <h1 className="text-4xl md:text-6xl font-bold mb-4">Residential Solar Solutions</h1>
             <p className="text-lg md:text-xl max-w-3xl mx-auto mb-6">
@@ -517,20 +517,22 @@ export default function Residential() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-semibold text-center text-gray-800 mb-12">Compare Solar Solutions</h2>
           <Tabs defaultValue="shakti" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="shakti" className="flex items-center gap-2">
-                <img src="/Shakti Solar.png" alt="Shakti Solar" className="h-4 w-auto" />
-                <span>Shakti Solar</span>
-              </TabsTrigger>
-              <TabsTrigger value="reliance" className="flex items-center gap-2">
-                <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-4 w-auto" />
-                <span>Reliance Solar</span>
-              </TabsTrigger>
-              <TabsTrigger value="tata" className="flex items-center gap-2">
-                <img src="/Tata Power Solar.png" alt="Tata Power Solar" className="h-4 w-auto" />
-                <span>Tata Power Solar</span>
-              </TabsTrigger>
-            </TabsList>
+            <div className="w-full overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+              <TabsList className="flex w-max min-w-full sm:grid sm:grid-cols-3 mb-6 h-auto p-1 bg-gray-100 rounded-lg">
+                <TabsTrigger value="shakti" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
+                  <img src="/Shakti Solar.png" alt="Shakti Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <span>Shakti Solar</span>
+                </TabsTrigger>
+                <TabsTrigger value="reliance" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
+                  <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <span>Reliance Solar</span>
+                </TabsTrigger>
+                <TabsTrigger value="tata" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
+                  <img src="/Tata Power Solar.png" alt="Tata Power Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <span>Tata Power Solar</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
             <TabsContent value="shakti" className="space-y-6">
               <Card>
                 <CardHeader>
