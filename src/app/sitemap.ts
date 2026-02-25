@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
             if (products && Array.isArray(products)) {
                 productRoutes = products.map((product) => ({
-                    url: `${siteConfig.url}/product/${product.slug}`,
+                    url: `${siteConfig.url}/products/${product.slug}`,
                     lastModified: new Date(product.updated_at || new Date()),
                     changeFrequency: "weekly" as const,
                     priority: 0.9,
@@ -38,31 +38,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error("Failed to fetch products for sitemap", e);
     }
 
-    // Generate location routes from locations.json (Standard + Competitive slugs)
-    const locationRoutes = locations.flatMap((location) => ([
-        {
-            url: `${siteConfig.url}/solar-installation/${location.slug}`,
-            lastModified: new Date(),
-            changeFrequency: "monthly" as const,
-            priority: 0.8,
-        },
-        {
-            url: `${siteConfig.url}/solar-in-${location.slug}`,
-            lastModified: new Date(),
-            changeFrequency: "monthly" as const,
-            priority: 0.8,
-        }
-    ]));
+    // Generate location routes from locations.json (canonical URLs only)
+    const locationRoutes = locations.map((location) => ({
+        url: `${siteConfig.url}/solar-installation/${location.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.8,
+    }));
 
-    // Add other static routes that might not be in nav (hardcoded for now as example)
-    // You can also crawl your file system here if needed
+    // Additional static routes not in main nav
     const extraRoutes = [
         "/about/sustainability",
+        "/hybrid-solar",
+        "/solutions/commercial-industrial",
+        "/blog",
+        "/get-quote",
+        "/checkout",
+        "/shakti-solar",
+        "/tata-solar",
+        "/reliance",
+        "/integrated",
     ].map((route) => ({
         url: `${siteConfig.url}${route}`,
         lastModified: new Date(),
         changeFrequency: "monthly" as const,
-        priority: 0.7,
+        priority: route === "/get-quote" ? 0.9 : 0.7,
     }));
 
     // Fetch blog posts for sitemap (Direct DB call with isolated client)

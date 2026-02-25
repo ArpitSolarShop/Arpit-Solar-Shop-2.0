@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import locationsData from "@/data/locations.json";
 import CityPageClient, { LocationData } from "./CityPageClient";
+import { siteConfig } from "@/config/site";
 
 interface Props {
   params: Promise<{ city: string }>;
@@ -45,20 +46,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `Rooftop Solar System Installation in ${location.name} | Subsidy & Price 2026`,
     description: `Get rooftop solar installation in ${location.name}, ${location.city}, ${location.state} (${location.pincode}). Avail PM Surya Ghar Yojana subsidy up to ${formattedSubsidy}. Rated 4.9★ on Google. Net metering available for ${location.discom}.`,
     alternates: {
-      canonical: `https://arpitsolar.com/solar-in-${location.slug}`,
+      canonical: `${siteConfig.url}/solar-installation/${location.slug}`,
     },
     openGraph: {
       type: "website",
-      url: `https://arpitsolar.com/solar-in-${location.slug}`,
+      url: `${siteConfig.url}/solar-installation/${location.slug}`,
       title: `Rooftop Solar System Installation in ${location.name} | Subsidy & Price 2026`,
       description: `Get rooftop solar installation in ${location.name}, ${location.city}, ${location.state}. Avail PM Surya Ghar Yojana subsidy up to ${formattedSubsidy}. Rated 4.9★ on Google.`,
-      images: ["https://arpitsolar.com/city-solar-bg.png"],
+      images: ["https://www.arpitsolar.com/city-solar-bg.png"],
     },
     twitter: {
       card: "summary_large_image",
       title: `Solar Installation in ${location.name} | ${formattedSubsidy} Subsidy`,
       description: `Get rooftop solar in ${location.name}, ${location.city}. PM Surya Ghar Yojana subsidy up to ${formattedSubsidy}.`,
-      images: ["https://arpitsolar.com/city-solar-bg.png"],
+      images: ["https://www.arpitsolar.com/city-solar-bg.png"],
     },
   };
 }
