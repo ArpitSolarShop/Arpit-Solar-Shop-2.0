@@ -279,7 +279,6 @@ export function HeroGetQuote() {
     // Calculate estimates + recommendations
     // ---------------------------
     const handleCalculate = async () => {
-        if (!productCatalog) return setMsg({ title: "Products are still loading, please wait." })
         setLoading(true)
         try {
             const actualMonthlyBill = convertBillRangeToNumber(formData.monthlyBill) || 0
@@ -305,7 +304,7 @@ export function HeroGetQuote() {
                 co2Savings: Number.parseFloat((systemSize * co2SavingPerKWYear).toFixed(1))
             })
 
-            const source = customerType === 'Residential' ? productCatalog.residential : productCatalog.commercial
+            const source = productCatalog ? (customerType === 'Residential' ? productCatalog.residential : productCatalog.commercial) : []
             if (source && source.length) {
                 const brands = [...new Set(source.map(p => p.brand))]
                 const recommendations: ProductSystem[] = []
@@ -413,8 +412,6 @@ export function HeroGetQuote() {
     // ---------------------------
     // UI rendering
     // ---------------------------
-    if (catalogLoading) return <section className="w-full max-w-xl mx-auto p-8 text-center">Loading products...</section>
-    if (catalogError) return <section className="w-full max-w-xl mx-auto p-8 text-center text-red-600">Error: {catalogError}</section>
 
     return (
         <section className="w-full max-w-xl mx-auto px-4 sm:px-0">
