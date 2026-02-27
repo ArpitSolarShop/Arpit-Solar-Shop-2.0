@@ -145,6 +145,11 @@ export default function Contact() {
                                             </p>
                                         </div>
                                     </div>
+
+                                    <div className="bg-gray-50 p-4 rounded-lg mt-4 border border-gray-100">
+                                        <p className="font-semibold text-gray-700">GSTIN:</p>
+                                        <p className="text-gray-900 tracking-wide">09APKPM6299L1ZW</p>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </div>
