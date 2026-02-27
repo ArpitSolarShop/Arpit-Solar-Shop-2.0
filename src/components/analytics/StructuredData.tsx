@@ -15,7 +15,7 @@ export default function StructuredData() {
             "streetAddress": siteConfig.contact.address,
             "addressLocality": "Varanasi",
             "addressRegion": "Uttar Pradesh",
-            "postalCode": "221001",
+            "postalCode": "221003",
             "addressCountry": "IN"
         },
         "geo": {
@@ -37,7 +37,7 @@ export default function StructuredData() {
             "closes": "20:00"
         },
         "priceRange": "₹₹",
-        "hasMap": "https://maps.app.goo.gl/your-google-maps-link",
+        "hasMap": "https://maps.google.com/maps?cid=16186476619204516290",
         "sameAs": [
             siteConfig.links.twitter,
             siteConfig.links.facebook,

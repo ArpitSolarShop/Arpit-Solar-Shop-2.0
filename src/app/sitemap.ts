@@ -53,7 +53,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "/solutions/commercial-industrial",
         "/blog",
         "/get-quote",
-        "/checkout",
         "/shakti-solar",
         "/tata-solar",
         "/reliance",

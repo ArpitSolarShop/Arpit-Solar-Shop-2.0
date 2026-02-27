@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     "Solar Shop Varanasi",
   ],
   openGraph: {
-    title: "Arpit Solar Shop | Rate #1 Solar Company in Varanasi",
+    title: "Arpit Solar Shop | Rated #1 Solar Company in Varanasi",
     description: "Your trusted partner for Solar Rooftop, Water Pumps, and Commercial Solar Projects.",
-    images: ["/logo.png"], // Ensuring a default OG image
+    images: ["/og-image.jpg"],
   },
 };
 

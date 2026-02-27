@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, CheckCircle2, MapPin, PhoneCall, Star } from "lucide-react";
 import { QuickSiteVisitForm } from "@/components/forms/QuickSiteVisitForm";
 
@@ -89,10 +90,10 @@ const LocationHero = ({ city, state }: LocationHeroProps) => {
 
                 {/* Partner Logos */}
                 <div className="mt-12 flex flex-wrap justify-center items-center gap-8 opacity-70 grayscale hover:grayscale-0 transition-all duration-300">
-                    <img src="/Tata Power Solar.webp" alt="Tata Power Solar Official Dealer" className="h-10 md:h-12 w-auto object-contain" />
-                    <img src="/reliance-industries-ltd.webp" alt="Reliance Solar Partner" className="h-10 md:h-12 w-auto object-contain" />
-                    <img src="/AdaniSolar.webp" alt="Adani Solar Dealer" className="h-8 md:h-10 w-auto object-contain" />
-                    <img src="/Shakti Solar.webp" alt="Shakti Pumps Authorized Partner" className="h-10 md:h-12 w-auto object-contain" />
+                    <Image src="/Tata Power Solar.webp" alt="Tata Power Solar Official Dealer" width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
+                    <Image src="/reliance-industries-ltd.webp" alt="Reliance Solar Partner" width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
+                    <Image src="/AdaniSolar.webp" alt="Adani Solar Dealer" width={100} height={40} className="h-8 md:h-10 w-auto object-contain" />
+                    <Image src="/Shakti Solar.webp" alt="Shakti Pumps Authorized Partner" width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
                 </div>
             </div>
         </section>
