@@ -130,8 +130,51 @@ export default function ProductDetailPage() {
     const specs = product.specifications || {};
     const specEntries = Object.entries(specs);
 
+    // Product JSON-LD Schema
+    const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "description": product.description,
+        "brand": {
+            "@type": "Brand",
+            "name": product.brand,
+        },
+        "image": product.image_url || `https://www.arpitsolar.com${brandLogo || "/og-image.jpg"}`,
+        "offers": {
+            "@type": "Offer",
+            "url": `https://www.arpitsolar.com/products/${product.id}`,
+            "priceCurrency": "INR",
+            ...(product.price && product.price > 0 ? { "price": product.price } : {}),
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "Arpit Solar Shop",
+            },
+        },
+        "category": product.category || "Solar Products",
+    };
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.arpitsolar.com" },
+            { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://www.arpitsolar.com/products" },
+            { "@type": "ListItem", "position": 3, "name": product.name, "item": `https://www.arpitsolar.com/products/${product.id}` },
+        ],
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-12 px-4 sm:px-6 lg:px-8">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
             <div className="max-w-7xl mx-auto">
                 {/* Back Button */}
                 <Link

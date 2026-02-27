@@ -8,11 +8,11 @@ export const siteConfig = {
     url: "https://www.arpitsolar.com",
     ogImage: "/og-image.jpg",
     links: {
-        twitter: "https://twitter.com/arpitsolar",
-        facebook: "https://facebook.com/arpitsolar",
-        instagram: "https://instagram.com/arpitsolar",
-        linkedin: "https://linkedin.com/company/arpitsolar",
-        youtube: "https://youtube.com/@arpitsolar",
+        twitter: "https://x.com/arpitsolar",
+        facebook: "https://www.facebook.com/arpitsolarshop",
+        instagram: "https://www.instagram.com/arpitsolarshop",
+        linkedin: "https://www.linkedin.com/company/arpit-solar-shop",
+        youtube: "https://www.youtube.com/@arpitsolarshop",
     },
     contact: {
         email: "info@arpitsolar.com",

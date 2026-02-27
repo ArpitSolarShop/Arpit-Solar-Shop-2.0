@@ -14,6 +14,7 @@ import Providers from "@/components/providers/Providers";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import DoubleTick from "@/components/analytics/DoubleTick";
 import StructuredData from "@/components/analytics/StructuredData";
+import DynamicBreadcrumbs from "@/components/analytics/DynamicBreadcrumbs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -79,6 +80,7 @@ export default function RootLayout({
           <DoubleTick />
           <Analytics />
           <StructuredData />
+          <DynamicBreadcrumbs />
         </Providers>
       </body>
     </html>
