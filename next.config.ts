@@ -26,8 +26,8 @@ const nextConfig: NextConfig = {
       },
       // Also catch any old single product pages like /tata-solar-roof-top...
       {
-        source: '/tata-solar-:path*',
-        destination: '/products/tata-solar-:path*',
+        source: '/:path(tata-solar-.*)',
+        destination: '/products/:path',
         permanent: true,
       }
     ];
