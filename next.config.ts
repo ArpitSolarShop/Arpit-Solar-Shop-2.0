@@ -15,6 +15,21 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/residential',
+        destination: '/solutions/residential',
+        permanent: true,
+      },
+      {
+        source: '/privacy-policy',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/terms-conditions',
+        destination: '/',
+        permanent: true,
+      },
+      {
         source: '/solar-in-:city',
         destination: '/solar-installation/:city',
         permanent: true,
