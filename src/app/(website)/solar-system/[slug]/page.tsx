@@ -94,8 +94,49 @@ export default async function SolarSystemCategoryPage({
 
     const titleText = slugInfo.capacityKw ? `${slugInfo.capacityKw}kW ${slugInfo.systemType || ''} Solar Systems` : `${slugInfo.rawQuery} Solutions`;
 
+    // Generate JSON-LD Structured Data for this dynamic page
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                    "@type": "Product",
+                    "name": `Tata ${titleText}`,
+                    "brand": { "@type": "Brand", "name": "Tata Power Solar" }
+                }
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "item": {
+                    "@type": "Product",
+                    "name": `Reliance ${titleText}`,
+                    "brand": { "@type": "Brand", "name": "Reliance Solar" }
+                }
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "item": {
+                    "@type": "Product",
+                    "name": `Shakti ${titleText}`,
+                    "brand": { "@type": "Brand", "name": "Shakti Solar" }
+                }
+            }
+        ]
+    };
+
     return (
         <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30">
+            {/* Inject JSON-LD for SEO Rich Results */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+
             {/* Premium Hero Section */}
             <section className="bg-blue-600 text-white py-16 px-4 mb-12 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
