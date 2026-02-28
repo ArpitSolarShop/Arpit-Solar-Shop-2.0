@@ -9,14 +9,27 @@ const nextConfig: NextConfig = {
         destination: '/about/us',
         permanent: true,
       },
-    ];
-  },
-  async rewrites() {
-    return [
+      {
+        source: '/index',
+        destination: '/',
+        permanent: true,
+      },
       {
         source: '/solar-in-:city',
         destination: '/solar-installation/:city',
+        permanent: true,
       },
+      {
+        source: '/product/:slug',
+        destination: '/products/:slug',
+        permanent: true,
+      },
+      // Also catch any old single product pages like /tata-solar-roof-top...
+      {
+        source: '/tata-solar-:path*',
+        destination: '/products/tata-solar-:path*',
+        permanent: true,
+      }
     ];
   },
   async headers() {
