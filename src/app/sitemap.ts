@@ -64,6 +64,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route === "/get-quote" ? 0.9 : 0.7,
     }));
 
+    // High-Intent Dynamic Solar System Categories (Add-on)
+    const categoryRoutes = [
+        "/solar-system/3kw-on-grid",
+        "/solar-system/5kw-on-grid",
+        "/solar-system/10kw-on-grid",
+        "/solar-system/3kw-hybrid",
+        "/solar-system/5kw-hybrid",
+        "/solar-system/10kw-hybrid",
+        "/solar-system/5kw-off-grid",
+        "/solar-system/solar-pump",
+        "/solar-system/solar-for-chakki",
+    ].map((route) => ({
+        url: `${siteConfig.url}${route}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.9, // Very high priority for these SEO landing pages
+    }));
+
     // Fetch blog posts for sitemap (Direct DB call with isolated client)
     let blogRoutes: MetadataRoute.Sitemap = [];
     try {
@@ -92,5 +110,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error("Failed to fetch blog posts for sitemap:", error);
     }
 
-    return [...routes, ...productRoutes, ...locationRoutes, ...extraRoutes, ...blogRoutes];
+    return [...routes, ...productRoutes, ...locationRoutes, ...extraRoutes, ...categoryRoutes, ...blogRoutes];
 }

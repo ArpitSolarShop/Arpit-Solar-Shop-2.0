@@ -29,6 +29,12 @@ const nextConfig: NextConfig = {
         destination: '/',
         permanent: true,
       },
+      // Missing /about redirect (old site had /about as a parent or page, new site uses /about/us)
+      {
+        source: '/about',
+        destination: '/about/us',
+        permanent: true,
+      },
       {
         source: '/solar-in-:city',
         destination: '/solar-installation/:city',
@@ -39,9 +45,19 @@ const nextConfig: NextConfig = {
         destination: '/products/:slug',
         permanent: true,
       },
-      // Also catch any old single product pages like /tata-solar-roof-top...
+      // Catch wildcards for old brand prefixes that were standalone pages
       {
         source: '/:path(tata-solar-.*)',
+        destination: '/products/:path',
+        permanent: true,
+      },
+      {
+        source: '/:path(reliance-.*)',
+        destination: '/products/:path',
+        permanent: true,
+      },
+      {
+        source: '/:path(shakti-solar-.*)',
         destination: '/products/:path',
         permanent: true,
       }
