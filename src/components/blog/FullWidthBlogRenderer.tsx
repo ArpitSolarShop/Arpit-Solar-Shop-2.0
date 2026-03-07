@@ -8,61 +8,71 @@ interface FullWidthBlogRendererProps {
 
 export default function FullWidthBlogRenderer({ htmlContent }: FullWidthBlogRendererProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
-    const [iframeHeight, setIframeHeight] = useState(3000);
+    const [iframeHeight, setIframeHeight] = useState(4000);
 
-    // Inject a resize script into the HTML content so the iframe reports its own height
-    const contentWithResizer = htmlContent.replace(
-        '</body>',
-        `<script>
+    // Process content: strip viewport-relative classes that cause infinite loops
+    // and inject a postMessage-based height reporter
+    const processedContent = (() => {
+        let content = htmlContent;
+
+        // Remove viewport-relative classes that cause infinite height loops in iframes
+        // min-h-screen = min-height: 100vh, h-screen = height: 100vh
+        content = content.replace(/\bmin-h-screen\b/g, '');
+        content = content.replace(/\bh-screen\b/g, '');
+
+        // Inject height reporter before </body>
+        const resizeScript = `<script>
             (function() {
+                var lastReported = 0;
                 function reportHeight() {
                     var h = Math.max(
-                        document.body.scrollHeight,
-                        document.body.offsetHeight,
-                        document.documentElement.scrollHeight,
-                        document.documentElement.offsetHeight
+                        document.body.scrollHeight || 0,
+                        document.body.offsetHeight || 0,
+                        document.documentElement.scrollHeight || 0,
+                        document.documentElement.offsetHeight || 0
                     );
-                    window.parent.postMessage({ type: '__blog_iframe_height', height: h }, '*');
+                    // Only report if height changed meaningfully
+                    if (Math.abs(h - lastReported) > 10) {
+                        lastReported = h;
+                        window.parent.postMessage({ type: '__blog_height', height: h }, '*');
+                    }
                 }
-                // Report on load
-                window.addEventListener('load', function() {
+                // Report after load and Tailwind compilation
+                if (document.readyState === 'complete') {
                     reportHeight();
-                    setTimeout(reportHeight, 500);
-                    setTimeout(reportHeight, 1500);
-                    setTimeout(reportHeight, 3000);
-                    setTimeout(reportHeight, 5000);
-                });
-                // Report on resize
-                window.addEventListener('resize', reportHeight);
-                // Report on DOM changes
-                if (typeof MutationObserver !== 'undefined') {
-                    new MutationObserver(function() {
-                        setTimeout(reportHeight, 100);
-                    }).observe(document.body, { childList: true, subtree: true, attributes: true });
+                } else {
+                    window.addEventListener('load', function() {
+                        reportHeight();
+                        setTimeout(reportHeight, 500);
+                        setTimeout(reportHeight, 1500);
+                        setTimeout(reportHeight, 3000);
+                        setTimeout(reportHeight, 5000);
+                    });
                 }
-                // Fallback: report every 2 seconds for 30 seconds
+                // Periodic check for first 20 seconds
                 var count = 0;
                 var interval = setInterval(function() {
                     reportHeight();
-                    count++;
-                    if (count > 15) clearInterval(interval);
+                    if (++count >= 10) clearInterval(interval);
                 }, 2000);
             })();
-        </script></body>`
-    );
+        </script>`;
+
+        if (content.includes('</body>')) {
+            content = content.replace('</body>', resizeScript + '</body>');
+        } else {
+            content += resizeScript;
+        }
+
+        return content;
+    })();
 
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            if (event.data?.type === '__blog_iframe_height' && typeof event.data.height === 'number') {
-                const newHeight = event.data.height;
-                if (newHeight > 100) {
-                    setIframeHeight(prev => {
-                        // Only grow or make significant changes (avoid shrink oscillation)
-                        if (newHeight > prev || Math.abs(newHeight - prev) > 50) {
-                            return newHeight + 20; // small buffer
-                        }
-                        return prev;
-                    });
+            if (event.data?.type === '__blog_height' && typeof event.data.height === 'number') {
+                const h = event.data.height;
+                if (h > 100 && h < 50000) { // sanity check - cap at 50000px
+                    setIframeHeight(h + 30); // small buffer for padding
                 }
             }
         };
@@ -74,7 +84,7 @@ export default function FullWidthBlogRenderer({ htmlContent }: FullWidthBlogRend
     return (
         <iframe
             ref={iframeRef}
-            srcDoc={contentWithResizer}
+            srcDoc={processedContent}
             className="w-full border-0"
             style={{ height: `${iframeHeight}px`, width: '100%' }}
             title="Blog Content"
