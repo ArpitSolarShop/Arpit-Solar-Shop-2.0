@@ -18,7 +18,7 @@ export default function BlogPage() {
 
     const fetchBlogPosts = async () => {
         try {
-            const response = await fetch("/api/cms/blog?status=published");
+            const response = await fetch(`/api/cms/blog?status=published&t=${Date.now()}`, { cache: 'no-store' });
             if (!response.ok) throw new Error("Failed to fetch blog posts");
 
             const data = await response.json();
