@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Tag, ArrowLeft, Clock, User } from "lucide-react";
 import { ShareButton } from "@/components/blog/ShareButton";
+import FullWidthBlogRenderer from "@/components/blog/FullWidthBlogRenderer";
 
 // Revalidate every hour
 export const revalidate = 3600;
@@ -136,11 +137,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <span className="text-gray-900 font-medium">{blogPost.title}</span>
                 </div>
 
-                {/* Full-Width HTML Content */}
-                <div
-                    className="full-width-blog-content w-full"
-                    dangerouslySetInnerHTML={{ __html: blogPost.content }}
-                />
+                {/* Full-Width HTML Content (rendered in iframe for complete HTML documents) */}
+                <FullWidthBlogRenderer htmlContent={blogPost.content} />
 
                 {/* Contact CTA */}
                 <section className="py-24 px-6 bg-blue-600 text-white">
