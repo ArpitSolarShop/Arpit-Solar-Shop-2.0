@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Tag, ArrowLeft, Clock, User } from "lucide-react";
 import { ShareButton } from "@/components/blog/ShareButton";
+import MountingStructuresGuide from '@/components/blog/MountingStructuresGuide';
 
 // Revalidate every hour
 export const revalidate = 3600;
@@ -98,6 +99,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         month: 'long',
         day: 'numeric'
     });
+
+    if (blogPost.slug === 'mounting-structures-guide') {
+        return (
+            <div className="w-full bg-white">
+                <MountingStructuresGuide />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -257,7 +266,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 </Button>
                             </Link>
                             <Link href="/contact">
-                                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-8">
+                                <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 font-semibold px-8">
                                     Contact Us
                                 </Button>
                             </Link>
