@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Tag, ArrowLeft, Clock, User } from "lucide-react";
 import { ShareButton } from "@/components/blog/ShareButton";
+import MountingStructuresGuide from '@/components/blog/MountingStructuresGuide';
 
 // Revalidate every hour
 export const revalidate = 3600;
@@ -218,10 +219,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                         {/* Main Content */}
                         <div className="px-8 py-8">
-                            <div
-                                className="blog-content"
-                                dangerouslySetInnerHTML={{ __html: blogPost.content }}
-                            />
+                            {blogPost.slug === 'mounting-structures-guide' ? (
+                                <MountingStructuresGuide />
+                            ) : (
+                                <div
+                                    className="blog-content"
+                                    dangerouslySetInnerHTML={{ __html: blogPost.content }}
+                                />
+                            )}
                         </div>
 
                         {/* Tags Footer */}

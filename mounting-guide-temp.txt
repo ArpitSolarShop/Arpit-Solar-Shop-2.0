@@ -1,0 +1,143 @@
+﻿<p>import React, { useState, useEffect, useRef } from 'react';
+import { Wind, Shield, Zap, Settings, ArrowRight, CheckCircle2, XCircle, Info, Layers } from 'lucide-react';
+
+// --- DATA ---
+
+const MATERIALS = [
+  {
+    id: 1,
+    name: "Hot-Dip Galvanized Mild Steel (HDG MS)",
+    description: "Mild steel fabricated into frames and hot-dip galvanized. The most widely used structural material globally.",
+    specs: { zinc: "80â120 micron", thickness: "2â6 mm", life: "20â30 years" },
+    uses: ["Large utility farms", "Commercial rooftops", "Elevated structures", "Car parking canopies"],
+    pros: ["Very strong and rigid", "Good corrosion protection", "Cost-effective", "Easy to fabricate"],
+    cons: ["Heavy", "Higher transport cost", "Rusts if galvanization is poor"]
+  },
+  {
+    id: 2,
+    name: "Aluminium (Extruded)",
+    description: "Aluminium profiles are extruded rails and brackets used mainly for lightweight installations.",
+    specs: { alloy: "6005-T5 / 6063-T6", finish: "Anodized", life: "25â30 years" },
+    uses: ["Residential rooftops", "Lightweight roofs", "Small commercial systems"],
+    pros: ["No rust", "Lightweight", "Easy installation", "High corrosion resistance"],
+    cons: ["Higher cost than steel", "Lower strength for large spans"]
+  },
+  {
+    id: 3,
+    name: "Galvanized Iron (GI Steel)",
+    description: "Steel coated with zinc to resist corrosion. Similar to HDG steel but typically thinner coating.",
+    specs: { zinc: "40â80 micron", thickness: "1.6â3 mm", life: "15â20 years" },
+    uses: ["Commercial structures", "Medium-scale installations"],
+    pros: ["Stronger than aluminium", "Cheaper than aluminium", "Good corrosion resistance"],
+    cons: ["Heavier", "Life depends heavily on coating thickness"]
+  },
+  {
+    id: 4,
+    name: "Pre-Galvanized Steel",
+    description: "Steel sheets that are galvanized before fabrication.",
+    specs: { zinc: "20â40 micron", thickness: "1.5â3 mm", life: "10â15 years" },
+    uses: ["Budget projects", "Lightweight rooftop structures"],
+    pros: ["Cheap", "Easy manufacturing", "Lightweight vs heavy steel"],
+    cons: ["Lower corrosion resistance", "Shorter lifespan"]
+  },
+  {
+    id: 5,
+    name: "Stainless Steel",
+    description: "High-grade steel containing chromium and nickel that resists rust naturally.",
+    specs: { grades: "SS304 / SS316", life: "30+ years" },
+    uses: ["Coastal regions", "Chemical plants", "Marine installations"],
+    pros: ["Excellent corrosion resistance", "Very long life", "Minimal maintenance"],
+    cons: ["Very expensive", "Heavy"]
+  },
+  {
+    id: 6,
+    name: "FRP (Fiber Reinforced Plastic)",
+    description: "Composite material made from plastic reinforced with glass fibers.",
+    specs: { weight: "Very lightweight", life: "20â25 years" },
+    uses: ["Chemical plants", "Coastal regions", "Corrosive environments"],
+    pros: ["100% corrosion resistant", "Lightweight", "Electrical insulation"],
+    cons: ["Expensive", "Lower mechanical strength"]
+  },
+  {
+    id: 7,
+    name: "Concrete Structures",
+    description: "Equipment mounted on precast or poured concrete supports.",
+    specs: { material: "Reinforced concrete", life: "30â40 years" },
+    uses: ["Utility-scale installations", "High wind regions"],
+    pros: ["Extremely durable", "High stability", "Long lifespan"],
+    cons: ["Very heavy", "Expensive installation"]
+  },
+  {
+    id: 8,
+    name: "Wood Structures",
+    description: "Simple timber structures sometimes used for small off-grid systems.",
+    specs: { material: "Treated timber", life: "5â10 years" },
+    uses: ["Small rural installations", "Temporary systems"],
+    pros: ["Very cheap", "Easy to build"],
+    cons: ["Low durability", "Susceptible to weather/termites"]
+  },
+  {
+    id: 9,
+    name: "Polymer / Composite",
+    description: "Modern high-strength polymer composites used in experimental installations.",
+    specs: { material: "Fiber-reinforced composites", life: "20â30 years" },
+    uses: ["Experimental installations", "Extreme environments"],
+    pros: ["Lightweight", "Corrosion resistant"],
+    cons: ["Expensive", "Limited availability"]
+  },
+  {
+    id: 10,
+    name: "Hybrid Structures",
+    description: "Combination of materials (e.g., steel base, aluminium rails, SS bolts).",
+    specs: { steel: "3â5 mm", rails: "Extruded Aluminium" },
+    uses: ["Most modern rooftop installations", "Commercial systems"],
+    pros: ["Best balance of strength &amp; corrosion resistance", "Optimized cost"],
+    cons: ["Slightly complex design"]
+  }
+];
+
+const MARKET_SHARE = [
+  { material: "HDG Mild Steel", share: 70, stars: 5, label: "Most used" },
+  { material: "Aluminium", share: 20, stars: 4, label: "Common" },
+  { material: "Pre-Galvanized", share: 5, stars: 3, label: "Budget" },
+  { material: "GI Steel", share: 3, stars: 2, label: "Mid-budget" },
+  { material: "Others (SS, FRP, etc.)", share: 2, stars: 1, label: "Specialized" }
+];
+
+const STRUCTURE_TYPES = [
+  { title: "Rooftop", desc: "Installed on building roofs (Houses, Offices).", tilt: "5Â° â 25Â°", pros: ["Uses existing space", "Lower cost"], cons: ["Limited capacity", "Roof strength limits"] },
+  { title: "Ground Mount", desc: "Fixed directly in the ground (Utility farms).", tilt: "15Â° â 30Â°", pros: ["Large capacity", "Easy maintenance"], cons: ["Requires land", "Higher install cost"] },
+  { title: "Elevated", desc: "High steel structures (Parking, Terraces).", tilt: "Custom", pros: ["Dual use space", "Good airflow"], cons: ["Expensive", "Heavy structure"] },
+  { title: "Tracker", desc: "Dynamic movement to maximize efficiency.", tilt: "Dynamic", pros: ["15â35% more efficiency"], cons: ["Expensive", "Mechanical maintenance"] },
+  { title: "Pole Mount", desc: "Mounted on single/multiple poles.", tilt: "Adjustable", pros: ["Small footprint"], cons: ["Limited system size"] }
+];
+
+// --- COMPONENTS ---
+
+// Scroll Reveal Wrapper for smooth transitions
+const Reveal = ({ children, delay = 0 }) =&gt; {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() =&gt; {
+    const observer = new IntersectionObserver(
+      ([entry]) =&gt; {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () =&gt; observer.disconnect();
+  }, []);
+
+  return (
+    </p><p><br></p><p>
+  );
+};
+
+// Animated Structural SVG to replace the Sun
+const AnimatedStructure = () =&gt; (
+  </p><p><br></p>
