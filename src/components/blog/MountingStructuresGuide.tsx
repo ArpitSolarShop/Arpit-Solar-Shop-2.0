@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Wind, Shield, Zap, Settings, ArrowRight, CheckCircle2, XCircle, Info, Layers, PhoneCall, MessageCircle, Mail } from 'lucide-react';
+import { Wind, Shield, Zap, Settings, ArrowRight, CheckCircle2, XCircle, Info, Layers, PhoneCall, MessageCircle, Mail, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 // --- DATA ---
 
@@ -179,6 +180,15 @@ export default function MountingStructuresGuide() {
             {/* --- HERO SECTION --- */}
             <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white via-[#f5f5f7] to-[#f5f5f7] -z-10" />
+
+                {/* --- BREADCRUMBS --- */}
+                <div className="absolute top-24 left-6 md:left-12 max-w-7xl w-full z-20 flex items-center space-x-2 text-sm text-slate-500">
+                    <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+                    <ChevronRight className="w-4 h-4" />
+                    <Link href="/blog" className="hover:text-blue-600 transition-colors">Blog</Link>
+                    <ChevronRight className="w-4 h-4" />
+                    <span className="text-slate-900 font-medium">Mounting Structures Guide</span>
+                </div>
 
                 <Reveal>
                     <AnimatedStructure />
