@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Wind, Shield, Zap, Settings, ArrowRight, CheckCircle2, XCircle, Info, Layers } from 'lucide-react';
+import { Wind, Shield, Zap, Settings, ArrowRight, CheckCircle2, XCircle, Info, Layers, PhoneCall, MessageCircle, Mail } from 'lucide-react';
 
 // --- DATA ---
 
@@ -358,8 +358,8 @@ export default function MountingStructuresGuide() {
                                     key={i}
                                     onClick={() => setActiveTab(i)}
                                     className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeTab === i
-                                            ? 'bg-blue-600 text-white shadow-md'
-                                            : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
+                                        ? 'bg-blue-600 text-white shadow-md'
+                                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
                                         }`}
                                 >
                                     {type.title}
@@ -396,6 +396,55 @@ export default function MountingStructuresGuide() {
                             </div>
                         </div>
                     </Reveal>
+                </div>
+            </section>
+
+            {/* --- CTA / CONTACT SECTION --- */}
+            <section className="py-24 px-6 bg-blue-600 text-white">
+                <div className="max-w-4xl mx-auto text-center">
+                    <Reveal>
+                        <div className="flex justify-center mb-8">
+                            <div className="bg-white p-4 rounded-2xl shadow-lg">
+                                <img src="/logo.webp" alt="Arpit Solar Shop Logo" className="h-12 object-contain" />
+                            </div>
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-bold mb-6">Need Expert Guidance?</h2>
+                        <p className="text-blue-100 text-lg mb-12 max-w-2xl mx-auto">
+                            Connect with us to avail our specialized blog services or to get expert advice on mounting structures for your next project. We are here to help!
+                        </p>
+                    </Reveal>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Reveal delay={100}>
+                            <a href="tel:+919005770466" className="flex flex-col items-center p-8 rounded-3xl bg-white/10 hover:bg-white/20 hover:-translate-y-1 transition-all duration-300 border border-white/10 group">
+                                <div className="p-4 bg-white/10 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                                    <PhoneCall className="w-8 h-8 text-white" />
+                                </div>
+                                <span className="text-sm text-blue-200 mb-1 uppercase tracking-wider font-semibold">Call Us</span>
+                                <span className="text-2xl font-bold">9005770466</span>
+                            </a>
+                        </Reveal>
+
+                        <Reveal delay={200}>
+                            <a href="https://wa.me/919044555572" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-8 rounded-3xl bg-white/10 hover:bg-white/20 hover:-translate-y-1 transition-all duration-300 border border-white/10 group">
+                                <div className="p-4 bg-emerald-500/20 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                                    <MessageCircle className="w-8 h-8 text-emerald-400" />
+                                </div>
+                                <span className="text-sm text-blue-200 mb-1 uppercase tracking-wider font-semibold">WhatsApp</span>
+                                <span className="text-2xl font-bold">9044555572</span>
+                            </a>
+                        </Reveal>
+
+                        <Reveal delay={300}>
+                            <a href="mailto:info@arpitsolar.com" className="flex flex-col items-center p-8 rounded-3xl bg-white/10 hover:bg-white/20 hover:-translate-y-1 transition-all duration-300 border border-white/10 group">
+                                <div className="p-4 bg-white/10 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                                    <Mail className="w-8 h-8 text-white" />
+                                </div>
+                                <span className="text-sm text-blue-200 mb-1 uppercase tracking-wider font-semibold">Email</span>
+                                <span className="text-xl font-bold">info@arpitsolar.com</span>
+                            </a>
+                        </Reveal>
+                    </div>
                 </div>
             </section>
 
