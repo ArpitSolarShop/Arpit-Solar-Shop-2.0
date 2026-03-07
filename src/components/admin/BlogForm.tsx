@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Trash2, UploadCloud, X, Image as ImageIcon, Code } from "lucide-react";
+import { Loader2, Save, Trash2, UploadCloud, X, Image as ImageIcon, Code, Maximize2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface BlogFormProps {
@@ -40,6 +40,7 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
     const [deleting, setDeleting] = useState(false);
     const [dragActive, setDragActive] = useState(false);
     const [isRawMode, setIsRawMode] = useState(false);
+    const [isFullWidth, setIsFullWidth] = useState(initialData?.tags?.includes('__full_width') || false);
     const [formData, setFormData] = useState({
         title: initialData?.title || "",
         slug: initialData?.slug || "",
@@ -180,11 +181,13 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
             // Get content directly from state
             const content = formData.content;
 
-            // Prepare payload
             const payload = {
                 ...formData,
                 content,
-                tags: formData.tags.split(",").map(tag => tag.trim()).filter(Boolean),
+                tags: [
+                    ...formData.tags.split(",").map(tag => tag.trim()).filter(t => t && t !== '__full_width'),
+                    ...(isFullWidth ? ['__full_width'] : [])
+                ],
                 author_id: "00000000-0000-0000-0000-000000000000", // TODO: Replace with actual user ID
             };
 
@@ -508,16 +511,29 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle>Content</CardTitle>
-                    <div className="flex items-center space-x-2">
-                        <Label htmlFor="raw-mode" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-gray-600 flex items-center gap-1">
-                            <Code className="w-4 h-4" />
-                            Raw HTML / Embed Code
-                        </Label>
-                        <Switch
-                            id="raw-mode"
-                            checked={isRawMode}
-                            onCheckedChange={setIsRawMode}
-                        />
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center space-x-2">
+                            <Label htmlFor="full-width-mode" className="text-sm font-medium leading-none cursor-pointer text-gray-600 flex items-center gap-1">
+                                <Maximize2 className="w-4 h-4" />
+                                Full-Width Layout
+                            </Label>
+                            <Switch
+                                id="full-width-mode"
+                                checked={isFullWidth}
+                                onCheckedChange={setIsFullWidth}
+                            />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Label htmlFor="raw-mode" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-gray-600 flex items-center gap-1">
+                                <Code className="w-4 h-4" />
+                                Raw HTML / Embed Code
+                            </Label>
+                            <Switch
+                                id="raw-mode"
+                                checked={isRawMode}
+                                onCheckedChange={setIsRawMode}
+                            />
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent>
