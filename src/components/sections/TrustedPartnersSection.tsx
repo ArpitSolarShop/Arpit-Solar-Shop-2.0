@@ -64,7 +64,7 @@ const TrustedPartnersSection = () => {
           <div className="bg-white p-6 rounded-xl shadow-lg border border-yellow-200 flex flex-col items-center justify-center text-center">
             <div className="relative h-16 w-full mb-4">
               <Image
-                src="/reliance-industries-ltd.png"
+                src="/reliance-industries-ltd.webp"
                 alt="Reliance Industries Ltd. Logo"
                 fill
                 className="object-contain"

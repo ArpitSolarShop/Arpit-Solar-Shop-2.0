@@ -113,7 +113,7 @@ const Navbar = () => {
           {
             name: "Reliance Solar",
             href: "/reliance",
-            image: "/reliance-industries-ltd.png",
+            image: "/reliance-industries-ltd.webp",
             description: "Leading renewable energy solutions",
             recommended: "Recommended for commercial",
           },

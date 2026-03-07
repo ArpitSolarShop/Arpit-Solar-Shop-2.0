@@ -207,7 +207,7 @@ function PriceComparison({ dataShakti, dataReliance, dataTata }: { dataShakti: R
 
   const systemsToCompare = [
     { brand: 'Shakti Solar', logo: '/Shakti Solar.png', data: shaktiSystem },
-    { brand: 'Reliance Solar', logo: '/reliance-industries-ltd.png', data: relianceSystem },
+    { brand: 'Reliance Solar', logo: '/reliance-industries-ltd.webp', data: relianceSystem },
     { brand: 'Tata Power Solar', logo: '/Tata Power Solar.png', data: tataSystem }
   ].filter(s => s.data);
 
@@ -524,7 +524,7 @@ export default function Residential() {
                   <span>Shakti Solar</span>
                 </TabsTrigger>
                 <TabsTrigger value="reliance" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
-                  <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <img src="/reliance-industries-ltd.webp" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
                   <span>Reliance Solar</span>
                 </TabsTrigger>
                 <TabsTrigger value="tata" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
@@ -551,7 +551,7 @@ export default function Residential() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-900">
-                    <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-5 w-auto" />
+                    <img src="/reliance-industries-ltd.webp" alt="Reliance Solar" className="h-5 w-auto" />
                     {relianceCompanyName} - Residential Solar Systems
                   </CardTitle>
                   <CardDescription>{relianceProductDesc} ({relianceWorkScope})</CardDescription>

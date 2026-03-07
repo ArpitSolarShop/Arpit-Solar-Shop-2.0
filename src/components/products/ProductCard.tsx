@@ -60,7 +60,7 @@ export function ProductCard({ product }: ProductCardProps) {
     const getBrandLogo = (brand: string) => {
         const brandLower = brand.toLowerCase();
         if (brandLower.includes("tata")) return "/Tata%20Power%20Solar.png";
-        if (brandLower.includes("reliance")) return "/reliance-industries-ltd.png";
+        if (brandLower.includes("reliance")) return "/reliance-industries-ltd.webp";
         if (brandLower.includes("shakti")) return "/Shakti%20Solar.png";
         if (brandLower.includes("waree") || brandLower.includes("adani")) return "/Integrated.png";
         if (brandLower.includes("hybrid")) return "/Hybrid.png";
