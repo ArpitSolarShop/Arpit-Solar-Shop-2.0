@@ -15,13 +15,14 @@ export async function GET(request: NextRequest) {
         const status = searchParams.get('status');
         const tag = searchParams.get('tag');
         const slug = searchParams.get('slug');
+        const id = searchParams.get('id');
 
         let query: any = supabase
             .from('blog_posts')
             .select('*');
 
-        // Order by created_at desc ONLY if we are fetching a list (no slug)
-        if (!slug) {
+        // Order by created_at desc ONLY if we are fetching a list (no slug or id)
+        if (!slug && !id) {
             query = query.order('created_at', { ascending: false });
         }
 
@@ -34,9 +35,11 @@ export async function GET(request: NextRequest) {
             query = query.contains('tags', [tag]);
         }
 
-        // Call .single() LAST if fetching by slug
+        // Call .single() LAST if fetching by slug or id
         if (slug) {
             query = query.eq('slug', slug).single();
+        } else if (id) {
+            query = query.eq('id', id).single();
         }
 
         const { data, error } = await query;
