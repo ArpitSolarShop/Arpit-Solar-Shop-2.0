@@ -181,8 +181,28 @@ export default function MountingStructuresGuide() {
             <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white via-[#f5f5f7] to-[#f5f5f7] -z-10" />
 
+                {/* --- BRAND HEADER --- */}
+                <div className="absolute top-0 left-0 w-full px-6 md:px-12 py-6 z-30 flex justify-between items-center bg-white/50 backdrop-blur-md border-b border-slate-200/50">
+                    <Link href="/" className="flex items-center gap-3 group">
+                        <img src="/logo.webp" alt="Arpit Solar Shop" className="h-8 md:h-10 object-contain group-hover:scale-105 transition-transform" />
+                    </Link>
+                    <div className="flex items-center gap-6 text-sm font-medium text-slate-600">
+                        <a href="tel:+919005770466" className="hidden sm:flex items-center gap-2 hover:text-blue-600 transition-colors">
+                            <PhoneCall className="w-4 h-4" />
+                            <span className="tracking-wide">9005770466</span>
+                        </a>
+                        <a href="mailto:info@arpitsolar.com" className="hidden lg:flex items-center gap-2 hover:text-blue-600 transition-colors">
+                            <Mail className="w-4 h-4" />
+                            <span>info@arpitsolar.com</span>
+                        </a>
+                        <Link href="/contact" className="bg-blue-600 text-white px-5 py-2.5 rounded-full hover:bg-blue-700 transition-colors shadow-sm text-xs md:text-sm">
+                            Get Quote
+                        </Link>
+                    </div>
+                </div>
+
                 {/* --- BREADCRUMBS --- */}
-                <div className="absolute top-24 left-6 md:left-12 max-w-7xl w-full z-20 flex items-center space-x-2 text-sm text-slate-500">
+                <div className="absolute top-28 left-6 md:left-12 max-w-7xl w-full z-20 flex items-center space-x-2 text-sm text-slate-500">
                     <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
                     <ChevronRight className="w-4 h-4" />
                     <Link href="/blog" className="hover:text-blue-600 transition-colors">Blog</Link>
