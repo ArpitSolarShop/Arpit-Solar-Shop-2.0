@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Trash2, UploadCloud, X, Image as ImageIcon } from "lucide-react";
+import { Loader2, Save, Trash2, UploadCloud, X, Image as ImageIcon, Code } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface BlogFormProps {
@@ -38,6 +39,7 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
     const [uploading, setUploading] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const [isRawMode, setIsRawMode] = useState(false);
     const [formData, setFormData] = useState({
         title: initialData?.title || "",
         slug: initialData?.slug || "",
@@ -504,17 +506,42 @@ export default function BlogForm({ initialData, mode = "create" }: BlogFormProps
             </Card>
 
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle>Content</CardTitle>
+                    <div className="flex items-center space-x-2">
+                        <Label htmlFor="raw-mode" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-gray-600 flex items-center gap-1">
+                            <Code className="w-4 h-4" />
+                            Raw HTML / Embed Code
+                        </Label>
+                        <Switch
+                            id="raw-mode"
+                            checked={isRawMode}
+                            onCheckedChange={setIsRawMode}
+                        />
+                    </div>
                 </CardHeader>
                 <CardContent>
-                    <RichTextEditor
-                        value={formData.content}
-                        onChange={(content) => {
-                            setFormData(prev => ({ ...prev, content }));
-                        }}
-                        placeholder="Start writing your blog post here..."
-                    />
+                    {isRawMode ? (
+                        <div className="space-y-3">
+                            <div className="text-xs text-blue-600 bg-blue-50 p-3 rounded-md border border-blue-100">
+                                <strong>Raw Code Mode Active:</strong> Paste raw HTML, custom CSS, or iframes (e.g. Canva embeds, YouTube videos) directly into this box.
+                            </div>
+                            <Textarea
+                                value={formData.content}
+                                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                                placeholder="<div><h1>Custom code block</h1>...</div>"
+                                className="min-h-[400px] font-mono text-sm leading-relaxed"
+                            />
+                        </div>
+                    ) : (
+                        <RichTextEditor
+                            value={formData.content}
+                            onChange={(content) => {
+                                setFormData(prev => ({ ...prev, content }));
+                            }}
+                            placeholder="Start writing your blog post here..."
+                        />
+                    )}
                 </CardContent>
             </Card>
 
