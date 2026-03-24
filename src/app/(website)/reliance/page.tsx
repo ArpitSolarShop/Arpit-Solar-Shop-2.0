@@ -46,7 +46,7 @@ const Reliance = () => {
         <div className="relative z-10 text-center text-white max-w-4xl px-6">
           {/* Reliance Industries Logo added here */}
           <img
-            src="/reliance-industries-ltd.webp"
+            src="/reliance-industries-ltd.png"
             alt="Reliance Industries Ltd. Logo"
             className="h-24 md:h-32 mx-auto mb-6" // Adjust height and margin as needed
           />

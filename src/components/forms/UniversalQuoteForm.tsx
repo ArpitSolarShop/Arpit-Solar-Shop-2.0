@@ -202,7 +202,7 @@ const UniversalQuoteForm = ({
 
     // --- UI Helpers ---
     const isLargeSystem = (parseFloat(formData.power_demand_kw) || 0) > 15;
-    const logoSrc = config?.logo || (category === "Tata" ? "/Tata Power Solar.png" : category === "Reliance" ? "/reliance-industries-ltd.webp" : category === "Shakti" ? "/Shakti Solar.png" : category === "Hybrid" ? "/Hybrid.png" : "/logo.png");
+    const logoSrc = config?.logo || (category === "Tata" ? "/Tata Power Solar.png" : category === "Reliance" ? "/reliance-industries-ltd.png" : category === "Shakti" ? "/Shakti Solar.png" : category === "Hybrid" ? "/Hybrid.png" : "/logo.png");
 
     const FormContent = (
         <div className={mode === "embedded" ? "w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6" : ""}>
