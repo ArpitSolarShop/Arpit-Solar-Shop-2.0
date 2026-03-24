@@ -77,10 +77,10 @@ export async function POST(req: NextRequest) {
             // Subsidy calc for calculator form — use requested (sanctioned) capacity, not panel-rounded
             const capacity = parseFloat(power_demand_kw);
             const sanctionedKw = Math.floor(capacity); // PM Surya Ghar uses sanctioned load in whole kW
-            if (sanctionedKw <= 2) calculatedValues.centralSubsidy = sanctionedKw * 30000;
-            else if (sanctionedKw <= 3) calculatedValues.centralSubsidy = 60000 + (sanctionedKw - 2) * 18000;
-            else calculatedValues.centralSubsidy = 78000;
-            calculatedValues.stateSubsidy = 30000;
+            if (sanctionedKw < 2) calculatedValues.centralSubsidy = 0;
+            else if (sanctionedKw === 2) calculatedValues.centralSubsidy = 90000;
+            else calculatedValues.centralSubsidy = 108000;
+            calculatedValues.stateSubsidy = 0; // Included in above flat rates for simplicity as requested by user
 
             calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
 
@@ -264,14 +264,13 @@ export async function POST(req: NextRequest) {
                             break;
 
                         case 'tiered_surya_ghar':
-                            // Logic: 30k/kW for first 2kW, 18k/kW for next 1kW (2-3kW), capped at 78k.
-                            // Uses sanctioned (whole kW) capacity for accurate subsidy
-                            if (capacity <= 2) {
-                                amount = capacity * 30000;
-                            } else if (capacity <= 3) {
-                                amount = (2 * 30000) + ((capacity - 2) * 18000);
+                            // Modified logic for user: 90k for 2kW, 108k for 3kW+
+                            if (capacity < 2) {
+                                amount = 0;
+                            } else if (capacity === 2) {
+                                amount = 90000;
                             } else {
-                                amount = 78000;
+                                amount = 108000;
                             }
                             break;
 
@@ -294,10 +293,10 @@ export async function POST(req: NextRequest) {
 
             } else {
                 // Legacy Fallback — uses sanctioned whole kW
-                if (capacity <= 2) calculatedValues.centralSubsidy = capacity * 30000;
-                else if (capacity <= 3) calculatedValues.centralSubsidy = 60000 + (capacity - 2) * 18000;
-                else calculatedValues.centralSubsidy = 78000;
-                calculatedValues.stateSubsidy = 30000;
+                if (capacity < 2) calculatedValues.centralSubsidy = 0;
+                else if (capacity === 2) calculatedValues.centralSubsidy = 90000;
+                else calculatedValues.centralSubsidy = 108000;
+                calculatedValues.stateSubsidy = 0;
             }
 
             calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
@@ -448,9 +447,19 @@ export async function POST(req: NextRequest) {
         try {
             await sendWhatsAppMessage(phone, pdfUrl);
             whatsappResult.sent = true;
+            
+            // Send copy to referral phone if provided
+            const referralPhone = formData.referral_phone?.replace(/\D/g, '');
+            if (referralPhone && referralPhone.length >= 10) {
+                try {
+                    console.log('📱 Sending copy to referral phone:', referralPhone);
+                    await sendWhatsAppMessage(referralPhone, pdfUrl);
+                } catch (refError) {
+                    console.error('WhatsApp to referral failed:', refError);
+                }
+            }
         } catch (waError: any) {
             console.error('WhatsApp failed:', waError);
-            whatsappResult.error = waError.message;
             whatsappResult.error = waError.message;
         }
 

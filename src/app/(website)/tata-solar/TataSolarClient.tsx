@@ -1,4 +1,4 @@
-﻿// "use client"
+// "use client"
 
 // import { useState } from "react";
 // // import Navbar
@@ -427,24 +427,18 @@ export default function TataSolarClient() {
                 मुफ्त बिजली योजना
               </span>
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg">
                 <p className="text-4xl font-bold text-green-600 mb-2">
-                  ₹30,000
+                  ₹90,000
                 </p>
-                <p>per kWp up to 2 kWp</p>
+                <p>Subsidy for 2 kWp Systems</p>
               </div>
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg">
                 <p className="text-4xl font-bold text-green-600 mb-2">
-                  ₹18,000
+                  ₹1,08,000
                 </p>
-                <p>for additional capacity up to 3 kWp</p>
-              </div>
-              <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg">
-                <p className="text-4xl font-bold text-green-600 mb-2">
-                  ₹78,000
-                </p>
-                <p>Total subsidy for systems &gt; 3 kWp</p>
+                <p>Total subsidy for systems ≥ 3 kWp</p>
               </div>
             </div>
           </div>

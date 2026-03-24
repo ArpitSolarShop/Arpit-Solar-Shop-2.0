@@ -97,10 +97,9 @@ const CityPageClient: React.FC<CityPageClientProps> = ({ location, formattedSubs
                                         </thead>
                                         <tbody>
                                             {[
-                                                ["1 kW", "₹30,000", "₹15,000", "₹45,000"],
-                                                ["2 kW", "₹60,000", "₹30,000", "₹90,000"],
-                                                ["3 kW", "₹78,000", "₹30,000", "₹1,08,000"],
-                                                ["Above 3 kW", "₹78,000", "₹30,000", formattedSubsidy],
+                                                ["2 kW", "₹90,000", "₹0*", "₹90,000"],
+                                                ["3 kW", "₹1,08,000", "₹0*", "₹1,08,000"],
+                                                ["Above 3 kW", "₹1,08,000", "₹0*", formattedSubsidy],
                                             ].map((row, i) => (
                                                 <tr key={i} className={`border-t border-gray-200 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                                                     {row.map((cell, j) => (

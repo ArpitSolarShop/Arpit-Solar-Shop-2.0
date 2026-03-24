@@ -31,19 +31,18 @@ export const companyDetails = {
 };
 
 // PM Surya Ghar Tiered Central Subsidy Calculator
-// Official rates: ₹30,000/kW for first 2kW, ₹18,000/kW for 2-3kW, capped at ₹78,000
+// User defined rules: 90k for 2kW, 108k for 3kW+, 0 for < 2kW
 export const calculateCentralSubsidy = (requestedCapacityKw: number): number => {
-    const kw = Math.max(0, requestedCapacityKw);
-    if (kw <= 2) return kw * 30000;
-    if (kw <= 3) return 60000 + (kw - 2) * 18000;
-    return 78000; // Cap for 3kW+
+    const kw = Math.floor(Math.max(0, requestedCapacityKw));
+    if (kw < 2) return 0;
+    if (kw === 2) return 90000;
+    return 108000; // Cap for 3kW+
 };
 
 // Default Subsidy Amounts (can be overridden per quotation)
-// Uses 3kW baseline for backward compatibility
 export const defaultSubsidy = {
-    central: 78000,  // PM Surya Ghar (for 3kW+ systems)
-    state: 30000,    // State Government
+    central: 108000,  // PM Surya Ghar (for 3kW+ systems)
+    state: 0,         // Integrated into central total as per user preference
 };
 
 // GST Configuration

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 // import Navbar
@@ -202,9 +202,8 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
     {
       q: "What subsidies are provided under the scheme?",
       a: `Under the PM Surya Ghar Muft Bijli Yojana:
-1 kW → ₹30,000
-2 kW → ₹60,000
-3 kW or above → ₹78,000 (max cap)`,
+2 kW → ₹90,000
+3 kW or above → ₹1,08,000 (max cap)`,
     },
     {
       q: "How do I apply for the scheme?",
@@ -398,29 +397,21 @@ Eligible for government subsidies (e.g., PM Surya Ghar Yojana)`,
               Residential Households
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center justify-center">
                 <p className="text-4xl font-bold text-green-600 mb-2">
-                  ₹30,000
+                  ₹90,000
                 </p>
                 <p className="text-lg font-semibold text-center">
-                  per kWp up to 2 kWp
+                  Subsidy for 2 kWp Systems
                 </p>
               </div>
               <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center justify-center">
                 <p className="text-4xl font-bold text-green-600 mb-2">
-                  ₹18,000
+                  ₹1,08,000
                 </p>
                 <p className="text-lg font-semibold text-center">
-                  per kWp for additional capacity up to 3 kWp
-                </p>
-              </div>
-              <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center justify-center">
-                <p className="text-4xl font-bold text-green-600 mb-2">
-                  ₹78,000
-                </p>
-                <p className="text-lg font-semibold text-center">
-                  Total subsidy for systems larger than 3 kWp capped at
+                  Total subsidy for systems ≥ 3 kWp
                 </p>
               </div>
             </div>

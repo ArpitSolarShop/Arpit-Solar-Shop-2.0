@@ -84,12 +84,12 @@ export function convertBillRangeToNumber(range: string): number | null {
  */
 export function calculateSubsidy(systemSizeKW: number): number {
     const kw = Math.floor(Math.max(0, systemSizeKW));
-    if (kw <= 2) {
-        return kw * 30000; // ₹30,000 per kW up to 2 kW
-    } else if (kw <= 3) {
-        return 60000 + (kw - 2) * 18000; // ₹60,000 for first 2 kW + ₹18,000 per kW for next 1 kW
+    if (kw < 2) {
+        return 0; // Below 2 kW not available
+    } else if (kw === 2) {
+        return 90000; // 2 kW = 90k
     } else {
-        return 78000; // Capped at ₹78,000 for systems > 3 kW
+        return 108000; // 3 kW and above = 1.08L
     }
 }
 

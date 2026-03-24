@@ -106,69 +106,23 @@ function useProductCatalog() {
         let mounted = true
         const fetchAndNormalize = async () => {
             try {
-                const [tataRes, shaktiRes, relianceRes, relianceLargeRes] = await Promise.all([
-                    supabase.from('tata_grid_tie_systems').select('*'),
-                    supabase.from('shakti_grid_tie_systems').select('*'),
-                    supabase.from('reliance_grid_tie_systems').select('*'),
-                    supabase.from('reliance_large_systems').select('*')
-                ])
+                const { data, error } = await supabase
+                    .from('solar_products')
+                    .select('*')
 
-                if (tataRes.error) throw tataRes.error
-                if (shaktiRes.error) throw shaktiRes.error
-                if (relianceRes.error) throw relianceRes.error
-                if (relianceLargeRes.error) throw relianceLargeRes.error
+                if (error) throw error
 
-                const tataProducts: ProductSystem[] = (tataRes.data || []).map((p) => ({
-                    brand: 'Tata',
-                    size: Number(p.system_size),
-                    phase: p.phase,
-                    price: Number(p.total_price)
-                }))
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const allProducts: ProductSystem[] = (data || []).map((p: any) => ({
+                    brand: p.category || 'Generic',
+                    size: Number(p.system_size_kw),
+                    phase: p.phase || '1Ph',
+                    price: Number(p.price),
+                    mountingType: p.specifications?.structure_type || undefined,
+                })).filter(p => p.size > 0 && p.price > 0)
 
-                const shaktiProducts: ProductSystem[] = (shaktiRes.data || []).map((p) => ({
-                    brand: 'Shakti',
-                    size: Number(p.system_size),
-                    phase: p.phase,
-                    price: Number(p.pre_gi_elevated_price)
-                }))
-
-                const relianceProducts: ProductSystem[] = (relianceRes.data || []).map((p) => ({
-                    brand: 'Reliance',
-                    size: Number(p.system_size),
-                    phase: p.phase,
-                    price: Number(p.hdg_elevated_price)
-                }))
-
-                const relianceLargeProducts: ProductSystem[] = []
-                    ; (relianceLargeRes.data || []).forEach((p) => {
-                        const size = Number(p.system_size_kwp)
-                        const phase = p.phase
-                        const getPrice = (totalField: string, perWattField: string): number => {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            let totalPrice = Number((p as any)[totalField])
-                            if (isNaN(totalPrice) || totalPrice <= 0) {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                const perWatt = Number((p as any)[perWattField])
-                                totalPrice = perWatt > 0 && size > 0 ? Math.round(perWatt * size * 1000) : 0
-                            }
-                            return totalPrice
-                        }
-
-                        const prices: Record<string, number> = {
-                            "Tin Shed": getPrice('short_rail_tin_shed_price', 'short_rail_tin_shed_price_per_watt'),
-                            "RCC Elevated": getPrice('hdg_elevated_rcc_price', 'hdg_elevated_rcc_price_per_watt'),
-                            "Pre GI MMS": getPrice('pre_gi_mms_price', 'pre_gi_mms_price_per_watt'),
-                            "Without MMS": getPrice('price_without_mms_price', 'price_without_mms_price_per_watt')
-                        }
-
-                        Object.entries(prices).forEach(([mountingType, price]) => {
-                            if (price > 0 && size > 0) relianceLargeProducts.push({ brand: 'Reliance', size, phase, price, mountingType })
-                        })
-                    })
-
-                const all = [...tataProducts, ...shaktiProducts, ...relianceProducts, ...relianceLargeProducts].filter(p => p.size > 0)
-                const residential = all.filter(p => p.size <= 13.8)
-                const commercial = all.filter(p => p.size > 13.8)
+                const residential = allProducts.filter(p => p.size <= 15)
+                const commercial = allProducts.filter(p => p.size > 15)
 
                 if (mounted) setCatalog({ residential, commercial })
 
@@ -188,6 +142,7 @@ function useProductCatalog() {
 }
 
 import { submitHeroLead } from "@/app/actions/crm"
+import { calculateSubsidy } from "@/utils/calculations"
 
 // ---------------------------
 // KIT19: SEND LEAD VIA SERVER ACTION
@@ -282,13 +237,43 @@ export function HeroGetQuote() {
         setLoading(true)
         try {
             const actualMonthlyBill = convertBillRangeToNumber(formData.monthlyBill) || 0
-            const tariff = stateTariffs[formData.city] || stateTariffs["Uttar Pradesh"]
+            const tariff = stateTariffs[formData.city] || stateTariffs["Uttar Pradesh"] || 7.2
             const estimatedMonthlyConsumption = actualMonthlyBill > 0 && tariff > 0 ? actualMonthlyBill / tariff : 0
             const systemSizeRaw = estimatedMonthlyConsumption > 0 ? Math.ceil(estimatedMonthlyConsumption / avgSolarGenerationPerKWMonth / 0.9) : 1
             const systemSize = Math.max(1, Math.min(systemSizeRaw, 100))
 
-            const grossCost = systemSize * systemCostPerKW
-            const applicableSubsidy = Math.min(systemSize * subsidyPerKW, maxSubsidy)
+            const source = productCatalog ? (customerType === 'Residential' ? productCatalog.residential : productCatalog.commercial) : []
+            let recommendations: ProductSystem[] = []
+            if (source && source.length) {
+                const brands = [...new Set(source.map(p => p.brand))]
+                brands.forEach(brand => {
+                    const brandProducts = source.filter(p => p.brand === brand)
+                    if (brandProducts.length > 0) {
+                        const closestProduct = brandProducts.reduce((prev, curr) => (Math.abs(curr.size - systemSize) < Math.abs(prev.size - systemSize) ? curr : prev))
+                        recommendations.push(closestProduct)
+                    }
+                })
+                setRecommendedProducts(recommendations)
+            } else {
+                setRecommendedProducts([])
+            }
+
+            let grossCost = systemSize * systemCostPerKW
+            if (recommendations.length > 0) {
+                const validPrices = recommendations.filter(r => r.price && r.price > 0).map(r => r.price!);
+                if (validPrices.length > 0) {
+                    const avgPrice = validPrices.reduce((a, b) => a + b, 0) / validPrices.length;
+                    const avgSize = recommendations.filter(r => r.price && r.price > 0).reduce((a, b) => a + b.size, 0) / validPrices.length;
+                    grossCost = avgSize > 0 ? Math.round((avgPrice / avgSize) * systemSize) : avgPrice;
+                }
+            }
+            
+            const getExpectedSubsidy = (kw: number) => {
+                if (kw < 2) return 0;
+                if (kw >= 3) return 108000;
+                return 90000; // 2 kW
+            };
+            const applicableSubsidy = customerType === 'Residential' ? getExpectedSubsidy(systemSize) : 0;
             const netCost = Math.max(0, grossCost - applicableSubsidy)
             const monthlySavings = Math.round(estimatedMonthlyConsumption * tariff * 0.9)
 
@@ -303,35 +288,6 @@ export function HeroGetQuote() {
                 paybackYears: netCost > 0 && monthlySavings > 0 ? Number.parseFloat((netCost / (monthlySavings * 12)).toFixed(1)) : 0,
                 co2Savings: Number.parseFloat((systemSize * co2SavingPerKWYear).toFixed(1))
             })
-
-            const source = productCatalog ? (customerType === 'Residential' ? productCatalog.residential : productCatalog.commercial) : []
-            if (source && source.length) {
-                const brands = [...new Set(source.map(p => p.brand))]
-                const recommendations: ProductSystem[] = []
-                brands.forEach(brand => {
-                    const brandProducts = source.filter(p => p.brand === brand)
-                    if (brandProducts.length > 0) {
-                        if (brand === 'Reliance' && customerType === 'Commercial') {
-                            const grouped = brandProducts.reduce((acc: Record<number, ProductSystem[]>, p) => {
-                                if (!acc[p.size]) acc[p.size] = []
-                                acc[p.size].push(p)
-                                return acc
-                            }, {})
-                            const sizes = Object.keys(grouped).map(Number)
-                            if (sizes.length > 0) {
-                                const closestSize = sizes.reduce((prev, curr) => Math.abs(curr - systemSize) < Math.abs(prev - systemSize) ? curr : prev)
-                                recommendations.push(...grouped[closestSize])
-                            }
-                        } else {
-                            const closestProduct = brandProducts.reduce((prev, curr) => (Math.abs(curr.size - systemSize) < Math.abs(prev.size - systemSize) ? curr : prev))
-                            recommendations.push(closestProduct)
-                        }
-                    }
-                })
-                setRecommendedProducts(recommendations)
-            } else {
-                setRecommendedProducts([])
-            }
 
             setStep(4)
         } catch (err: any) {

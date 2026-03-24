@@ -97,8 +97,8 @@ export async function POST(request: Request) {
                 gstAmount: quoteData.calculations?.gstAmount || gstAmount,
                 total: quoteData.calculations?.total || quoteData.calculations?.grandTotal || grandTotal,
                 grandTotal: quoteData.calculations?.grandTotal || grandTotal,
-                centralSubsidy: quoteData.calculations?.centralSubsidy || 78000,
-                stateSubsidy: quoteData.calculations?.stateSubsidy || 30000,
+                centralSubsidy: quoteData.calculations?.centralSubsidy ?? (quoteData.selectedProduct?.systemSizeKw ? require('@/lib/companyDetails').calculateCentralSubsidy(quoteData.selectedProduct.systemSizeKw) : 108000),
+                stateSubsidy: quoteData.calculations?.stateSubsidy ?? 0,
                 effectiveCost: quoteData.calculations?.effectiveCost || 0
             },
             qrCodeUrl,

@@ -181,7 +181,7 @@ export default async function LocationPage({ params }: Props) {
                                 </table>
                             </div>
                             <p className="text-xs text-gray-500 mt-4 leading-relaxed">
-                                * Prices are indicative and including GST. Effective cost is calculated after deducting Central (₹78k) and State (₹30k) subsidies for residential consumers in {location.state}. Actual price depends on component selection and site conditions.
+                                * Prices are indicative and including GST. Effective cost is calculated after deducting the PM Surya Ghar Yojana subsidy (₹90,000 for 2kW and ₹1,08,000 for 3kW+) for residential consumers in {location.state}. Actual price depends on component selection and site conditions.
                             </p>
                         </div>
 
@@ -201,20 +201,20 @@ export default async function LocationPage({ params }: Props) {
                                     <tbody>
                                         <tr className="bg-white border-b">
                                             <td className="px-3 py-2 font-medium">2 kW</td>
-                                            <td className="px-3 py-2">₹60,000</td>
-                                            <td className="px-3 py-2">₹30,000</td>
+                                            <td className="px-3 py-2">₹90,000</td>
+                                            <td className="px-3 py-2">₹0*</td>
                                             <td className="px-3 py-2 font-bold text-green-600">₹90,000</td>
                                         </tr>
                                         <tr className="bg-white border-b">
                                             <td className="px-3 py-2 font-medium">3 kW</td>
-                                            <td className="px-3 py-2">₹78,000</td>
-                                            <td className="px-3 py-2">₹30,000</td>
+                                            <td className="px-3 py-2">₹1,08,000</td>
+                                            <td className="px-3 py-2">₹0*</td>
                                             <td className="px-3 py-2 font-bold text-green-600">₹1,08,000</td>
                                         </tr>
                                         <tr className="bg-white">
                                             <td className="px-3 py-2 font-medium">Above 3 kW</td>
-                                            <td className="px-3 py-2">₹78,000</td>
-                                            <td className="px-3 py-2">₹30,000</td>
+                                            <td className="px-3 py-2">₹1,08,000</td>
+                                            <td className="px-3 py-2">₹0*</td>
                                             <td className="px-3 py-2 font-bold text-green-600">₹1,08,000</td>
                                         </tr>
                                     </tbody>
