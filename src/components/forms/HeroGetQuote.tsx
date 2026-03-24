@@ -148,10 +148,14 @@ import { calculateSubsidy } from "@/utils/calculations"
 // KIT19: SEND LEAD VIA SERVER ACTION
 // ---------------------------
 const sendToKit19 = async (formData: QuoteFormData, estimateData: EstimateData, customerType: CustomerType) => {
-    // Wrapper to match existing signature or just replace call site.
-    // I'll replace call site, but for minimal diff, I can keep this function as wrapper.
     try {
-        await submitHeroLead({ ...formData, city: formData.city || "Varanasi", monthlyBill: formData.monthlyBill }, customerType);
+        await submitHeroLead({ 
+            name: formData.fullName, 
+            phone: formData.whatsappNumber,
+            city: formData.city || "Varanasi", 
+            monthlyBill: formData.monthlyBill,
+            category: "General Inquiry"
+        }, customerType);
     } catch (err) {
         console.error("Kit19 Sync Failed", err);
     }

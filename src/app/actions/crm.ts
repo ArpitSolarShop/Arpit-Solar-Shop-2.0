@@ -11,7 +11,7 @@ export async function submitHeroLead(formData: any, customerType: string = "resi
             phone: formData.phone,
             source: "Hero Section",
             customer_type: customerType || "residential",
-            project_location: "Varanasi (Hero Default)", // or parse if available
+            project_location: formData.city || "Varanasi (Hero Default)",
             remarks: `Initial Interest. Category: ${formData.category}`
         });
     } catch (dbErr) {
@@ -24,12 +24,12 @@ export async function submitHeroLead(formData: any, customerType: string = "resi
             name: formData.name,
             phone: formData.phone,
             email: "",
-            address: "Varanasi",
-            city: "Varanasi",
+            address: formData.city || "Varanasi",
+            city: formData.city || "Varanasi",
             source: "Website Hero Section",
             medium: "Organic",
             campaign: "Hero Lead Form",
-            remarks: `Interested in ${formData.category}`
+            remarks: `Type: ${customerType} | Monthly Bill: ${formData.monthlyBill || 'N/A'}`
         };
 
         await pushLeadToCRM(lead);
