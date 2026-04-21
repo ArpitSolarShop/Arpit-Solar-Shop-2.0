@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Hybrid Solar Systems | Smart Energy Storage | Arpit Solar Shop",
         description: "Experience the freedom of energy independence with our advanced Hybrid Solar Systems.",
-        images: ["/hybrid-inverter.png"],
+        images: ["/Hybrid.webp"],
     },
 };
 

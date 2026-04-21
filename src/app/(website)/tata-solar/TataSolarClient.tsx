@@ -273,7 +273,6 @@ import TataSolarPricingPage from "@/assets/tata-solar"; // This path is now upda
 import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
 import { Zap } from "lucide-react";
 
-import tataPowerSolarImg from "@/assets/Tata Solar Content/Tata Power Solar.webp";
 import tataModuleImg from "@/assets/Tata Solar Content/tata-module.webp";
 import tataInverterImg from "@/assets/Tata Solar Content/tata-inverter.webp";
 import tataMountingImg from "@/assets/Tata Solar Content/tata-mounting.webp";

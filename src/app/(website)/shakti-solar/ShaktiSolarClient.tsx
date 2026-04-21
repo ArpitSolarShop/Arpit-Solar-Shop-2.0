@@ -18,16 +18,16 @@ import {
 } from "lucide-react";
 
 // Images
-import welcomeImage from "@/assets/shakti-solar-contents/Group-1707478263.png";
+import welcomeImage from "@/assets/shakti-solar-contents/Group-1707478263.webp";
 import Man1 from "@/assets/shakti-solar-contents/Group-1707478384-7-scaled.png.webp";
 import Man2 from "@/assets/shakti-solar-contents/Group-1707478385-1-1.png.webp";
 import Man3 from "@/assets/shakti-solar-contents/Group-1707478386-1.png.webp";
 import Man4 from "@/assets/shakti-solar-contents/Group-1707478387-1-1-scaled.png.webp";
 import Man5 from "@/assets/shakti-solar-contents/Group-1707478388-1.png.webp";
 import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
-import ModuleImg from "@/assets/shakti-solar-contents/Solar PV Modules.png";
-import InverterImg from "@/assets/shakti-solar-contents/Sunshakti Inverter.png";
-import MountingImg from "@/assets/shakti-solar-contents/Module Mounting Structures.png";
+import ModuleImg from "@/assets/shakti-solar-contents/Solar PV Modules.webp";
+import InverterImg from "@/assets/shakti-solar-contents/Sunshakti Inverter.webp";
+import MountingImg from "@/assets/shakti-solar-contents/Module Mounting Structures.webp";
 import { Button } from "@/components/ui/button"; // Assuming this is needed for the new ShaktiSolar component
 
 const images = [Man1.src, Man2.src, Man3.src, Man4.src, Man5.src];

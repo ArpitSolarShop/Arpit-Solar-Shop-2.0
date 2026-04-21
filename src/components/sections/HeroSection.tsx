@@ -109,7 +109,7 @@ const HeroSection = () => {
           </video>
         ) : (
           <Image
-            src="/enhance-quality.png"
+            src="/city-solar-bg.webp"
             alt="Fallback: solar house"
             fill
             className="object-cover"
