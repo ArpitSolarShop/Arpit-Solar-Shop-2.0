@@ -54,7 +54,7 @@ const ImageCarousel = () => {
       {/* Logo at top-left (transparent) */}
       <div className="absolute top-28 left-6">
         <img
-          src="/Shakti Solar.png"
+          src="/Shakti Solar.webp"
           alt="Shakti Solar Logo"
           className="w-28 md:w-36 object-contain"
         />

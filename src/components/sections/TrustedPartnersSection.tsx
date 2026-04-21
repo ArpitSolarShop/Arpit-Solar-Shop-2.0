@@ -32,7 +32,7 @@ const TrustedPartnersSection = () => {
           <div className="bg-white p-6 rounded-xl shadow-lg border border-yellow-200 flex flex-col items-center justify-center text-center">
             <div className="relative h-16 w-full mb-4">
               <Image
-                src="/Shakti Solar.png"
+                src="/Shakti Solar.webp"
                 alt="Shakti Solar Logo"
                 fill
                 className="object-contain"
@@ -48,7 +48,7 @@ const TrustedPartnersSection = () => {
           <div className="bg-white p-6 rounded-xl shadow-lg border border-yellow-200 flex flex-col items-center justify-center text-center">
             <div className="relative h-16 w-full mb-4">
               <Image
-                src="/Tata Power Solar.png"
+                src="/Tata Power Solar.webp"
                 alt="Tata Power Solar Logo"
                 fill
                 className="object-contain"
@@ -64,7 +64,7 @@ const TrustedPartnersSection = () => {
           <div className="bg-white p-6 rounded-xl shadow-lg border border-yellow-200 flex flex-col items-center justify-center text-center">
             <div className="relative h-16 w-full mb-4">
               <Image
-                src="/reliance-industries-ltd.png"
+                src="/Reliance.webp"
                 alt="Reliance Industries Ltd. Logo"
                 fill
                 className="object-contain"

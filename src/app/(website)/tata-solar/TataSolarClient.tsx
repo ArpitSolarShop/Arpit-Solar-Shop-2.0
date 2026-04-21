@@ -40,7 +40,7 @@
 //               <button onClick={() => setIsQuoteOpen(true)} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">Request a Free Consultation</button>
 //             </div>
 //             <div className="flex-1 flex justify-center">
-//               <img src="/Tata Power Solar.png" alt="Tata Power Solar" className="w-full max-w-md object-contain" />
+//               <img src="/Tata Power Solar.webp" alt="Tata Power Solar" className="w-full max-w-md object-contain" />
 //             </div>
 //           </div>
 //         </section>
@@ -154,7 +154,7 @@
 //             </div>
 //             <div className="flex-1 flex justify-center">
 //               <img
-//                 src="/Tata Power Solar.png"
+//                 src="/Tata Power Solar.webp"
 //                 alt="Tata Power Solar"
 //                 className="w-full max-w-md object-contain"
 //               />
@@ -273,10 +273,10 @@ import TataSolarPricingPage from "@/assets/tata-solar"; // This path is now upda
 import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm";
 import { Zap } from "lucide-react";
 
-import tataPowerSolarImg from "@/assets/Tata Solar Content/Tata Power Solar.png";
-import tataModuleImg from "@/assets/Tata Solar Content/tata-module.png";
-import tataInverterImg from "@/assets/Tata Solar Content/tata-inverter.png";
-import tataMountingImg from "@/assets/Tata Solar Content/tata-mounting.png";
+import tataPowerSolarImg from "@/assets/Tata Solar Content/Tata Power Solar.webp";
+import tataModuleImg from "@/assets/Tata Solar Content/tata-module.webp";
+import tataInverterImg from "@/assets/Tata Solar Content/tata-inverter.webp";
+import tataMountingImg from "@/assets/Tata Solar Content/tata-mounting.webp";
 
 const SolarSolutionCard = ({
   title,
@@ -345,7 +345,7 @@ export default function TataSolarClient() {
             </div>
             <div className="flex-1 flex justify-center">
               <img
-                src="/Tata Power Solar.png"
+                src="/Tata Power Solar.webp"
                 alt="Tata Power Solar"
                 className="w-full max-w-md object-contain"
               />

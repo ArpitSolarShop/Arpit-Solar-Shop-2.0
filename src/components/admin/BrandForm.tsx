@@ -126,7 +126,7 @@ export function BrandForm({ brand, onSuccess }: BrandFormProps) {
                                 type="url"
                                 value={formData.logo_url || ""}
                                 onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                                placeholder="https://example.com/logo.png"
+                                placeholder="https://example.com/logo.webp"
                             />
                         </div>
 

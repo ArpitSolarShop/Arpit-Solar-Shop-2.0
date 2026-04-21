@@ -261,7 +261,7 @@ function PriceComparison({ data }: { data: SolarSystem[] }) {
           {relianceSystem && (
             <div className="bg-white p-4 rounded-lg border">
               <div className="flex items-center gap-2 mb-3">
-                <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-6 w-auto" />
+                <img src="/Reliance.webp" alt="Reliance Solar" className="h-6 w-auto" />
                 <h4 className="font-semibold text-gray-900">Reliance Solar</h4>
               </div>
               <div className="space-y-2 text-sm">
@@ -519,7 +519,7 @@ export default function CommercialIndustrial() {
           <Card className="bg-white">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-gray-900">
-                <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-5 w-auto" />
+                <img src="/Reliance.webp" alt="Reliance Solar" className="h-5 w-auto" />
                 {companyName} - Commercial Solar Systems
               </CardTitle>
               <div className="flex flex-wrap justify-center gap-2">

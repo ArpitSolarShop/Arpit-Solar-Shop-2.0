@@ -116,7 +116,7 @@
 //       <div className="max-w-7xl mx-auto space-y-8">
 //         <div className="text-center space-y-4">
 //           <div className="flex items-center justify-center gap-4 mb-4">
-//             <img src="/Tata Power Solar.png" alt="Tata Power Solar Logo" className="h-12 w-auto" />
+//             <img src="/Tata Power Solar.webp" alt="Tata Power Solar Logo" className="h-12 w-auto" />
 //             <h1 className="text-4xl font-bold text-gray-900">{config.companyName} System Pricing</h1>
 //           </div>
 //           <p className="text-lg text-gray-600 max-w-2xl mx-auto">{config.description} ({config.scope})</p>
@@ -265,7 +265,7 @@
 //       <div className="max-w-7xl mx-auto space-y-8">
 //         <div className="text-center space-y-4">
 //           <div className="flex items-center justify-center gap-4 mb-4">
-//             <img src="/Tata Power Solar.png" alt="Tata Power Solar Logo" className="h-12 w-auto" />
+//             <img src="/Tata Power Solar.webp" alt="Tata Power Solar Logo" className="h-12 w-auto" />
 //             <h1 className="text-4xl font-bold text-gray-900">{config.companyName} System Pricing</h1>
 //           </div>
 //           <p className="text-lg text-gray-600 max-w-2xl mx-auto">{config.description} ({config.scope})</p>
@@ -597,7 +597,7 @@ export default function TataSolarPricingPage() {
         {/* Header Section */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <img src="/Tata Power Solar.png" alt="Tata Power Solar Logo" className="h-12 w-auto" />
+            <img src="/Tata Power Solar.webp" alt="Tata Power Solar Logo" className="h-12 w-auto" />
             <h1 className="text-4xl font-bold text-gray-900">{config.companyName} System Pricing</h1>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">

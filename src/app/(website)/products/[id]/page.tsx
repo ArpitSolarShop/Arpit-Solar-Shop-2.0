@@ -82,11 +82,11 @@ export default function ProductDetailPage() {
 
     const getBrandLogo = (brand: string) => {
         const brandLower = brand.toLowerCase();
-        if (brandLower.includes("tata")) return "/Tata%20Power%20Solar.png";
-        if (brandLower.includes("reliance")) return "/reliance-industries-ltd.png";
-        if (brandLower.includes("shakti")) return "/Shakti%20Solar.png";
-        if (brandLower.includes("waree") || brandLower.includes("adani")) return "/Integrated.png";
-        if (brandLower.includes("hybrid")) return "/Hybrid.png";
+        if (brandLower.includes("tata")) return "/Tata%20Power%20Solar.webp";
+        if (brandLower.includes("reliance")) return "/Reliance.webp";
+        if (brandLower.includes("shakti")) return "/Shakti%20Solar.webp";
+        if (brandLower.includes("waree") || brandLower.includes("adani")) return "/Integrated.webp";
+        if (brandLower.includes("hybrid")) return "/Hybrid.webp";
         return null;
     };
 

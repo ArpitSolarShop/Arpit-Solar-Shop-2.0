@@ -338,7 +338,7 @@ export function IntegratedBrands() {
               </div>
 
               <div className="w-48 flex-shrink-0 hidden lg:block">
-                <img src="/AdaniSolar.png" alt="Adani Solar" className="w-full h-40 object-contain rounded-lg shadow-sm border border-slate-100" />
+                <img src="/AdaniSolar.webp" alt="Adani Solar" className="w-full h-40 object-contain rounded-lg shadow-sm border border-slate-100" />
               </div>
             </div>
 

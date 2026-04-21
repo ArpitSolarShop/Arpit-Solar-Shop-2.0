@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Integrated Solar Solutions | Power & Backup | Arpit Solar Shop",
         description: "Reliable solar power with battery backup. Keep your home running 24/7 with our integrated solutions.",
-        images: ["/integrated-logo.png"],
+        images: ["/integrated-logo.webp"],
     },
 };
 

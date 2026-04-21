@@ -52,11 +52,11 @@ export async function POST(request: Request) {
         // Attach components list to the PDF payload
         // Resolve absolute logo URL from public folder so Chromium can fetch it
         const origin = process.env.APP_ORIGIN || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
-        let logoUrl = `${origin}/logo.png`;
+        let logoUrl = `${origin}/logo.webp`;
         try {
-            const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+            const logoPath = path.join(process.cwd(), 'public', 'logo.webp');
             const logoBuffer = await fs.readFile(logoPath);
-            logoUrl = `data:image/png;base64,${logoBuffer.toString('base64')}`;
+            logoUrl = `data:image/webp;base64,${logoBuffer.toString('base64')}`;
         } catch (logoError) {
             console.warn('Falling back to origin logo URL', logoError);
         }
@@ -66,18 +66,18 @@ export async function POST(request: Request) {
         const upiLink = `upi://pay?pa=${quoteData.companyDetails?.bank?.upiId || '9044555574@okbizaxis'}&pn=${encodeURIComponent(quoteData.companyDetails?.name || 'Arpit Solar Shop')}&am=${grandTotal}&cu=INR`;
 
         try {
-            const qrPath = path.join(process.cwd(), 'public', 'payment.png');
+            const qrPath = path.join(process.cwd(), 'public', 'payment.webp');
             const qrBuffer = await fs.readFile(qrPath);
-            qrCodeUrl = `data:image/png;base64,${qrBuffer.toString('base64')}`;
+            qrCodeUrl = `data:image/webp;base64,${qrBuffer.toString('base64')}`;
         } catch (qrError) {
-            console.warn('payment.png not found', qrError);
+            console.warn('payment.webp not found', qrError);
         }
 
         let signatureUrl = '';
         try {
-            const sigPath = path.join(process.cwd(), 'public', 'signature.png');
+            const sigPath = path.join(process.cwd(), 'public', 'signature.webp');
             const sigBuffer = await fs.readFile(sigPath);
-            signatureUrl = `data:image/png;base64,${sigBuffer.toString('base64')}`;
+            signatureUrl = `data:image/webp;base64,${sigBuffer.toString('base64')}`;
         } catch (sigError) {
             console.warn('Signature image not found', sigError);
         }

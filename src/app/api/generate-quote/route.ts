@@ -305,24 +305,24 @@ export async function POST(req: NextRequest) {
         // 2. Prepare Assets (Logo, Sig, Payment)
         let logoUrl = '';
         try {
-            const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+            const logoPath = path.join(process.cwd(), 'public', 'logo.webp');
             const logoBuffer = await fs.readFile(logoPath);
-            logoUrl = `data:image/png;base64,${logoBuffer.toString('base64')}`;
+            logoUrl = `data:image/webp;base64,${logoBuffer.toString('base64')}`;
         } catch (e) { }
 
         let qrCodeUrl = '';
         const upiLink = `upi://pay?pa=9044555574@okbizaxis&pn=Arpit%20Solar%20Shop&am=${calculatedValues.grandTotal}&cu=INR`;
         try {
-            const qrPath = path.join(process.cwd(), 'public', 'payment.png');
+            const qrPath = path.join(process.cwd(), 'public', 'payment.webp');
             const qrBuffer = await fs.readFile(qrPath);
-            qrCodeUrl = `data:image/png;base64,${qrBuffer.toString('base64')}`;
+            qrCodeUrl = `data:image/webp;base64,${qrBuffer.toString('base64')}`;
         } catch (e) { }
 
         let signatureUrl = '';
         try {
-            const sigPath = path.join(process.cwd(), 'public', 'signature.png');
+            const sigPath = path.join(process.cwd(), 'public', 'signature.webp');
             const sigBuffer = await fs.readFile(sigPath);
-            signatureUrl = `data:image/png;base64,${sigBuffer.toString('base64')}`;
+            signatureUrl = `data:image/webp;base64,${sigBuffer.toString('base64')}`;
         } catch (e) { }
 
         // 3. Components Selection — fetch from DB by brand, with hardcoded fallback

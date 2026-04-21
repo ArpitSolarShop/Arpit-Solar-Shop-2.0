@@ -91,7 +91,7 @@ const LocationHero = ({ city, state }: LocationHeroProps) => {
                 {/* Partner Logos */}
                 <div className="mt-12 flex flex-wrap justify-center items-center gap-8 opacity-70 grayscale hover:grayscale-0 transition-all duration-300">
                     <Image src="/Tata Power Solar.webp" alt="Tata Power Solar Official Dealer" width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
-                    <Image src="/reliance-industries-ltd.png" alt="Reliance Solar Partner" width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
+                    <Image src="/Reliance.webp" alt="Reliance Solar Partner" width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
                     <Image src="/AdaniSolar.webp" alt="Adani Solar Dealer" width={100} height={40} className="h-8 md:h-10 w-auto object-contain" />
                     <Image src="/Shakti Solar.webp" alt="Shakti Pumps Authorized Partner" width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
                 </div>

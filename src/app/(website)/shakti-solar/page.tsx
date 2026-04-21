@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Shakti Solar Pumps & Rooftop Solutions | Arpit Solar Shop",
         description: "Maximize your energy savings with high-performance Shakti Solar solutions. Authorized dealer in Varanasi.",
-        images: ["/Shakti Solar.png"],
+        images: ["/Shakti Solar.webp"],
     },
 };
 

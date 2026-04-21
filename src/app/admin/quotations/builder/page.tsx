@@ -805,7 +805,7 @@ export default function QuotationBuilder() {
                     {/* Header */}
                     <div className="header">
                         <div className="logo-section">
-                            <img src="/logo.png" className="logo" alt="Logo" onError={(e: any) => { e.target.style.display = 'none'; }} />
+                            <img src="/logo.webp" className="logo" alt="Logo" onError={(e: any) => { e.target.style.display = 'none'; }} />
                             <div>
                                 <div className="company-name">ARPIT SOLAR SHOP</div>
                                 <div className="company-tagline">{companyDetails.tagline}</div>
@@ -1361,7 +1361,7 @@ export default function QuotationBuilder() {
                     {/* Header */}
                     <div className="flex justify-between items-start border-b-4 border-yellow-500 pb-6 mb-6">
                         <div className="flex items-center gap-4">
-                            <img src="/logo.png" alt="Logo" className="max-h-20" onError={(e: any) => { e.target.style.display = 'none'; }} />
+                            <img src="/logo.webp" alt="Logo" className="max-h-20" onError={(e: any) => { e.target.style.display = 'none'; }} />
                             <div>
                                 <h1 className="text-[26px] font-black text-slate-800 tracking-tighter leading-none m-0">ARPIT SOLAR SHOP</h1>
                                 <p className="text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-widest">{companyDetails.tagline}</p>
@@ -1445,7 +1445,7 @@ export default function QuotationBuilder() {
                                 <div className="mt-3 pt-2 border-t border-dashed border-slate-300 text-center">
                                     <p className="font-bold text-slate-800 text-[10px] mb-1">Scan to Pay</p>
                                     <a href={`upi://pay?pa=${companyDetails.bank.upiId}&pn=${encodeURIComponent(companyDetails.name)}&am=${calculations.totalAmount}&cu=INR`} className="inline-block">
-                                        <img src="/payment.png" alt="Payment QR" className="w-24 h-24 object-contain mx-auto mix-blend-multiply" onError={(e: any) => e.target.style.display = 'none'} />
+                                        <img src="/payment.webp" alt="Payment QR" className="w-24 h-24 object-contain mx-auto mix-blend-multiply" onError={(e: any) => e.target.style.display = 'none'} />
                                     </a>
                                     <p className="text-[8px] text-slate-500 mt-1">Click or Scan with UPI App</p>
                                 </div>

@@ -215,7 +215,7 @@ export default function ShaktiSolar() {
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <img src="/Shakti Solar.png" alt="Shakti Solar" className="h-12 w-auto" />
+            <img src="/Shakti Solar.webp" alt="Shakti Solar" className="h-12 w-auto" />
             <h1 className="text-4xl font-bold text-gray-900">{companyName} System Pricing</h1>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -238,7 +238,7 @@ export default function ShaktiSolar() {
         <Card className="bg-white">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-gray-900">
-              <img src="/Shakti Solar.png" alt="Shakti Solar" className="h-5 w-auto" />
+              <img src="/Shakti Solar.webp" alt="Shakti Solar" className="h-5 w-auto" />
               Grid Tie Systems - DCR RIL 535 Wp Modules
             </CardTitle>
             <CardDescription>

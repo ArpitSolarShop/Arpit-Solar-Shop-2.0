@@ -17,7 +17,7 @@ export default function GetQuote() {
                     </Link>
                     <div className="flex justify-center mb-4">
                         <Image
-                            src="/logo.png"
+                            src="/logo.webp"
                             alt="Company Logo"
                             width={128}
                             height={64}

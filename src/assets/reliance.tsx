@@ -231,7 +231,7 @@
 
 //         {/* Original Header */}
 //         <div className="text-center space-y-4">
-//           <div className="flex items-center justify-center gap-4 mb-4"><img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-12 w-auto" /><h1 className="text-4xl font-bold text-gray-900">HJT Solar System Pricing</h1></div>
+//           <div className="flex items-center justify-center gap-4 mb-4"><img src="/Reliance.webp" alt="Reliance Solar" className="h-12 w-auto" /><h1 className="text-4xl font-bold text-gray-900">HJT Solar System Pricing</h1></div>
 //           <p className="text-lg text-gray-600 max-w-2xl mx-auto">Comprehensive pricing for {productDescription} and complete system packages</p>
 //           <div className="flex flex-wrap justify-center gap-2"><Badge variant="secondary">Non DCR Modules</Badge><Badge variant="secondary">Excluding GST</Badge><Badge variant="secondary">Net Metering Not Included</Badge></div>
 //         </div>
@@ -566,7 +566,7 @@ export default function Reliance() {
 
         {/* Original Header */}
         <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-4 mb-4"><img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-12 w-auto" /><h1 className="text-4xl font-bold text-gray-900">HJT Solar System Pricing</h1></div>
+          <div className="flex items-center justify-center gap-4 mb-4"><img src="/Reliance.webp" alt="Reliance Solar" className="h-12 w-auto" /><h1 className="text-4xl font-bold text-gray-900">HJT Solar System Pricing</h1></div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">Comprehensive pricing for {productDescription} and complete system packages</p>
           <div className="flex flex-wrap justify-center gap-2"><Badge variant="secondary">Non DCR Modules</Badge><Badge variant="secondary">Excluding GST</Badge><Badge variant="secondary">Net Metering Not Included</Badge></div>
         </div>

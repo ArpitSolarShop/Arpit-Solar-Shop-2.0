@@ -113,21 +113,21 @@ const Navbar = () => {
           {
             name: "Reliance Solar",
             href: "/reliance",
-            image: "/reliance-industries-ltd.png",
+            image: "/Reliance.webp",
             description: "Leading renewable energy solutions",
             recommended: "Recommended for commercial",
           },
           {
             name: "Shakti Solar",
             href: "/shakti-solar",
-            image: "/Shakti%20Solar.png",
+            image: "/Shakti%20Solar.webp",
             description: "Innovative solar solutions",
             recommended: "Recommended for Residential",
           },
           {
             name: "Tata Solar",
             href: "/tata-solar",
-            image: "/Tata%20Power%20Solar.png",
+            image: "/Tata%20Power%20Solar.webp",
             description: "India's #1 Solar Rooftop Company",
             recommended: "Trusted choice for Residential & Commercial",
           },
@@ -164,7 +164,7 @@ const Navbar = () => {
           {
             name: "About Us",
             href: "/about/us",
-            image: "/logo.png",
+            image: "/logo.webp",
             description: "Our company story and mission",
           },
         ],

@@ -19,8 +19,8 @@ export default function AboutUs() {
                 <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
                     <div className="flex items-center justify-center mb-6">
                         <div className="relative h-16 w-48 md:h-20 md:w-64">
-                            {/* Using a placeholder-like relative path assuming public/logo.png exists per previous verification */}
-                            <img src="/logo.png" alt="Arpit Solar Logo" className="h-16 w-auto md:h-20 mx-auto" />
+                            {/* Using a placeholder-like relative path assuming public/logo.webp exists per previous verification */}
+                            <img src="/logo.webp" alt="Arpit Solar Logo" className="h-16 w-auto md:h-20 mx-auto" />
                         </div>
                     </div>
                     <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">

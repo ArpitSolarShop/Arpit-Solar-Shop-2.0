@@ -129,8 +129,8 @@ export const navItems = [
 ] as const;
 
 export const brands = [
-    { name: "Shakti Solar", slug: "shakti-solar", logo: "/Shakti Solar.png" },
-    { name: "Tata Power Solar", slug: "tata-solar", logo: "/Tata Power Solar.png" },
-    { name: "Reliance", slug: "reliance", logo: "/reliance-industries-ltd.png" },
-    { name: "Integrated", slug: "integrated", logo: "/integrated-logo.png" },
+    { name: "Shakti Solar", slug: "shakti-solar", logo: "/Shakti Solar.webp" },
+    { name: "Tata Power Solar", slug: "tata-solar", logo: "/Tata Power Solar.webp" },
+    { name: "Reliance", slug: "reliance", logo: "/Reliance.webp" },
+    { name: "Integrated", slug: "integrated", logo: "/integrated-logo.webp" },
 ] as const;

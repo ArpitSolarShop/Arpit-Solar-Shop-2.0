@@ -5,7 +5,7 @@ export const EXTRA_HEIGHT_RATE = 1500; // ₹ per kWp
 
 export const companyDetails = {
     name: "Arpit Solar",
-    logo: "/logo.png",
+    logo: "/logo.webp",
     address: "Sh16/114-25-K-2, Sharvodayanagar, Kadipur, Shivpur, Varanasi 221003 (UP)",
 };
 

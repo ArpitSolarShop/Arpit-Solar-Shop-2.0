@@ -206,9 +206,9 @@ function PriceComparison({ dataShakti, dataReliance, dataTata }: { dataShakti: R
   const tataSystem = nearest(dataTata, selectedSize);
 
   const systemsToCompare = [
-    { brand: 'Shakti Solar', logo: '/Shakti Solar.png', data: shaktiSystem },
-    { brand: 'Reliance Solar', logo: '/reliance-industries-ltd.png', data: relianceSystem },
-    { brand: 'Tata Power Solar', logo: '/Tata Power Solar.png', data: tataSystem }
+    { brand: 'Shakti Solar', logo: '/Shakti Solar.webp', data: shaktiSystem },
+    { brand: 'Reliance Solar', logo: '/Reliance.webp', data: relianceSystem },
+    { brand: 'Tata Power Solar', logo: '/Tata Power Solar.webp', data: tataSystem }
   ].filter(s => s.data);
 
   let bestValue = null;
@@ -520,15 +520,15 @@ export default function Residential() {
             <div className="w-full overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
               <TabsList className="flex w-max min-w-full sm:grid sm:grid-cols-3 mb-6 h-auto p-1 bg-gray-100 rounded-lg">
                 <TabsTrigger value="shakti" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
-                  <img src="/Shakti Solar.png" alt="Shakti Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <img src="/Shakti Solar.webp" alt="Shakti Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
                   <span>Shakti Solar</span>
                 </TabsTrigger>
                 <TabsTrigger value="reliance" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
-                  <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <img src="/Reliance.webp" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
                   <span>Reliance Solar</span>
                 </TabsTrigger>
                 <TabsTrigger value="tata" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
-                  <img src="/Tata Power Solar.png" alt="Tata Power Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <img src="/Tata Power Solar.webp" alt="Tata Power Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
                   <span>Tata Power Solar</span>
                 </TabsTrigger>
               </TabsList>
@@ -537,7 +537,7 @@ export default function Residential() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-900">
-                    <img src="/Shakti Solar.png" alt="Shakti Solar" className="h-5 w-auto" />
+                    <img src="/Shakti Solar.webp" alt="Shakti Solar" className="h-5 w-auto" />
                     {shaktiCompanyName} - Residential Solar Systems
                   </CardTitle>
                   <CardDescription>{shaktiProductDesc} ({shaktiWorkScope})</CardDescription>
@@ -551,7 +551,7 @@ export default function Residential() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-900">
-                    <img src="/reliance-industries-ltd.png" alt="Reliance Solar" className="h-5 w-auto" />
+                    <img src="/Reliance.webp" alt="Reliance Solar" className="h-5 w-auto" />
                     {relianceCompanyName} - Residential Solar Systems
                   </CardTitle>
                   <CardDescription>{relianceProductDesc} ({relianceWorkScope})</CardDescription>
@@ -565,7 +565,7 @@ export default function Residential() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-900">
-                    <img src="/Tata Power Solar.png" alt="Tata Power Solar" className="h-5 w-auto" />
+                    <img src="/Tata Power Solar.webp" alt="Tata Power Solar" className="h-5 w-auto" />
                     {tataCompanyName} - Residential Solar Systems
                   </CardTitle>
                   <CardDescription>{tataProductDesc} ({tataWorkScope})</CardDescription>

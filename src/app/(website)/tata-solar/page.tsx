@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Tata Power Solar Rooftop Solutions | Arpit Solar Shop",
         description: "Harness the sun with India's most trusted solar brand. Authorized Tata Power Solar dealer in Varanasi.",
-        images: ["/Tata Power Solar.png"],
+        images: ["/Tata Power Solar.webp"],
     },
 };
 

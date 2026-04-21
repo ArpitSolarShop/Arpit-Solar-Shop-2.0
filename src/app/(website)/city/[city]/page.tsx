@@ -53,13 +53,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `${siteConfig.url}/solar-installation/${location.slug}`,
       title: `Rooftop Solar System Installation in ${location.name} | Subsidy & Price 2026`,
       description: `Get rooftop solar installation in ${location.name}, ${location.city}, ${location.state}. Avail PM Surya Ghar Yojana subsidy up to ${formattedSubsidy}. Rated 4.9★ on Google.`,
-      images: ["https://www.arpitsolar.com/city-solar-bg.png"],
+      images: ["https://www.arpitsolar.com/city-solar-bg.webp"],
     },
     twitter: {
       card: "summary_large_image",
       title: `Solar Installation in ${location.name} | ${formattedSubsidy} Subsidy`,
       description: `Get rooftop solar in ${location.name}, ${location.city}. PM Surya Ghar Yojana subsidy up to ${formattedSubsidy}.`,
-      images: ["https://www.arpitsolar.com/city-solar-bg.png"],
+      images: ["https://www.arpitsolar.com/city-solar-bg.webp"],
     },
   };
 }

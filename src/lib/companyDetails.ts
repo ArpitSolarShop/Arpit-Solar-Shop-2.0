@@ -24,7 +24,7 @@ export const companyDetails = {
     },
 
     // Logo
-    logo: "/logo.png",
+    logo: "/logo.webp",
 
     // Authorized Signatory
     authorizedSignatory: "Ratnesh Mishra",
