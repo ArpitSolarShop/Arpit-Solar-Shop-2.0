@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 // import Navbar
 // import Footer
@@ -58,8 +58,8 @@ const ChecklistItem = ({ text }: { text: string }) => (
   </div>
 );
 
-// A single, reusable table component for all products.
-function ResidentialSolarTable({ data, onRowClick }: { data: ResidentialSystem[]; onRowClick: (product: ResidentialSystem) => void }) {
+// A single, reusable table// Components for pricing tables
+function ResidentialSolarTable({ data, onRowClick, disabled }: { data: ResidentialSystem[]; onRowClick: (product: ResidentialSystem) => void; disabled?: boolean }) {
   const [sortField, setSortField] = useState<keyof ResidentialSystem | null>("systemSize");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -120,16 +120,16 @@ function ResidentialSolarTable({ data, onRowClick }: { data: ResidentialSystem[]
               <TableHead className="font-semibold">Monthly Generation (kWh)</TableHead>
               <TableHead className="font-semibold">Roof Area (sq ft)</TableHead>
               <TableHead className="font-semibold">
-                <Button variant="ghost" onClick={() => handleSort("pricePerWatt")} className="h-auto p-0 font-semibold">
-                  Price/Watt (â‚¹) <ArrowUpDown className="ml-2 h-4 w-4" />
+                <Button variant="ghost" onClick={() => handleSort("pricePerWatt")} className="h-auto p-0 font-semibold text-gray-900">
+                  Price/Watt (₹) <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
               <TableHead className="font-semibold">
-                <Button variant="ghost" onClick={() => handleSort("totalPrice")} className="h-auto p-0 font-semibold">
-                  Total Price (â‚¹) <ArrowUpDown className="ml-2 h-4 w-4" />
+                <Button variant="ghost" onClick={() => handleSort("totalPrice")} className="h-auto p-0 font-semibold text-gray-900">
+                  Total Price (₹) <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead className="font-semibold">Monthly Savings (â‚¹)</TableHead>
+              <TableHead className="font-semibold text-gray-900">Monthly Savings (₹)</TableHead>
               <TableHead className="font-semibold">Payback (Years)</TableHead>
               <TableHead className="font-semibold">Action</TableHead>
             </TableRow>
@@ -148,13 +148,18 @@ function ResidentialSolarTable({ data, onRowClick }: { data: ResidentialSystem[]
                 </TableCell>
                 <TableCell className="font-medium text-green-600">{item.monthlyGeneration}</TableCell>
                 <TableCell>{item.roofAreaRequired}</TableCell>
-                <TableCell className="font-medium">â‚¹{item.pricePerWatt.toFixed(2)}</TableCell>
-                <TableCell className="font-bold text-green-600">â‚¹{item.totalPrice.toLocaleString("en-IN")}</TableCell>
-                <TableCell className="font-medium text-green-600">â‚¹{item.monthlySavings.toLocaleString("en-IN")}</TableCell>
+                <TableCell className="font-medium">₹{item.pricePerWatt.toFixed(2)}</TableCell>
+                <TableCell className="font-bold text-green-600">₹{item.totalPrice.toLocaleString("en-IN")}</TableCell>
+                <TableCell className="font-medium text-green-600">₹{item.monthlySavings.toLocaleString("en-IN")}</TableCell>
                 <TableCell className="font-medium text-blue-600">{item.paybackPeriod}</TableCell>
                 <TableCell>
-                  <Button onClick={() => onRowClick(item)} size="sm" className="bg-black hover:bg-gray-800 text-white">
-                    Get Quote
+                  <Button 
+                    onClick={() => onRowClick(item)} 
+                    size="sm" 
+                    disabled={disabled}
+                    className={`${disabled ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-black hover:bg-gray-800 text-white'}`}
+                  >
+                    {disabled ? 'Coming Soon' : 'Get Quote'}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -244,23 +249,50 @@ function PriceComparison({ dataShakti, dataReliance, dataTata }: { dataShakti: R
               ))}
             </select>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {systemsToCompare.map(({ brand, logo, data }) => data && (
-              <div key={brand} className="bg-white p-4 rounded-lg border">
-                <div className="flex items-center gap-2 mb-3">
-                  <img src={logo} alt={brand} className="h-6 w-auto" />
-                  <h4 className="font-semibold text-gray-900">{brand}</h4>
+            {systemsToCompare.map(({ brand, logo, data }) => {
+              const isReliance = brand === 'Reliance Solar';
+              return data && (
+                <div key={brand} className={`bg-white p-4 rounded-lg border relative overflow-hidden ${isReliance ? 'opacity-60 grayscale' : ''}`}>
+                  {isReliance && (
+                    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                      <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200 font-bold py-1 px-3 shadow-sm rotate-[-10deg]">
+                        Coming Soon
+                      </Badge>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={logo} alt={brand} className="h-6 w-auto" />
+                    <h4 className="font-semibold text-gray-900">{brand}</h4>
+                    {brand === bestValue?.brand && !isReliance && (
+                      <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200">Best Value</Badge>
+                    )}
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>System Size:</span>
+                      <span className="font-medium">{data.systemSize} kWp</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Price/Watt:</span>
+                      <span className="font-medium">₹{data.pricePerWatt.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total Price:</span>
+                      <span className="font-bold text-green-600">₹{data.totalPrice.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Monthly Savings:</span>
+                      <span className="font-medium text-green-600">₹{data.monthlySavings.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Payback Period:</span>
+                      <span className="font-medium text-blue-600">{data.paybackPeriod} years</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span>System Size:</span><span className="font-medium">{data.systemSize} kWp</span></div>
-                  <div className="flex justify-between"><span>Price/Watt:</span><span className="font-medium">â‚¹{data.pricePerWatt.toFixed(2)}</span></div>
-                  <div className="flex justify-between"><span>Total Price:</span><span className="font-bold text-green-600">â‚¹{data.totalPrice.toLocaleString("en-IN")}</span></div>
-                  <div className="flex justify-between"><span>Monthly Savings:</span><span className="font-medium text-green-600">â‚¹{data.monthlySavings.toLocaleString("en-IN")}</span></div>
-                  <div className="flex justify-between"><span>Payback Period:</span><span className="font-medium text-blue-600">{data.paybackPeriod} years</span></div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {bestValue && (
@@ -524,8 +556,9 @@ export default function Residential() {
                   <span>Shakti Solar</span>
                 </TabsTrigger>
                 <TabsTrigger value="reliance" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
-                  <img src="/Reliance.webp" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
+                  <img src="/Reliance.webp" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block grayscale" />
                   <span>Reliance Solar</span>
+                  <Badge className="ml-1 px-1.5 py-0 text-[10px] bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Soon</Badge>
                 </TabsTrigger>
                 <TabsTrigger value="tata" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
                   <img src="/Tata Power Solar.webp" alt="Tata Power Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
@@ -551,13 +584,14 @@ export default function Residential() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-900">
-                    <img src="/Reliance.webp" alt="Reliance Solar" className="h-5 w-auto" />
+                    <img src="/Reliance.webp" alt="Reliance Solar" className="h-5 w-auto grayscale" />
                     {relianceCompanyName} - Residential Solar Systems
+                    <Badge variant="outline" className="ml-2 bg-amber-50 text-amber-600 border-amber-200">Coming Soon</Badge>
                   </CardTitle>
                   <CardDescription>{relianceProductDesc} ({relianceWorkScope})</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ResidentialSolarTable data={relianceRows} onRowClick={handleRelianceRowClick} />
+                  <ResidentialSolarTable data={relianceRows} onRowClick={handleRelianceRowClick} disabled />
                 </CardContent>
               </Card>
             </TabsContent>

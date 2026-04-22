@@ -1,69 +1,83 @@
 
 import axios from 'axios';
 
-export async function sendWhatsAppMessage(phone: string, pdfUrl: string) {
-    try {
-        // Validate environment variables
-        const apiKey = process.env.DOUBLETICK_API_KEY;
-        const senderPhone = process.env.DOUBLETICK_SENDER_PHONE;
+/**
+ * Send a WhatsApp quotation to a customer via DoubleTick API.
+ * 
+ * Uses the APPROVED template 'quotation_document' (UTILITY category)
+ * which has a DOCUMENT header and no body placeholders.
+ */
+export async function sendWhatsAppMessage(phone: string, pdfUrl: string, customerName?: string) {
+    // Validate environment variables
+    const apiKey = process.env.DOUBLETICK_API_KEY;
+    const senderPhone = process.env.DOUBLETICK_SENDER_PHONE;
 
-        if (!apiKey) {
-            throw new Error('DOUBLETICK_API_KEY is not set in .env');
-        }
-        if (!senderPhone) {
-            throw new Error('DOUBLETICK_SENDER_PHONE is not set in .env');
-        }
+    if (!apiKey) {
+        throw new Error('DOUBLETICK_API_KEY is not set in .env');
+    }
+    if (!senderPhone) {
+        throw new Error('DOUBLETICK_SENDER_PHONE is not set in .env');
+    }
 
-        // Format phone number with +91
-        const cleanedPhone = phone.replace(/[^0-9]/g, '');
-        if (cleanedPhone.length !== 10) {
-            throw new Error(`Phone number must be 10 digits: ${phone}`);
-        }
-        const formattedPhone = `+91${cleanedPhone}`;
+    // Format phone number with +91
+    const cleanedPhone = phone.replace(/[^0-9]/g, '');
+    if (cleanedPhone.length !== 10) {
+        throw new Error(`Phone number must be 10 digits: ${phone}`);
+    }
+    const formattedPhone = `+91${cleanedPhone}`;
 
-        console.log('Sending WhatsApp message to:', formattedPhone, 'from:', senderPhone);
-        // console.log('Using API key:', apiKey.substring(0, 10) + '...'); 
+    const headers = {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'Authorization': apiKey
+    };
 
-        // const templateName = 'arpit_solar_shop_quotation_document';
-        const templateName = 'quotation_document';
-        const filename = pdfUrl.split('/').pop();
+    const safeName = (customerName || 'Customer').replace(/[^a-zA-Z0-9 ]/g, '').trim();
+    const filename = `Arpit_Solar_Quotation_${safeName.replace(/\s+/g, '_')}.pdf`;
 
-        const payload = {
-            messages: [
-                {
-                    to: formattedPhone,
-                    from: senderPhone,
-                    content: {
-                        templateName: templateName,
-                        language: 'en',
-                        templateData: {
-                            header: {
-                                type: 'DOCUMENT',
-                                mediaUrl: pdfUrl,
-                                filename: filename
-                            },
-                            body: {
-                                placeholders: []
-                            }
+    console.log('📱 WhatsApp: Sending quotation to', formattedPhone, 'from', senderPhone);
+    console.log('📄 PDF URL:', pdfUrl);
+
+    // Use the APPROVED template: "quotation_document" (UTILITY, DOCUMENT header, no body placeholders)
+    const templatePayload = {
+        messages: [
+            {
+                to: formattedPhone,
+                from: senderPhone,
+                content: {
+                    templateName: 'quotation_document',
+                    language: 'en',
+                    templateData: {
+                        header: {
+                            type: 'DOCUMENT',
+                            mediaUrl: pdfUrl,
+                            filename: filename
+                        },
+                        body: {
+                            placeholders: []
                         }
                     }
                 }
-            ]
-        };
+            }
+        ]
+    };
 
-        const headers = {
-            'accept': 'application/json',
-            'content-type': 'application/json',
-            'Authorization': apiKey // Remove extra 'key_' prefix if passed fully
-        };
+    console.log('📱 WhatsApp: Sending template message with template "quotation_document"...');
 
-        const url = 'https://public.doubletick.io/whatsapp/message/template';
+    const response = await axios.post(
+        'https://public.doubletick.io/whatsapp/message/template',
+        templatePayload,
+        { headers }
+    );
 
-        const response = await axios.post(url, payload, { headers });
-        console.log('WhatsApp message sent successfully:', response.data);
-        return response.data;
-    } catch (error: any) {
-        console.error('Doubletick API error:', error.response ? error.response.data : error.message);
-        throw error;
+    console.log('✅ WhatsApp template message response:', JSON.stringify(response.data));
+
+    const msgStatus = response.data?.messages?.[0]?.status;
+    if (msgStatus === 'ENQUEUED' || msgStatus === 'SENT') {
+        console.log('✅ WhatsApp message accepted by DoubleTick (status:', msgStatus, ')');
+    } else {
+        console.warn('⚠️ Unexpected WhatsApp status:', msgStatus);
     }
+
+    return response.data;
 }

@@ -48,3 +48,5 @@ public/output/
 build_*.log
 build_*.txt
 tsc_errors*.log
+
+/generated/prisma

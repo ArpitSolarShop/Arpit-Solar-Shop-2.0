@@ -33,7 +33,7 @@ type IntegratedRow = {
   gst_rate?: number
 }
 
-type ModuleTypeFilter = 'all' | 'Mono Bifacial' | 'TopCon'
+type ModuleTypeFilter = 'all' | 'Mono DCR' | 'TOPCON DCR'
 
 export default function IntegratedPriceData() {
   const [rows, setRows] = useState<IntegratedRow[]>([])
@@ -62,7 +62,14 @@ export default function IntegratedPriceData() {
 
         if (mounted) {
           setRows(data.map((r: any, idx: number) => {
-            const specs = r.specifications || {};
+            let specs = r.specifications || {};
+            if (typeof specs === 'string') {
+              try {
+                specs = JSON.parse(specs);
+              } catch (e) {
+                console.error("Failed to parse specifications", e);
+              }
+            }
             const compQtys = specs.component_qtys || {};
             const wireBrands = specs.wire_brands || {};
             return {
@@ -73,7 +80,7 @@ export default function IntegratedPriceData() {
               price: Number(r.price),
               inverter_capacity_kw: Number(specs.inverter_kw || 0),
               module_watt: Number(specs.module_watt || 0),
-              module_type: specs.module_type || 'TopCon',
+              module_type: specs.module_type || 'TOPCON DCR',
               no_of_modules: Number(specs.module_count || 0),
               acdb_nos: compQtys.acdb ? Number(compQtys.acdb) : 1,
               dcdb_nos: compQtys.dcdb ? Number(compQtys.dcdb) : 1,
@@ -114,8 +121,8 @@ export default function IntegratedPriceData() {
   const moduleTypeStats = useMemo(() => {
     const stats = {
       all: rows.length,
-      'Mono Bifacial': rows.filter(r => r.module_type === 'Mono Bifacial').length,
-      'TopCon': rows.filter(r => r.module_type === 'TopCon').length,
+      'Mono DCR': rows.filter(r => r.module_type === 'Mono DCR').length,
+      'TOPCON DCR': rows.filter(r => r.module_type === 'TOPCON DCR').length,
     }
     return stats
   }, [rows])
@@ -126,8 +133,8 @@ export default function IntegratedPriceData() {
   }
 
   const getModuleTypeBadgeColor = (moduleType: string | null) => {
-    if (moduleType === 'TopCon') return 'bg-blue-100 text-blue-800 border-blue-300'
-    if (moduleType === 'Mono Bifacial') return 'bg-green-100 text-green-800 border-green-300'
+    if (moduleType === 'TOPCON DCR') return 'bg-blue-100 text-blue-800 border-blue-300'
+    if (moduleType === 'Mono DCR') return 'bg-green-100 text-green-800 border-green-300'
     return 'bg-slate-100 text-slate-800 border-slate-300'
   }
 
@@ -157,26 +164,26 @@ export default function IntegratedPriceData() {
             All ({moduleTypeStats.all})
           </Button>
           <Button
-            variant={moduleTypeFilter === 'Mono Bifacial' ? 'default' : 'outline'}
+            variant={moduleTypeFilter === 'Mono DCR' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setModuleTypeFilter('Mono Bifacial')}
-            className={moduleTypeFilter === 'Mono Bifacial'
+            onClick={() => setModuleTypeFilter('Mono DCR')}
+            className={moduleTypeFilter === 'Mono DCR'
               ? 'bg-green-600 hover:bg-green-700 text-white'
               : 'bg-white hover:bg-slate-50 border-slate-300'
             }
           >
-            Mono Bifacial ({moduleTypeStats['Mono Bifacial']})
+            Mono DCR ({moduleTypeStats['Mono DCR']})
           </Button>
           <Button
-            variant={moduleTypeFilter === 'TopCon' ? 'default' : 'outline'}
+            variant={moduleTypeFilter === 'TOPCON DCR' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setModuleTypeFilter('TopCon')}
-            className={moduleTypeFilter === 'TopCon'
+            onClick={() => setModuleTypeFilter('TOPCON DCR')}
+            className={moduleTypeFilter === 'TOPCON DCR'
               ? 'bg-blue-600 hover:bg-blue-700 text-white'
               : 'bg-white hover:bg-slate-50 border-slate-300'
             }
           >
-            TopCon ({moduleTypeStats.TopCon})
+            TOPCON DCR ({moduleTypeStats['TOPCON DCR']})
           </Button>
         </div>
       </div>

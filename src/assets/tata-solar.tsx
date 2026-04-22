@@ -326,6 +326,7 @@ type GridTieSystemData = {
   slNo: number;
   systemSize: number;
   noOfModules: number;
+  moduleWattage?: number;
   phase: string;
   pricePerKwp: number;
   totalPrice: number;
@@ -359,12 +360,13 @@ function GridTieSystemTable({
         item.phase.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.systemSize.toString().includes(searchTerm) ||
         item.noOfModules.toString().includes(searchTerm) ||
+        (item.moduleWattage?.toString() || "").includes(searchTerm) ||
         item.pricePerKwp.toString().includes(searchTerm)
     )
     .sort((a, b) => {
       if (!sortField) return 0;
-      const aValue = a[sortField];
-      const bValue = b[sortField];
+      const aValue = a[sortField] ?? 0;
+      const bValue = b[sortField] ?? 0;
       let comparison = 0;
 
       if (typeof aValue === "number" && typeof bValue === "number") {
@@ -382,7 +384,7 @@ function GridTieSystemTable({
       <div className="flex items-center space-x-2">
         <Search className="h-4 w-4 text-gray-400" />
         <Input
-          placeholder="Search by phase, system size, modules, or price..."
+          placeholder="Search by phase, system size, modules, wattage, or price..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-sm"
@@ -411,6 +413,16 @@ function GridTieSystemTable({
                   className="p-0 h-auto font-semibold"
                 >
                   System Size (kWp)
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => handleSort("moduleWattage")}
+                  className="p-0 h-auto font-semibold"
+                >
+                  Module (W)
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
@@ -451,7 +463,7 @@ function GridTieSystemTable({
           <TableBody>
             {filteredAndSortedData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-gray-500">
+                <TableCell colSpan={8} className="text-center text-gray-500">
                   No data available. Please try again later.
                 </TableCell>
               </TableRow>
@@ -460,6 +472,7 @@ function GridTieSystemTable({
                 <TableRow key={item.slNo} className="hover:bg-gray-50">
                   <TableCell className="font-medium">{item.slNo}</TableCell>
                   <TableCell>{item.systemSize}</TableCell>
+                  <TableCell>{item.moduleWattage ? `${item.moduleWattage}W` : 'N/A'}</TableCell>
                   <TableCell>{item.noOfModules}</TableCell>
                   <TableCell>
                     <Badge variant={item.phase === "Single" ? "default" : "secondary"}>
@@ -530,11 +543,20 @@ export default function TataSolarPricingPage() {
         if (grid && isMounted) {
           setGridData(
             grid.map((r: any, idx: number) => {
-              const specs = r.specifications || {};
+              let specs = r.specifications || {};
+              if (typeof specs === 'string') {
+                try {
+                  specs = JSON.parse(specs);
+                } catch (e) {
+                  console.error("Failed to parse specifications", e);
+                }
+              }
+              
               return {
                 slNo: specs.sl_no || idx + 1,
                 systemSize: Number(r.system_size_kw),
                 noOfModules: specs.module_count || 0,
+                moduleWattage: Number(specs.module_watt || 0),
                 phase: r.phase || '1Ph',
                 pricePerKwp: specs.price_per_kw || (r.price / r.system_size_kw),
                 totalPrice: Number(r.price),

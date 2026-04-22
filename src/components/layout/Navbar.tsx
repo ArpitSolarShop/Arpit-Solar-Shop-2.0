@@ -43,6 +43,7 @@ type DropdownItem = {
   icon?: LucideIcon
   iconClassName?: string
   recommended?: string
+  disabled?: boolean
 }
 
 type NavigationItem = {
@@ -115,7 +116,8 @@ const Navbar = () => {
             href: "/reliance",
             image: "/Reliance.webp",
             description: "Leading renewable energy solutions",
-            recommended: "Recommended for commercial",
+            recommended: "Coming Soon",
+            disabled: true,
           },
           {
             name: "Shakti Solar",
@@ -259,17 +261,24 @@ const Navbar = () => {
                     : "space-y-2"
                   }`}
               >
-                {item.dropdown.map((dropdownItem) => (
-                  <Link
+                {item.dropdown.map((dropdownItem) => {
+                  const isDisabled = dropdownItem.disabled === true;
+                  const Wrapper = isDisabled ? 'div' : Link;
+                  const wrapperProps = isDisabled ? {} : { href: dropdownItem.href };
+                  return (
+                  <Wrapper
                     key={`${item.name}-${dropdownItem.name}`}
-                    href={dropdownItem.href}
+                    {...(wrapperProps as any)}
                     className={`${item.name === "Products" || item.name === "Solutions" || item.name === "About"
                       ? "flex flex-col items-center gap-3 p-4 min-w-[200px]"
                       : "flex items-center gap-3 p-3"
-                      } cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-200 dark:hover:border-blue-700 group`}
+                      } ${isDisabled
+                        ? "opacity-50 grayscale pointer-events-none cursor-not-allowed"
+                        : "cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:border-blue-200 dark:hover:border-blue-700"
+                      } rounded-lg transition-all duration-200 border border-transparent group relative`}
                   >
                     {(item.name === "Products" || item.name === "Solutions" || item.name === "About") && (
-                      <div className="w-20 h-20 bg-white dark:bg-gray-700 rounded-lg p-2 shadow-sm group-hover:shadow-md transition-shadow duration-200 flex items-center justify-center">
+                      <div className={`w-20 h-20 bg-white dark:bg-gray-700 rounded-lg p-2 shadow-sm ${isDisabled ? '' : 'group-hover:shadow-md'} transition-shadow duration-200 flex items-center justify-center`}>
                         {dropdownItem.icon ? (
                           <dropdownItem.icon
                             className={`w-10 h-10 ${dropdownItem.iconClassName || "text-gray-700 dark:text-gray-200 group-hover:text-gray-800 dark:group-hover:text-gray-100"}`}
@@ -278,7 +287,7 @@ const Navbar = () => {
                           <img
                             src={dropdownItem.image || "/placeholder.svg?height=40&width=40"}
                             alt={dropdownItem.name}
-                            className="w-full h-full object-contain"
+                            className={`w-full h-full object-contain ${isDisabled ? 'grayscale' : ''}`}
                             loading="lazy"
                           />
                         )}
@@ -301,7 +310,9 @@ const Navbar = () => {
                       )}
                       {dropdownItem.recommended && (
                         <div
-                          className={`text-xs px-2 py-1 rounded-full mt-2 inline-block transition-colors duration-200 ${dropdownItem.recommended === "Currently Out of Stock"
+                          className={`text-xs px-2 py-1 rounded-full mt-2 inline-block transition-colors duration-200 ${dropdownItem.recommended === "Coming Soon"
+                            ? "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-400"
+                            : dropdownItem.recommended === "Currently Out of Stock"
                             ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 group-hover:bg-red-200 dark:group-hover:bg-red-800"
                             : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 group-hover:bg-blue-200 dark:group-hover:bg-blue-800"
                             }`}
@@ -310,8 +321,9 @@ const Navbar = () => {
                         </div>
                       )}
                     </div>
-                  </Link>
-                ))}
+                  </Wrapper>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -365,12 +377,18 @@ const Navbar = () => {
                       className={`gap-3 px-3 py-3 ${item.name === "Products" ? "flex overflow-x-auto pb-2" : "grid grid-cols-1 xs:grid-cols-2"
                         }`}
                     >
-                      {item.dropdown.map((dropdownItem) => (
-                        <Link
+                      {item.dropdown.map((dropdownItem) => {
+                        const isDisabled = dropdownItem.disabled === true;
+                        const Wrapper = isDisabled ? 'div' : Link;
+                        const wrapperProps = isDisabled ? {} : { href: dropdownItem.href, onClick: closeMobileMenu };
+                        return (
+                        <Wrapper
                           key={dropdownItem.name}
-                          href={dropdownItem.href}
-                          className="flex flex-col items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 rounded-lg border border-transparent hover:border-blue-200 dark:hover:border-blue-700 flex-shrink-0 min-w-[140px]"
-                          onClick={closeMobileMenu}
+                          {...(wrapperProps as any)}
+                          className={`flex flex-col items-center gap-2 p-3 transition-colors duration-200 rounded-lg border border-transparent flex-shrink-0 min-w-[140px] ${isDisabled
+                            ? "opacity-50 grayscale cursor-not-allowed"
+                            : "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-blue-200 dark:hover:border-blue-700"
+                          }`}
                         >
                           <div className="w-16 h-16 bg-white dark:bg-gray-700 rounded-lg p-2 shadow-sm flex items-center justify-center">
                             {dropdownItem.icon ? (
@@ -381,7 +399,7 @@ const Navbar = () => {
                               <img
                                 src={dropdownItem.image || "/placeholder.svg?height=32&width=32"}
                                 alt={dropdownItem.name}
-                                className="w-full h-full object-contain"
+                                className={`w-full h-full object-contain ${isDisabled ? 'grayscale' : ''}`}
                                 loading="lazy"
                               />
                             )}
@@ -397,7 +415,9 @@ const Navbar = () => {
                             )}
                             {dropdownItem.recommended && (
                               <div
-                                className={`text-xs px-2 py-1 rounded-full mt-2 inline-block ${dropdownItem.recommended === "Currently Out of Stock"
+                                className={`text-xs px-2 py-1 rounded-full mt-2 inline-block ${dropdownItem.recommended === "Coming Soon"
+                                  ? "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-400"
+                                  : dropdownItem.recommended === "Currently Out of Stock"
                                   ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400"
                                   : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400"
                                   }`}
@@ -406,8 +426,9 @@ const Navbar = () => {
                               </div>
                             )}
                           </div>
-                        </Link>
-                      ))}
+                        </Wrapper>
+                        );
+                      })}
                     </div>
                   </div>
                 ) : (

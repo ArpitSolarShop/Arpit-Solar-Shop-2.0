@@ -74,13 +74,18 @@ export async function POST(req: NextRequest) {
             calculatedValues.gstAmount = metadata.gst_amount;
             calculatedValues.total = metadata.estimated_price;
             calculatedValues.grandTotal = metadata.estimated_price;
-            // Subsidy calc for calculator form — use requested (sanctioned) capacity, not panel-rounded
+            // Subsidy calc for calculator form — PM Surya Ghar (Central) + UP State
             const capacity = parseFloat(power_demand_kw);
-            const sanctionedKw = Math.floor(capacity); // PM Surya Ghar uses sanctioned load in whole kW
-            if (sanctionedKw < 2) calculatedValues.centralSubsidy = 0;
-            else if (sanctionedKw === 2) calculatedValues.centralSubsidy = 90000;
-            else calculatedValues.centralSubsidy = 108000;
-            calculatedValues.stateSubsidy = 0; // Included in above flat rates for simplicity as requested by user
+            const sanctionedKw = Math.floor(capacity); // Uses sanctioned load in whole kW
+            // Central Subsidy: 1kW=30k, 2kW=60k, 3kW+=78k
+            if (sanctionedKw < 1) calculatedValues.centralSubsidy = 0;
+            else if (sanctionedKw === 1) calculatedValues.centralSubsidy = 30000;
+            else if (sanctionedKw === 2) calculatedValues.centralSubsidy = 60000;
+            else calculatedValues.centralSubsidy = 78000; // 3kW and above
+            // UP State Subsidy: 1kW=15k, 2kW+=30k
+            if (sanctionedKw < 1) calculatedValues.stateSubsidy = 0;
+            else if (sanctionedKw === 1) calculatedValues.stateSubsidy = 15000;
+            else calculatedValues.stateSubsidy = 30000; // 2kW and above
 
             calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
 
@@ -172,7 +177,14 @@ export async function POST(req: NextRequest) {
 
             if (systemData) {
                 initialPrice = Number(systemData.price);
-                const specs = systemData.specifications || {};
+                let specs = systemData.specifications || {};
+                if (typeof specs === 'string') {
+                    try {
+                        specs = JSON.parse(specs);
+                    } catch (e) {
+                        console.error("Failed to parse specifications", e);
+                    }
+                }
 
                 // Handle Reliance Special Pricing (Structure)
                 if (product_category === 'Reliance' && specs.structure_prices) {
@@ -192,7 +204,7 @@ export async function POST(req: NextRequest) {
                 if (specs.module_watt) selectedProductData.panelWattage = specs.module_watt;
                 if (specs.module_count) selectedProductData.panelCount = specs.module_count;
                 if (specs.inverter_kw) selectedProductData.inverterSize = specs.inverter_kw;
-                if (specs.technology) selectedProductData.panelType = specs.technology;
+                if (specs.technology || specs.module_type) selectedProductData.panelType = specs.technology || specs.module_type;
                 if (specs.brand) selectedProductData.panelBrand = specs.brand;
                 if (specs.variant) selectedProductData.variant = specs.variant;
 
@@ -264,13 +276,15 @@ export async function POST(req: NextRequest) {
                             break;
 
                         case 'tiered_surya_ghar':
-                            // Modified logic for user: 90k for 2kW, 108k for 3kW+
-                            if (capacity < 2) {
+                            // Central Subsidy: 1kW=30k, 2kW=60k, 3kW+=78k
+                            if (capacity < 1) {
                                 amount = 0;
+                            } else if (capacity === 1) {
+                                amount = 30000;
                             } else if (capacity === 2) {
-                                amount = 90000;
+                                amount = 60000;
                             } else {
-                                amount = 108000;
+                                amount = 78000; // 3kW and above
                             }
                             break;
 
@@ -292,11 +306,15 @@ export async function POST(req: NextRequest) {
                 calculatedValues.stateSubsidy = stateTotal;
 
             } else {
-                // Legacy Fallback — uses sanctioned whole kW
-                if (capacity < 2) calculatedValues.centralSubsidy = 0;
-                else if (capacity === 2) calculatedValues.centralSubsidy = 90000;
-                else calculatedValues.centralSubsidy = 108000;
-                calculatedValues.stateSubsidy = 0;
+                // Legacy Fallback — Central: 1kW=30k, 2kW=60k, 3kW+=78k
+                if (capacity < 1) calculatedValues.centralSubsidy = 0;
+                else if (capacity === 1) calculatedValues.centralSubsidy = 30000;
+                else if (capacity === 2) calculatedValues.centralSubsidy = 60000;
+                else calculatedValues.centralSubsidy = 78000; // 3kW and above
+                // UP State: 1kW=15k, 2kW+=30k
+                if (capacity < 1) calculatedValues.stateSubsidy = 0;
+                else if (capacity === 1) calculatedValues.stateSubsidy = 15000;
+                else calculatedValues.stateSubsidy = 30000; // 2kW and above
             }
 
             calculatedValues.effectiveCost = Math.max(0, calculatedValues.grandTotal - calculatedValues.centralSubsidy - calculatedValues.stateSubsidy);
@@ -445,7 +463,7 @@ export async function POST(req: NextRequest) {
         // 8. WhatsApp
         let whatsappResult = { sent: false, error: null };
         try {
-            await sendWhatsAppMessage(phone, pdfUrl);
+            await sendWhatsAppMessage(phone, pdfUrl, name);
             whatsappResult.sent = true;
             
             // Send copy to referral phone if provided

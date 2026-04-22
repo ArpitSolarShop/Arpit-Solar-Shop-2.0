@@ -122,9 +122,8 @@ export async function insertQuoteRequest(data: any) {
   // Sanitize data: remove 'phase' if it exists, as the table might not have it yet.
   // Also remove 'address' if not in schema (it was used in invoice but maybe not in DB table).
   // Safest approach: create a clean object with only known columns if we knew them all, or just omit known bad ones.
-  // Sanitize data: remove 'address' if not in schema.
-  // We NOW include 'phase' as the column exists.
-  const { address, ...cleanData } = data;
+  // Sanitize data: remove columns that don't exist in the solar_quote_requests table.
+  const { address, phase, cables, price_includes_gst, gst_rate, additional_details, brand, ...cleanData } = data;
 
   console.log('Inserting into solar_quote_requests (Sanitized):', cleanData);
   const { error } = await supabase.from('solar_quote_requests').insert([cleanData]);

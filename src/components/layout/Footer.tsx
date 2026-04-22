@@ -148,9 +148,22 @@ const Footer = () => {
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">Products</h3>
                             <ul className="space-y-2">
-                                {[{ name: "Reliance Solar", href: "/reliance" }, { name: "Shakti Solar", href: "/shakti-solar" }, { name: "Tata Solar", href: "/tata-solar" }].map((link) => (
+                                {[
+                                    { name: "Reliance Solar", href: "/reliance", disabled: true },
+                                    { name: "Shakti Solar", href: "/shakti-solar" },
+                                    { name: "Tata Solar", href: "/tata-solar" },
+                                    { name: "Waree | Adani", href: "/integrated" },
+                                    { name: "Hybrid Solar", href: "/hybrid-solar" },
+                                ].map((link) => (
                                     <li key={link.name}>
-                                        <Link href={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
+                                        {link.disabled ? (
+                                            <span className="text-gray-500 text-sm cursor-not-allowed inline-flex items-center gap-2">
+                                                {link.name}
+                                                <span className="text-xs bg-amber-900/40 text-amber-400 px-1.5 py-0.5 rounded-full">Coming Soon</span>
+                                            </span>
+                                        ) : (
+                                            <Link href={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>
+                                        )}
                                     </li>
                                 ))}
                             </ul>

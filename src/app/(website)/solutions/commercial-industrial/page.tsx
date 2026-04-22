@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 // import Navbar
 // import Footer
@@ -116,10 +116,11 @@ function RelianceCommercialTable({ data, onRowClick }: { data: SolarSystem[]; on
     <Button
       onClick={() => onRowClick(item, mountingType)}
       size="sm"
-      variant="default"
-      className="bg-black hover:bg-gray-800 text-white w-full text-xs mt-2"
+      variant="secondary"
+      disabled
+      className="bg-gray-200 text-gray-500 w-full text-xs mt-2 cursor-not-allowed"
     >
-      Get Quote
+      Coming Soon
     </Button>
   );
 
@@ -151,13 +152,13 @@ function RelianceCommercialTable({ data, onRowClick }: { data: SolarSystem[]; on
               <TableHead className="font-semibold">Phase</TableHead>
               <TableHead className="font-semibold">Monthly Generation (kWh)</TableHead>
               <TableHead className="font-semibold">Roof Area (sq ft)</TableHead>
-              <TableHead className="font-semibold text-center">Tin Shed (â‚¹)</TableHead>
-              <TableHead className="font-semibold text-center">RCC Elevated (â‚¹)</TableHead>
-              <TableHead className="font-semibold text-center">Pre GI MMS (â‚¹)</TableHead>
-              <TableHead className="font-semibold text-center">Without MMS (â‚¹)</TableHead>
-              <TableHead className="font-semibold">Monthly Savings (â‚¹)</TableHead>
-              <TableHead className="font-semibold">Payback (Years)</TableHead>
-              <TableHead className="font-semibold">COâ‚‚ Reduction (tons/year)</TableHead>
+              <TableHead className="font-semibold text-center text-gray-900">Tin Shed (₹)</TableHead>
+              <TableHead className="font-semibold text-center text-gray-900">RCC Elevated (₹)</TableHead>
+              <TableHead className="font-semibold text-center text-gray-900">Pre GI MMS (₹)</TableHead>
+              <TableHead className="font-semibold text-center text-gray-900">Without MMS (₹)</TableHead>
+              <TableHead className="font-semibold text-gray-900">Monthly Savings (₹)</TableHead>
+              <TableHead className="font-semibold text-gray-900">Payback (Years)</TableHead>
+              <TableHead className="font-semibold text-gray-900">CO₂ Reduction (tons/year)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -177,27 +178,27 @@ function RelianceCommercialTable({ data, onRowClick }: { data: SolarSystem[]; on
                 </TableCell>
                 <TableCell>{item.roofAreaRequired.toLocaleString("en-IN")}</TableCell>
                 <TableCell className="text-center">
-                  <div className="font-bold text-green-600">â‚¹{item.shortRailTinShedPrice.toLocaleString("en-IN")}</div>
-                  <div className="text-xs text-gray-500">â‚¹{item.shortRailTinShedPricePerWatt.toFixed(2)}/W</div>
+                  <div className="font-bold text-green-600">₹{item.shortRailTinShedPrice.toLocaleString("en-IN")}</div>
+                  <div className="text-xs text-gray-500">₹{item.shortRailTinShedPricePerWatt.toFixed(2)}/W</div>
                   <QuoteButton item={item} mountingType="Tin Shed" />
                 </TableCell>
                 <TableCell className="text-center">
-                  <div className="font-bold text-green-600">â‚¹{item.hdgElevatedRccPrice.toLocaleString("en-IN")}</div>
-                  <div className="text-xs text-gray-500">â‚¹{item.hdgElevatedRccPricePerWatt.toFixed(2)}/W</div>
+                  <div className="font-bold text-green-600">₹{item.hdgElevatedRccPrice.toLocaleString("en-IN")}</div>
+                  <div className="text-xs text-gray-500">₹{item.hdgElevatedRccPricePerWatt.toFixed(2)}/W</div>
                   <QuoteButton item={item} mountingType="RCC Elevated" />
                 </TableCell>
                 <TableCell className="text-center">
-                  <div className="font-bold text-green-600">â‚¹{item.preGiMmsPrice.toLocaleString("en-IN")}</div>
-                  <div className="text-xs text-gray-500">â‚¹{item.preGiMmsPricePerWatt.toFixed(2)}/W</div>
+                  <div className="font-bold text-green-600">₹{item.preGiMmsPrice.toLocaleString("en-IN")}</div>
+                  <div className="text-xs text-gray-500">₹{item.preGiMmsPricePerWatt.toFixed(2)}/W</div>
                   <QuoteButton item={item} mountingType="Pre GI MMS" />
                 </TableCell>
                 <TableCell className="text-center">
-                  <div className="font-bold text-green-600">â‚¹{item.priceWithoutMmsPrice.toLocaleString("en-IN")}</div>
-                  <div className="text-xs text-gray-500">â‚¹{item.priceWithoutMmsPricePerWatt.toFixed(2)}/W</div>
+                  <div className="font-bold text-green-600">₹{item.priceWithoutMmsPrice.toLocaleString("en-IN")}</div>
+                  <div className="text-xs text-gray-500">₹{item.priceWithoutMmsPricePerWatt.toFixed(2)}/W</div>
                   <QuoteButton item={item} mountingType="Without MMS" />
                 </TableCell>
                 <TableCell className="font-medium text-green-600">
-                  â‚¹{item.monthlySavings.toLocaleString("en-IN")}
+                  ₹{item.monthlySavings.toLocaleString("en-IN")}
                 </TableCell>
                 <TableCell className="font-medium text-blue-600">{item.paybackPeriod}</TableCell>
                 <TableCell className="font-medium text-green-600">{item.co2Reduction}</TableCell>
@@ -259,7 +260,12 @@ function PriceComparison({ data }: { data: SolarSystem[] }) {
           </div>
 
           {relianceSystem && (
-            <div className="bg-white p-4 rounded-lg border">
+            <div className="bg-white p-4 rounded-lg border opacity-60 grayscale relative overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200 font-bold py-1 px-3 shadow-sm rotate-[-10deg]">
+                  Coming Soon
+                </Badge>
+              </div>
               <div className="flex items-center gap-2 mb-3">
                 <img src="/Reliance.webp" alt="Reliance Solar" className="h-6 w-auto" />
                 <h4 className="font-semibold text-gray-900">Reliance Solar</h4>
@@ -271,16 +277,16 @@ function PriceComparison({ data }: { data: SolarSystem[] }) {
                 </div>
                 <div className="flex justify-between">
                   <span>Price/Watt (Tin Shed):</span>
-                  <span className="font-medium">â‚¹{pricePerWatt.toFixed(2)}</span>
+                  <span className="font-medium">₹{pricePerWatt.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Total Price (Tin Shed):</span>
-                  <span className="font-bold text-green-600">â‚¹{totalPrice.toLocaleString("en-IN")}</span>
+                  <span className="font-bold text-green-600">₹{totalPrice.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Monthly Savings:</span>
                   <span className="font-medium text-green-600">
-                    â‚¹{relianceSystem.monthlySavings.toLocaleString("en-IN")}
+                    ₹{relianceSystem.monthlySavings.toLocaleString("en-IN")}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -519,8 +525,9 @@ export default function CommercialIndustrial() {
           <Card className="bg-white">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-gray-900">
-                <img src="/Reliance.webp" alt="Reliance Solar" className="h-5 w-auto" />
+                <img src="/Reliance.webp" alt="Reliance Solar" className="h-5 w-auto grayscale" />
                 {companyName} - Commercial Solar Systems
+                <Badge variant="outline" className="ml-2 bg-amber-50 text-amber-600 border-amber-200">Coming Soon</Badge>
               </CardTitle>
               <div className="flex flex-wrap justify-center gap-2">
                 <Badge variant="secondary" className="text-sm">Non DCR RIL 690 Wp HJT Modules</Badge>
@@ -612,17 +619,13 @@ export default function CommercialIndustrial() {
                 <div className="flex gap-4 justify-center mt-4">
                   <Button
                     variant="outline"
-                    className="border-gray-400 text-gray-700 hover:bg-gray-200 bg-transparent"
+                    disabled
+                    className="border-gray-300 text-gray-400 bg-gray-50 cursor-not-allowed"
                     onClick={() => {
-                      const customProduct = {
-                        ...customQuoteTemplate,
-                        slNo: 0,
-                        systemSize: maxSystemSize || 165.6, // Use calculated max size or fallback
-                      };
-                      handleRelianceRowClick(customProduct, "Custom");
+                      // Disabled
                     }}
                   >
-                    Get Reliance Solar Quote
+                    Reliance Solar Quote (Coming Soon)
                   </Button>
                 </div>
               </div>

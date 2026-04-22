@@ -4,6 +4,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@generated/*": [
+        "./generated/*"
       ]
     },
     "noImplicitAny": false,
