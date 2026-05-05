@@ -5,8 +5,14 @@ import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { supabase } from "@/integrations/supabase/client"
-import { Battery } from "lucide-react"
+import { Battery, Zap, Shield, Sun } from "lucide-react"
 import UniversalQuoteForm from "@/components/forms/UniversalQuoteForm"
+import { 
+  waareeHybridDcrWithBatteryProducts, 
+  waareeHybridDcrNoBatteryProducts,
+  waareeHybridNDcrWithBatteryProducts,
+  waareeHybridNDcrNoBatteryProducts
+} from "@/data/priceList"
 
 type HybridSystemData = {
   id: number
@@ -35,7 +41,88 @@ type HybridSystemData = {
   gst_rate?: number
 }
 
-type TechnologyFilter = 'all' | 'TOPCON' | 'MONO_BIFACIAL' | 'TOPCON_NDCR'
+const HYBRID_FALLBACK_DATA: HybridSystemData[] = [
+  ...waareeHybridDcrWithBatteryProducts.map((p, idx) => ({
+    id: 1000 + idx,
+    category: 'DCR' as const,
+    variant: 'WITH_BATTERY' as const,
+    capacity_kw: p.kWp,
+    phase: p.phase === 1 ? '1Ph' : '3Ph',
+    price_inr: p.price,
+    inverter_kwp: Math.ceil(p.kWp),
+    battery_kwh: p.phase === 1 ? 5 : 10,
+    module_watt: p.module,
+    module_count: p.qty,
+    structure_type: 'Elevated GI',
+    technology: 'TOPCON' as const,
+    acdb_qty: 1,
+    dcdb_qty: 1,
+    earthing_rod_qty: 3,
+    earthing_chemical_qty: 3,
+    lightning_arrester_qty: 1,
+    ac_wire_mtr: 10,
+    dc_wire_mtr: 20,
+    earthing_wire_mtr: 90,
+    price_includes_gst: true,
+    gst_rate: 8.9,
+    created_at: null,
+    updated_at: null
+  })),
+  ...waareeHybridDcrNoBatteryProducts.map((p, idx) => ({
+    id: 2000 + idx,
+    category: 'DCR' as const,
+    variant: 'WOBB' as const,
+    capacity_kw: p.kWp,
+    phase: p.phase === 1 ? '1Ph' : '3Ph',
+    price_inr: p.price,
+    inverter_kwp: Math.ceil(p.kWp),
+    battery_kwh: null,
+    module_watt: p.module,
+    module_count: p.qty,
+    structure_type: 'Elevated GI',
+    technology: 'TOPCON' as const,
+    acdb_qty: 1,
+    dcdb_qty: 1,
+    earthing_rod_qty: 3,
+    earthing_chemical_qty: 3,
+    lightning_arrester_qty: 1,
+    ac_wire_mtr: 10,
+    dc_wire_mtr: 20,
+    earthing_wire_mtr: 90,
+    price_includes_gst: true,
+    gst_rate: 8.9,
+    created_at: null,
+    updated_at: null
+  })),
+  ...waareeHybridNDcrWithBatteryProducts.map((p, idx) => ({
+    id: 3000 + idx,
+    category: 'NON_DCR' as const,
+    variant: 'WITH_BATTERY' as const,
+    capacity_kw: p.kWp,
+    phase: p.phase === 1 ? '1Ph' : '3Ph',
+    price_inr: p.price,
+    inverter_kwp: Math.ceil(p.kWp),
+    battery_kwh: p.phase === 1 ? 5 : 10,
+    module_watt: p.module,
+    module_count: p.qty,
+    structure_type: 'Elevated GI',
+    technology: 'TOPCON' as const,
+    acdb_qty: 1,
+    dcdb_qty: 1,
+    earthing_rod_qty: 3,
+    earthing_chemical_qty: 3,
+    lightning_arrester_qty: 1,
+    ac_wire_mtr: 10,
+    dc_wire_mtr: 20,
+    earthing_wire_mtr: 90,
+    price_includes_gst: true,
+    gst_rate: 8.9,
+    created_at: null,
+    updated_at: null
+  }))
+];
+
+type TechnologyFilter = 'all' | 'TOPCON' | 'Mono PERC'
 type VariantFilter = 'all' | 'WITH_BATTERY' | 'WOBB'
 
 export default function HybridSolarPricing() {
@@ -110,9 +197,17 @@ export default function HybridSolarPricing() {
         });
 
         setPricingData(mappedData);
+        
+        // If very few items, merge with fallback
+        if (mappedData.length < 5) {
+          setPricingData(prev => {
+            const existingIds = new Set(prev.map(r => `${r.capacity_kw}-${r.category}-${r.variant}`));
+            const additions = HYBRID_FALLBACK_DATA.filter(f => !existingIds.has(`${f.capacity_kw}-${f.category}-${f.variant}`));
+            return [...prev, ...additions].sort((a, b) => a.capacity_kw - b.capacity_kw);
+          });
+        }
       } else {
-        console.warn('No data found in hybrid_solar_pricing table');
-        setPricingData([]);
+        setPricingData(HYBRID_FALLBACK_DATA)
       }
 
       setLoading(false)
@@ -166,15 +261,13 @@ export default function HybridSolarPricing() {
 
   const getTechnologyBadgeColor = (tech: string) => {
     if (tech === 'TOPCON') return 'bg-blue-100 text-blue-800 border-blue-300'
-    if (tech === 'TOPCON_NDCR') return 'bg-cyan-100 text-cyan-800 border-cyan-300'
-    if (tech === 'MONO_BIFACIAL') return 'bg-green-100 text-green-800 border-green-300'
+    if (tech === 'Mono PERC') return 'bg-green-100 text-green-800 border-green-300'
     return 'bg-slate-100 text-slate-800 border-slate-300'
   }
 
   const getCategoryBadgeColor = (cat: string) => {
     if (cat === 'DCR') return 'bg-purple-100 text-purple-800 border-purple-300'
-    if (cat === 'NDCR') return 'bg-teal-100 text-teal-800 border-teal-300'
-    return 'bg-orange-100 text-orange-800 border-orange-300'
+    return 'bg-teal-100 text-teal-800 border-teal-300'
   }
 
   if (loading) {
@@ -228,29 +321,7 @@ export default function HybridSolarPricing() {
                 : 'bg-white hover:bg-slate-50 border-slate-300'
               }
             >
-              TOPCon ({filterStats.technology.TOPCON})
-            </Button>
-            <Button
-              variant={technologyFilter === 'TOPCON_NDCR' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setTechnologyFilter('TOPCON_NDCR')}
-              className={technologyFilter === 'TOPCON_NDCR'
-                ? 'bg-cyan-600 hover:bg-cyan-700 text-white'
-                : 'bg-white hover:bg-slate-50 border-slate-300'
-              }
-            >
-              TOPCon NDCR ({filterStats.technology.TOPCON_NDCR})
-            </Button>
-            <Button
-              variant={technologyFilter === 'MONO_BIFACIAL' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setTechnologyFilter('MONO_BIFACIAL')}
-              className={technologyFilter === 'MONO_BIFACIAL'
-                ? 'bg-green-600 hover:bg-green-700 text-white'
-                : 'bg-white hover:bg-slate-50 border-slate-300'
-              }
-            >
-              Mono Bifacial ({filterStats.technology.MONO_BIFACIAL})
+              TOPCon ({filterStats.technology.all})
             </Button>
           </div>
 

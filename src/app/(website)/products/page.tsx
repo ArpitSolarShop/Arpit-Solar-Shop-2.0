@@ -18,7 +18,7 @@ import {
 import { Label } from "@/components/ui/label";
 
 interface Product {
-    id: number;
+    id: string;
     name: string;
     description: string;
     category: string;

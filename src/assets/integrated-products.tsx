@@ -5,8 +5,73 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import UniversalQuoteForm from '@/components/forms/UniversalQuoteForm'
 import { supabase } from '@/integrations/supabase/client'
+import { waareeTopconProducts, adaniTopconProducts, premierTopconProducts, tataProducts } from '@/data/priceList'
+
+const normalizeModuleType = (type: string | null): string => {
+  if (!type) return 'TOPCON';
+  const t = type.toUpperCase();
+  if (t.includes('MONO') || t.includes('PERC')) return 'Mono PERC';
+  if (t.includes('TOPCON')) return 'TOPCON';
+  return 'TOPCON';
+};
+
+const INTEGRATED_FALLBACK_DATA: IntegratedRow[] = [
+  ...waareeTopconProducts.map((p, idx) => ({
+    id: 1000 + idx,
+    brand: 'Waaree',
+    system_kw: p.kWp,
+    phase: p.phase === 1 ? '1Ph' : '3Ph',
+    price: p.price,
+    inverter_capacity_kw: Math.ceil(p.kWp),
+    module_watt: p.module,
+    module_type: 'TOPCON',
+    no_of_modules: p.qty,
+    price_includes_gst: true,
+    gst_rate: 8.9
+  })),
+  ...adaniTopconProducts.map((p, idx) => ({
+    id: 2000 + idx,
+    brand: 'Adani',
+    system_kw: p.kWp,
+    phase: p.phase === 1 ? '1Ph' : '3Ph',
+    price: p.price,
+    inverter_capacity_kw: Math.ceil(p.kWp),
+    module_watt: p.module,
+    module_type: 'TOPCON',
+    no_of_modules: p.qty,
+    price_includes_gst: true,
+    gst_rate: 8.9
+  })),
+  ...premierTopconProducts.map((p, idx) => ({
+    id: 3000 + idx,
+    brand: 'Premier',
+    system_kw: p.kWp,
+    phase: p.phase === 1 ? '1Ph' : '3Ph',
+    price: p.price,
+    inverter_capacity_kw: Math.ceil(p.kWp),
+    module_watt: p.module,
+    module_type: 'TOPCON',
+    no_of_modules: p.qty,
+    price_includes_gst: true,
+    gst_rate: 8.9
+  })),
+  ...tataProducts.map((p, idx) => ({
+    id: 4000 + idx,
+    brand: 'Waaree',
+    system_kw: p.kWp,
+    phase: p.phase === 1 ? '1Ph' : '3Ph',
+    price: p.price,
+    inverter_capacity_kw: Math.ceil(p.kWp),
+    module_watt: 545,
+    module_type: 'Mono PERC',
+    no_of_modules: p.qty,
+    price_includes_gst: true,
+    gst_rate: 8.9
+  }))
+];
 
 type IntegratedRow = {
   id: number
@@ -33,15 +98,13 @@ type IntegratedRow = {
   gst_rate?: number
 }
 
-type ModuleTypeFilter = 'all' | 'Mono DCR' | 'TOPCON DCR'
-
 export default function IntegratedPriceData() {
   const [rows, setRows] = useState<IntegratedRow[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<IntegratedRow | null>(null)
-  const [moduleTypeFilter, setModuleTypeFilter] = useState<ModuleTypeFilter>('all')
+  const [moduleTypeFilter, setModuleTypeFilter] = useState<string>('all')
 
   useEffect(() => {
     let mounted = true
@@ -55,8 +118,8 @@ export default function IntegratedPriceData() {
           .order('system_size_kw', { ascending: true })
 
         if (error) throw error
-        if (!data) {
-          setRows([])
+        if (!data || data.length === 0) {
+          setRows(INTEGRATED_FALLBACK_DATA)
           return
         }
 
@@ -78,10 +141,10 @@ export default function IntegratedPriceData() {
               system_kw: Number(r.system_size_kw),
               phase: r.phase || '1Ph',
               price: Number(r.price),
-              inverter_capacity_kw: Number(specs.inverter_kw || 0),
-              module_watt: Number(specs.module_watt || 0),
-              module_type: specs.module_type || 'TOPCON DCR',
-              no_of_modules: Number(specs.module_count || 0),
+              inverter_capacity_kw: Number(specs.inverter_capacity_kw) || Math.ceil(Number(r.system_size_kw)),
+              module_watt: Number(specs.module_watt) || 580,
+              module_type: normalizeModuleType(specs.module_type),
+              no_of_modules: Number(specs.no_of_modules) || Math.ceil(Number(r.system_size_kw) * 1000 / 580),
               acdb_nos: compQtys.acdb ? Number(compQtys.acdb) : 1,
               dcdb_nos: compQtys.dcdb ? Number(compQtys.dcdb) : 1,
               earthing_rod_nos: compQtys.earthing_rod ? Number(compQtys.earthing_rod) : 3,
@@ -97,6 +160,14 @@ export default function IntegratedPriceData() {
               gst_rate: r.gst_rate,
             };
           }))
+
+          if (data.length < 5) {
+            setRows(prev => {
+              const existingIds = new Set(prev.map(r => `${r.brand}-${r.system_kw}-${r.module_type}`));
+              const additional = INTEGRATED_FALLBACK_DATA.filter(f => !existingIds.has(`${f.brand}-${f.system_kw}-${f.module_type}`));
+              return [...prev, ...additional].sort((a, b) => a.system_kw - b.system_kw);
+            });
+          }
         }
       } catch (err: any) {
         console.error('Failed to load integrated products', err)
@@ -109,7 +180,6 @@ export default function IntegratedPriceData() {
     return () => { mounted = false }
   }, [])
 
-  // Filter rows based on selected module type
   const filteredRows = useMemo(() => {
     if (moduleTypeFilter === 'all') {
       return rows
@@ -117,14 +187,20 @@ export default function IntegratedPriceData() {
     return rows.filter(row => row.module_type === moduleTypeFilter)
   }, [rows, moduleTypeFilter])
 
-  // Get unique module types for statistics
   const moduleTypeStats = useMemo(() => {
-    const stats = {
+    const stats: Record<string, number> = {
       all: rows.length,
-      'Mono DCR': rows.filter(r => r.module_type === 'Mono DCR').length,
-      'TOPCON DCR': rows.filter(r => r.module_type === 'TOPCON DCR').length,
     }
+    rows.forEach(r => {
+      const type = r.module_type || 'TOPCON';
+      stats[type] = (stats[type] || 0) + 1;
+    });
     return stats
+  }, [rows])
+
+  const moduleTypes = useMemo(() => {
+    const types = Array.from(new Set(rows.map(r => r.module_type || 'TOPCON')));
+    return types.sort();
   }, [rows])
 
   const handleRowClick = (row: IntegratedRow) => {
@@ -133,153 +209,102 @@ export default function IntegratedPriceData() {
   }
 
   const getModuleTypeBadgeColor = (moduleType: string | null) => {
-    if (moduleType === 'TOPCON DCR') return 'bg-blue-100 text-blue-800 border-blue-300'
-    if (moduleType === 'Mono DCR') return 'bg-green-100 text-green-800 border-green-300'
+    if (moduleType === 'TOPCON') return 'bg-blue-100 text-blue-800 border-blue-300'
+    if (moduleType === 'Mono PERC') return 'bg-green-100 text-green-800 border-green-300'
     return 'bg-slate-100 text-slate-800 border-slate-300'
   }
 
   return (
     <div className="max-w-full mx-auto my-8 px-4">
-      {/* Header with Filter Toggles */}
-      <div className="mb-6 space-y-4">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="mb-8 space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Integrated Solar Products</h2>
-            <p className="text-sm text-slate-600 mt-1">Browse our comprehensive range of integrated solar solutions</p>
+            <h2 className="text-3xl font-bold text-slate-900">Integrated Solar Products</h2>
+            <p className="text-slate-500 mt-1">Browse our range of Waaree and Adani solar systems</p>
           </div>
         </div>
 
-        {/* Module Type Filter Buttons */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm font-medium text-slate-700 mr-2">Filter by Module Type:</span>
-          <Button
-            variant={moduleTypeFilter === 'all' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setModuleTypeFilter('all')}
-            className={moduleTypeFilter === 'all'
-              ? 'bg-blue-600 hover:bg-blue-700 text-white'
-              : 'bg-white hover:bg-slate-50 border-slate-300'
-            }
-          >
-            All ({moduleTypeStats.all})
-          </Button>
-          <Button
-            variant={moduleTypeFilter === 'Mono DCR' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setModuleTypeFilter('Mono DCR')}
-            className={moduleTypeFilter === 'Mono DCR'
-              ? 'bg-green-600 hover:bg-green-700 text-white'
-              : 'bg-white hover:bg-slate-50 border-slate-300'
-            }
-          >
-            Mono DCR ({moduleTypeStats['Mono DCR']})
-          </Button>
-          <Button
-            variant={moduleTypeFilter === 'TOPCON DCR' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setModuleTypeFilter('TOPCON DCR')}
-            className={moduleTypeFilter === 'TOPCON DCR'
-              ? 'bg-blue-600 hover:bg-blue-700 text-white'
-              : 'bg-white hover:bg-slate-50 border-slate-300'
-            }
-          >
-            TOPCON DCR ({moduleTypeStats['TOPCON DCR']})
-          </Button>
-        </div>
-      </div>
+        <Tabs defaultValue="all" value={moduleTypeFilter} onValueChange={setModuleTypeFilter} className="w-full">
+          <TabsList className="bg-slate-100 p-1 mb-6">
+            <TabsTrigger value="all" className="px-6">
+              All Systems ({moduleTypeStats.all})
+            </TabsTrigger>
+            {moduleTypes.map(type => (
+              <TabsTrigger key={type} value={type} className="px-6">
+                {type} ({moduleTypeStats[type] || 0})
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-      {/* Products Table */}
-      <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
-        {loading && (
-          <div className="text-center py-8 text-slate-500">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-2">Loading products...</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="text-red-600 p-4 bg-red-50 border-l-4 border-red-500">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
-
-        {!loading && !error && (
-          <>
-            {filteredRows.length === 0 ? (
-              <div className="text-center py-12 text-slate-500">
-                <p className="text-lg">No products found for the selected filter.</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setModuleTypeFilter('all')}
-                  className="mt-4"
-                >
-                  Show All Products
-                </Button>
-              </div>
-            ) : (
-              <table className="min-w-[1200px] w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-100 text-slate-600 text-xs uppercase border-b-2 border-slate-200">
-                    <th className="p-3 border-r">Module Type</th>
-                    <th className="p-3 border-r">Brand</th>
-                    <th className="p-3 border-r">System (kW)</th>
-                    <th className="p-3 border-r">Phase</th>
-                    <th className="p-3 border-r">Price (₹)</th>
-                    <th className="p-3 border-r">Inverter (kW)</th>
-                    <th className="p-3 border-r">Module (W)</th>
-                    <th className="p-3 border-r">No. of Modules</th>
-                    <th className="p-3">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredRows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="border-b border-slate-200 hover:bg-blue-50 transition-colors"
-                    >
-                      <td className="p-3 border-r">
-                        <Badge className={`${getModuleTypeBadgeColor(row.module_type)} border font - medium`}>
-                          {row.module_type || 'N/A'}
+          <div className="overflow-x-auto border rounded-xl bg-white shadow-sm">
+            <table className="min-w-[1200px] w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 text-slate-600 text-xs uppercase font-semibold">
+                  <th className="p-4 border-b">Module Type</th>
+                  <th className="p-4 border-b">Brand</th>
+                  <th className="p-4 border-b">System (kW)</th>
+                  <th className="p-4 border-b">Phase</th>
+                  <th className="p-4 border-b">Price (₹)</th>
+                  <th className="p-4 border-b">Inverter (kW)</th>
+                  <th className="p-4 border-b">Module (W)</th>
+                  <th className="p-4 border-b">No. of Modules</th>
+                  <th className="p-4 border-b text-center">Action</th>
+                </tr>
+              </thead>
+              <TableBody>
+                {filteredRows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-20 text-slate-500">
+                      <p className="text-lg font-medium">No products found for the selected technology.</p>
+                      <p className="text-sm">Try selecting a different module type.</p>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredRows.map((row) => (
+                    <TableRow key={row.id} className="group transition-colors hover:bg-slate-50/80">
+                      <TableCell className="p-4">
+                        <Badge variant="outline" className={`${getModuleTypeBadgeColor(row.module_type)} font-medium px-2.5 py-0.5 rounded-full`}>
+                          {row.module_type || 'TOPCON'}
                         </Badge>
-                      </td>
-                      <td className="p-3 border-r font-medium text-slate-900">{row.brand}</td>
-                      <td className="p-3 border-r text-slate-700">{row.system_kw} kW</td>
-                      <td className="p-3 border-r">
-                        <Badge variant="outline" className="border-slate-300">
+                      </TableCell>
+                      <TableCell className="p-4 font-semibold text-slate-900">{row.brand}</TableCell>
+                      <TableCell className="p-4 font-medium">{row.system_kw} kW</TableCell>
+                      <TableCell className="p-4">
+                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-100 border-none px-2 py-0">
                           {row.phase}
                         </Badge>
-                      </td>
-                      <td className="p-3 border-r font-semibold text-blue-700">
+                      </TableCell>
+                      <TableCell className="p-4">
                         <div className="flex flex-col">
-                          <span>₹{row.price.toLocaleString('en-IN')}</span>
-                          <span className="text-xs text-slate-500 font-normal mt-1">
-                            {row.price_includes_gst ? "Incl. GST" : "+ GST"}
+                          <span className="text-lg font-bold text-blue-600">
+                            ₹{row.price.toLocaleString('en-IN')}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-medium">
+                            {row.price_includes_gst ? 'INCL. GST' : '+ GST'}
                           </span>
                         </div>
-                      </td>
-                      <td className="p-3 border-r text-slate-700">{row.inverter_capacity_kw} kW</td>
-                      <td className="p-3 border-r text-slate-700">{row.module_watt} W</td>
-                      <td className="p-3 border-r text-slate-700">{row.no_of_modules} Nos</td>
-                      <td className="p-3">
+                      </TableCell>
+                      <TableCell className="p-4 text-slate-600">{row.inverter_capacity_kw} kW</TableCell>
+                      <TableCell className="p-4 text-slate-600">{row.module_watt} W</TableCell>
+                      <TableCell className="p-4 text-slate-600">{row.no_of_modules} Nos</TableCell>
+                      <TableCell className="p-4 text-center">
                         <Button
                           size="sm"
                           onClick={() => handleRowClick(row)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow transition-all"
+                          className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 shadow-sm transition-all active:scale-95"
                         >
                           Get Quote
                         </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </>
-        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </table>
+          </div>
+        </Tabs>
       </div>
 
-      {/* Show active filter info */}
       {!loading && !error && filteredRows.length > 0 && (
         <div className="mt-4 text-sm text-slate-600">
           Showing <strong>{filteredRows.length}</strong> product{filteredRows.length !== 1 ? 's' : ''}

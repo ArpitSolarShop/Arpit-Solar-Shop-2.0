@@ -124,7 +124,7 @@ export const seedProductData = async () => {
 
     // Insert products
     const { data, error } = await supabase
-      .from('products')
+      .from('solar_products')
       .insert(products);
 
     if (error) {

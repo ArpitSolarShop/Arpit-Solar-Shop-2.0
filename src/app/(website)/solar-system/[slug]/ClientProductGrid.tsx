@@ -26,7 +26,7 @@ export default function ClientProductGrid({
             try {
                 // Fetch all published products from Supabase
                 const { data: products, error } = await supabase
-                    .from('products')
+                    .from('solar_products')
                     .select('*')
                     .eq('is_published', true);
 

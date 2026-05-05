@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
         // Get current product stock
         const { data: product, error: productError } = await supabase
-            .from('products')
+            .from('solar_products')
             .select('stock_quantity')
             .eq('id', product_id)
             .single();

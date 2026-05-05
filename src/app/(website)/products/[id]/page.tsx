@@ -22,7 +22,7 @@ import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface Product {
-    id: number;
+    id: string;
     name: string;
     description: string;
     category: string;
@@ -64,7 +64,7 @@ export default function ProductDetailPage() {
         try {
             setLoading(true);
             const { data, error } = await supabase
-                .from("products")
+                .from("solar_products")
                 .select("*")
                 .eq("id", params.id)
                 .eq("is_published", true)

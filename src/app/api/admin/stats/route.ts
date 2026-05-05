@@ -5,7 +5,7 @@ export async function GET(request: Request) {
     try {
         // Fetch products
         const { data: products, error: productsError } = await supabase
-            .from('products')
+            .from('solar_products')
             .select('price, is_published, stock_quantity');
 
         if (productsError) {

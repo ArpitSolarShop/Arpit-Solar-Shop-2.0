@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         if (supabaseUrl && supabaseKey) {
             const supabase = createClient(supabaseUrl, supabaseKey);
             const { data: products } = await supabase
-                .from('products')
+                .from('solar_products')
                 .select('slug, updated_at')
                 .eq('is_published', true);
 
