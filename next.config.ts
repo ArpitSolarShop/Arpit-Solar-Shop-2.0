@@ -19,16 +19,7 @@ const nextConfig: NextConfig = {
         destination: '/solutions/residential',
         permanent: true,
       },
-      {
-        source: '/privacy-policy',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/terms-conditions',
-        destination: '/',
-        permanent: true,
-      },
+      // /privacy-policy and /terms-and-conditions now have dedicated pages
       // Missing /about redirect (old site had /about as a parent or page, new site uses /about/us)
       {
         source: '/about',

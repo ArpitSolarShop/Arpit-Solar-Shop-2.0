@@ -57,6 +57,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "/tata-solar",
         "/reliance",
         "/integrated",
+        "/terms-and-conditions",
+        "/privacy-policy",
     ].map((route) => ({
         url: `${siteConfig.url}${route}`,
         lastModified: new Date(),

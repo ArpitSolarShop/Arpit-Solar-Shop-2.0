@@ -308,10 +308,19 @@ const UniversalQuoteForm = ({
                                 </div>
                             </div>
 
+                            <div className="flex items-start gap-3 pt-2 border-t">
+                                <input id={`consent-${category}`} type="checkbox" required className="mt-1 h-4 w-4 rounded border accent-green-600" />
+                                <label htmlFor={`consent-${category}`} className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                                    I agree to receive marketing and promotional communications via email, SMS, WhatsApp, RCS, and calls, in accordance with the{" "}
+                                    <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms-and-conditions', '_blank'); }} className="text-blue-600 hover:underline font-medium cursor-pointer">Terms &amp; Conditions</span>
+                                    {" "}and{" "}
+                                    <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy-policy', '_blank'); }} className="text-blue-600 hover:underline font-medium cursor-pointer">Privacy Policy</span>.
+                                </label>
+                            </div>
+
                             <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white h-12 text-lg" disabled={loading}>
                                 {loading ? "Submitting..." : `Get My ${category} Quote`}
                             </Button>
-                            <p className="text-xs text-center text-gray-500">By submitting, you agree to receive a call/message from our team.</p>
 
                         </form>
                     </CardContent>

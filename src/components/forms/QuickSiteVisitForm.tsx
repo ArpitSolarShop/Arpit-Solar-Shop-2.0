@@ -145,6 +145,16 @@ export function QuickSiteVisitForm({ city, children }: QuickSiteVisitFormProps) 
                             </div>
                         </div>
 
+                        <div className="flex items-start gap-2">
+                            <input id="siteVisitConsent" type="checkbox" required className="mt-1 h-4 w-4 rounded border accent-[#0a2351]" />
+                            <label htmlFor="siteVisitConsent" className="text-xs text-gray-500 leading-relaxed">
+                                I agree to receive marketing and promotional communications via email, SMS, WhatsApp, RCS, and calls, in accordance with the{" "}
+                                <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms-and-conditions', '_blank'); }} className="text-blue-600 hover:underline font-medium cursor-pointer">Terms &amp; Conditions</span>
+                                {" "}and{" "}
+                                <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy-policy', '_blank'); }} className="text-blue-600 hover:underline font-medium cursor-pointer">Privacy Policy</span>.
+                            </label>
+                        </div>
+
                         <Button
                             type="submit"
                             disabled={loading}

@@ -424,7 +424,7 @@ export function HeroGetQuote() {
                                         </>
                                     )}
 
-                                    <div className="flex items-start gap-3 pt-2"><input id="agree" type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 h-4 w-4 rounded border" /><label htmlFor="agree" className="text-sm text-muted-foreground">I agree to the terms of service & privacy policy.</label></div>
+                                                                        <div className="flex items-start gap-3 pt-2"><input id="agree" type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1 h-4 w-4 rounded border accent-[#0a2351]" /><label htmlFor="agree" className="text-xs sm:text-sm text-muted-foreground leading-relaxed">I agree to receive marketing and promotional communications via email, SMS, WhatsApp, RCS, and calls, in accordance with the <span className="text-blue-600 hover:underline font-medium cursor-pointer" onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/terms-and-conditions', '_blank'); }}>Terms &amp; Conditions</span> and <span className="text-blue-600 hover:underline font-medium cursor-pointer" onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open('/privacy-policy', '_blank'); }}>Privacy Policy</span>.</label></div>
 
                                     <button type="submit" disabled={loading} className={`${buttonPrimary} w-full h-11 font-semibold`}>{loading ? "Submitting..." : "Submit Details"}</button>
                                 </form>

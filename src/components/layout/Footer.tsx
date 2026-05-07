@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react"; // Import useState for managing modal state
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"; // Import Dialog components
 import Image from "next/image";
 import { MapPin, Phone, Mail, Facebook, Linkedin, Instagram, Youtube } from "lucide-react";
 
@@ -15,63 +13,8 @@ const PinterestIcon = () => (
     </svg>
 );
 
-// Content for the modals
-const policyData = {
-    privacy: {
-        title: "Privacy Policy",
-        content: (
-            <div className="space-y-4 text-sm text-gray-600">
-                <p><strong>Last Updated:</strong> August 10, 2025</p>
-                <p>Arpit Solar Shop ("us", "we", or "our") operates the arpitsolar.com website (the "Service"). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.</p>
-                <h3 className="font-semibold text-gray-800">1. Information Collection and Use</h3>
-                <p>We collect several different types of information for various purposes to provide and improve our Service to you. This may include personal data, such as your email address, name, phone number, and usage data.</p>
-                <h3 className="font-semibold text-gray-800">2. Use of Data</h3>
-                <p>Arpit Solar Shop uses the collected data for various purposes: to provide and maintain the Service, to notify you about changes to our Service, to provide customer care and support, and to monitor the usage of the Service.</p>
-                <h3 className="font-semibold text-gray-800">3. Data Security</h3>
-                <p>The security of your data is important to us, but remember that no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.</p>
-            </div>
-        )
-    },
-    terms: {
-        title: "Terms of Service",
-        content: (
-            <div className="space-y-4 text-sm text-gray-600">
-                <p><strong>Last Updated:</strong> August 10, 2025</p>
-                <p>Please read these Terms of Service ("Terms", "Terms of Service") carefully before using the arpitsolar.com website (the "Service") operated by Arpit Solar Shop ("us", "we", or "our").</p>
-                <h3 className="font-semibold text-gray-800">1. Agreement to Terms</h3>
-                <p>By accessing or using our Service, you agree to be bound by these Terms. If you disagree with any part of the terms, then you may not access the Service.</p>
-                <h3 className="font-semibold text-gray-800">2. Intellectual Property</h3>
-                <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Arpit Solar Shop and its licensors. The Service is protected by copyright, trademark, and other laws of both India and foreign countries.</p>
-                <h3 className="font-semibold text-gray-800">3. Limitation Of Liability</h3>
-                <p>In no event shall Arpit Solar Shop, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.</p>
-            </div>
-        )
-    },
-    cookies: {
-        title: "Cookie Policy",
-        content: (
-            <div className="space-y-4 text-sm text-gray-600">
-                <p><strong>Last Updated:</strong> August 10, 2025</p>
-                <p>This Cookie Policy explains what cookies are and how we use them. You should read this policy to understand what cookies are, how we use them, the types of cookies we use, the information we collect using cookies and how that information is used.</p>
-                <h3 className="font-semibold text-gray-800">1. What are Cookies?</h3>
-                <p>Cookies are small text files that are stored on your computer or mobile device when you visit a website. They are widely used to make websites work or work more efficiently, as well as to provide information to the owners of the site.</p>
-                <h3 className="font-semibold text-gray-800">2. How We Use Cookies</h3>
-                <p>We use cookies to enhance your Browse experience by: remembering your preferences, understanding how you use our site to improve functionality, and providing content that is relevant to you.</p>
-                <p>We use both session and persistent cookies on our Service.</p>
-            </div>
-        )
-    }
-};
-
 const Footer = () => {
     const currentYear = new Date().getFullYear();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalContentKey, setModalContentKey] = useState<string | null>(null);
-
-    const handlePolicyClick = (key: string) => {
-        setModalContentKey(key);
-        setIsModalOpen(true);
-    };
 
     return (
         <>
@@ -179,11 +122,9 @@ const Footer = () => {
                                     </li>
                                 ))}
                             </ul>
-                        </div>
 
-                        {/* Top Locations Column */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold">Top Locations</h3>
+                            {/* Top Locations */}
+                            <h3 className="text-lg font-semibold mt-6">Top Locations</h3>
                             <ul className="space-y-2">
                                 {[{ name: "Solar in Varanasi", href: "/solar-installation/varanasi" }, { name: "Solar in Mau", href: "/solar-installation/mau" }, { name: "Solar in Jaunpur", href: "/solar-installation/jaunpur" }].map((link) => (
                                     <li key={link.name}>
@@ -195,34 +136,35 @@ const Footer = () => {
                     </div>
                 </div>
 
+                {/* Consent & Promotional Message Bar */}
+                <div className="border-t border-white/10 bg-[#071a3d]">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                        <p className="text-xs sm:text-sm text-gray-400 text-center leading-relaxed">
+                            By using this website, you agree to receive promotional messages through WhatsApp / RCS / SMS according to our{" "}
+                            <Link href="/terms-and-conditions" className="text-solar-orange hover:underline font-medium">Terms &amp; Conditions</Link>
+                            {" "}and{" "}
+                            <Link href="/privacy-policy" className="text-solar-orange hover:underline font-medium">Privacy Policy</Link>.
+                            {" "}You also consent to receive marketing and promotional emails, messages, WhatsApp communications, and calls from Arpit Solar Shop.
+                            {" "}You may opt out at any time by replying STOP or contacting us at info@arpitsolar.com.
+                        </p>
+                    </div>
+                </div>
+
                 {/* UPDATED Bottom Bar */}
                 <div className="border-t border-white/10 bg-solar-navy/90">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
                         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
                             <p className="text-gray-400 text-sm order-2 md:order-1"> © {currentYear} Arpit Solar Shop. All rights reserved. </p>
                             <div className="flex flex-wrap justify-center md:justify-end gap-3 sm:gap-6 order-1 md:order-2">
-                                {/* These are now buttons that trigger the modal */}
-                                <button onClick={() => handlePolicyClick('privacy')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Privacy Policy </button>
-                                <button onClick={() => handlePolicyClick('terms')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Terms </button>
-                                <button onClick={() => handlePolicyClick('cookies')} className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Cookie Policy </button>
+                                {/* These are now proper links to dedicated pages */}
+                                <Link href="/privacy-policy" className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Privacy Policy </Link>
+                                <Link href="/terms-and-conditions" className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200"> Terms &amp; Conditions </Link>
                                 <Link href="/admin/login" className="text-gray-400 hover:text-solar-orange text-sm transition-colors duration-200">Admin</Link>
                             </div>
                         </div>
                     </div>
                 </div>
             </footer>
-
-            {/* The Modal Dialog component */}
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="sm:max-w-2xl bg-white text-black p-0">
-                    <DialogHeader className="p-6 pb-4">
-                        <DialogTitle className="text-2xl">{modalContentKey && (policyData as any)[modalContentKey].title}</DialogTitle>
-                    </DialogHeader>
-                    <div className="px-6 pb-6 max-h-[70vh] overflow-y-auto">
-                        {modalContentKey && (policyData as any)[modalContentKey].content}
-                    </div>
-                </DialogContent>
-            </Dialog>
         </>
     );
 };
