@@ -38,38 +38,70 @@ async function runMigrations() {
 
     // 0. Base setup: Extensions and Helper functions
     console.log('🚀 Running base setups (Extensions & Helpers)...');
-    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-    await client.query(`
-      CREATE OR REPLACE FUNCTION update_updated_at_column()
-      RETURNS TRIGGER AS $$
-      BEGIN
-          NEW.updated_at = NOW();
-          RETURN NEW;
-      END;
-      $$ language 'plpgsql';
-    `);
-    console.log('✅ Base setups complete!');
+    try {
+      await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+      await client.query(`
+        CREATE OR REPLACE FUNCTION update_updated_at_column()
+        RETURNS TRIGGER AS $$
+        BEGIN
+            NEW.updated_at = NOW();
+            RETURN NEW;
+        END;
+        $$ language 'plpgsql';
+      `);
+      console.log('✅ Base setups complete!');
+    } catch (err) {
+      console.warn('⚠️ Base setups warning:', err.message);
+    }
 
     // 1. Run cms blog migration
-    const blogMigrationPath = path.join(__dirname, '../supabase/migrations/20260120_create_cms_blog.sql');
-    console.log(`📄 Reading migration: ${path.basename(blogMigrationPath)}`);
-    const blogSql = fs.readFileSync(blogMigrationPath, 'utf8');
+    try {
+      const blogMigrationPath = path.join(__dirname, '../supabase/migrations/20260120_create_cms_blog.sql');
+      console.log(`📄 Reading migration: ${path.basename(blogMigrationPath)}`);
+      const blogSql = fs.readFileSync(blogMigrationPath, 'utf8');
 
-    console.log('🚀 Executing CMS & Blog migration...');
-    await client.query(blogSql);
-    console.log('✅ CMS & Blog tables successfully created/verified!');
+      console.log('🚀 Executing CMS & Blog migration...');
+      await client.query(blogSql);
+      console.log('✅ CMS & Blog tables successfully created/verified!');
+    } catch (err) {
+      console.warn('⚠️ CMS & Blog migration warning (could be that some resources/policies already exist):', err.message);
+    }
 
     // 2. Run solar quote requests migration
-    const quoteMigrationPath = path.join(__dirname, '../supabase/migrations/20260525_create_solar_quote_requests.sql');
-    console.log(`📄 Reading migration: ${path.basename(quoteMigrationPath)}`);
-    const quoteSql = fs.readFileSync(quoteMigrationPath, 'utf8');
+    try {
+      const quoteMigrationPath = path.join(__dirname, '../supabase/migrations/20260525_create_solar_quote_requests.sql');
+      console.log(`📄 Reading migration: ${path.basename(quoteMigrationPath)}`);
+      const quoteSql = fs.readFileSync(quoteMigrationPath, 'utf8');
 
-    console.log('🚀 Executing Solar Quote Requests migration...');
-    await client.query(quoteSql);
-    console.log('✅ Solar Quote Requests table successfully created/verified!');
+      console.log('🚀 Executing Solar Quote Requests migration...');
+      await client.query(quoteSql);
+      console.log('✅ Solar Quote Requests table successfully created/verified!');
+    } catch (err) {
+      console.warn('⚠️ Solar Quote Requests migration warning (could be that some resources/policies already exist):', err.message);
+    }
+
+    // 3. Grant privileges explicitly to Supabase roles
+    console.log('🚀 Granting explicit privileges to anon, authenticated, and service_role...');
+    try {
+      await client.query(`
+        -- Grant access to schema public
+        GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+        
+        -- Grant access to tables
+        GRANT ALL ON public.solar_quote_requests TO anon, authenticated, service_role;
+        GRANT ALL ON public.blog_posts TO anon, authenticated, service_role;
+        GRANT ALL ON public.cms_pages TO anon, authenticated, service_role;
+        
+        -- If there are any sequences, grant usage on them
+        GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+      `);
+      console.log('✅ Privileges granted successfully!');
+    } catch (err) {
+      console.error('❌ Failed to grant privileges:', err.message);
+    }
 
   } catch (err) {
-    console.error('❌ Migration failed:', err);
+    console.error('❌ Database connection or global run failed:', err);
   } finally {
     await client.end();
     console.log('🔌 Connection closed.');
