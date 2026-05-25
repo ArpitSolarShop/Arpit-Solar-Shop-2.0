@@ -12,6 +12,7 @@ export async function submitHeroLead(formData: any, customerType: string = "resi
             source: "Hero Section",
             customer_type: customerType || "residential",
             project_location: formData.city || "Varanasi (Hero Default)",
+            monthly_bill: formData.monthlyBill || null,
             remarks: `Initial Interest. Category: ${formData.category} | Monthly Bill: ${formData.monthlyBill || 'N/A'}`
         });
 
