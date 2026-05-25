@@ -117,11 +117,7 @@ export async function uploadToBucket(filePath: string): Promise<string> {
 }
 
 // Insert a new quote request into the solar_quote_requests table
-// Insert a new quote request into the solar_quote_requests table
 export async function insertQuoteRequest(data: any) {
-  // Sanitize data: remove 'phase' if it exists, as the table might not have it yet.
-  // Also remove 'address' if not in schema (it was used in invoice but maybe not in DB table).
-  // Safest approach: create a clean object with only known columns if we knew them all, or just omit known bad ones.
   // Sanitize data: remove columns that don't exist in the solar_quote_requests table.
   const { address, phase, cables, price_includes_gst, gst_rate, additional_details, brand, ...cleanData } = data;
 
@@ -129,9 +125,7 @@ export async function insertQuoteRequest(data: any) {
   const { error } = await supabase.from('solar_quote_requests').insert([cleanData]);
   if (error) {
     console.error('Supabase insert error:', error);
-    // Do not throw error here, just log it, so that the main flow (PDF/Email) can continue even if DB logging fails.
-    // Or if crucial, throw. But for now, let's treat it as non-fatal to avoid block.
-    // throw error; 
+    throw new Error(`Failed to insert into Supabase: ${error.message}`);
   }
   return true;
 }

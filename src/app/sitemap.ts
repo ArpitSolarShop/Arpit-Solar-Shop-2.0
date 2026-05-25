@@ -53,6 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "/solutions/commercial-industrial",
         "/blog",
         "/get-quote",
+        "/quote",
         "/shakti-solar",
         "/tata-solar",
         "/reliance",
@@ -63,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${siteConfig.url}${route}`,
         lastModified: new Date(),
         changeFrequency: "monthly" as const,
-        priority: route === "/get-quote" ? 0.9 : 0.7,
+        priority: route === "/get-quote" || route === "/quote" ? 0.9 : 0.7,
     }));
 
     // High-Intent Dynamic Solar System Categories (Add-on)
@@ -112,5 +113,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error("Failed to fetch blog posts for sitemap:", error);
     }
 
-    return [...routes, ...productRoutes, ...locationRoutes, ...extraRoutes, ...categoryRoutes, ...blogRoutes];
+    // Quote City Routes (Dynamic parameters for SEO)
+    const quoteCities = [
+        "varanasi",
+        "lucknow",
+        "prayagraj",
+        "allahabad",
+        "kanpur",
+        "gorakhpur",
+        "azamgarh",
+        "ghazipur",
+        "mirzapur",
+        "jaunpur",
+        "mau",
+        "ballia",
+        "bhadhohi",
+        "chandauli",
+        "sonbhadra",
+        "ayodhya"
+    ];
+
+    const quoteCityRoutes = quoteCities.map((city) => ({
+        url: `${siteConfig.url}/quote?city=${city}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 1.0,
+    }));
+
+    return [...routes, ...productRoutes, ...locationRoutes, ...extraRoutes, ...categoryRoutes, ...blogRoutes, ...quoteCityRoutes];
 }

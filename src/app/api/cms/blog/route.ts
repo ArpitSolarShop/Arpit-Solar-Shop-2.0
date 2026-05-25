@@ -44,9 +44,15 @@ export async function GET(request: NextRequest) {
 
         const { data, error } = await query;
 
-        if (error) throw error;
+        if (error) {
+            // Graceful fallback if the Supabase table doesn't exist yet
+            if (error.code === '42P01' || error.message?.includes('Could not find the table')) {
+                return NextResponse.json({ data: [] }, { status: 200 });
+            }
+            throw error;
+        }
 
-        return NextResponse.json({ data }, { status: 200 });
+        return NextResponse.json({ data: data || [] }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
             { error: error.message },
