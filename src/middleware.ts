@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
     if (process.env.NODE_ENV === 'production') {
         response.headers.set(
             'Content-Security-Policy',
-            "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://d3r49s2alut4u1.cloudfront.net https://*.doubletick.io; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://vqusgnzkxkzidjsohips.supabase.co https://sipapi.kit19.com https://d3r49s2alut4u1.cloudfront.net https://api.doubletick.io https://*.doubletick.io; frame-src 'self' https://www.youtube.com https://www.google.com https://maps.google.com;"
+            "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://d3r49s2alut4u1.cloudfront.net https://*.doubletick.io https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://vqusgnzkxkzidjsohips.supabase.co https://sipapi.kit19.com https://d3r49s2alut4u1.cloudfront.net https://api.doubletick.io https://*.doubletick.io https://connect.facebook.net https://www.facebook.com; frame-src 'self' https://www.youtube.com https://www.google.com https://maps.google.com;"
         );
     }
 
