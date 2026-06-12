@@ -124,7 +124,8 @@ const Navbar = () => {
             href: "/shakti-solar",
             image: "/Shakti%20Solar.webp",
             description: "Innovative solar solutions",
-            recommended: "Recommended for Residential",
+            recommended: "Discontinued",
+            disabled: true,
           },
           {
             name: "Tata Solar",
@@ -312,6 +313,8 @@ const Navbar = () => {
                         <div
                           className={`text-xs px-2 py-1 rounded-full mt-2 inline-block transition-colors duration-200 ${dropdownItem.recommended === "Coming Soon"
                             ? "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-400"
+                            : dropdownItem.recommended === "Discontinued"
+                            ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
                             : dropdownItem.recommended === "Currently Out of Stock"
                             ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 group-hover:bg-red-200 dark:group-hover:bg-red-800"
                             : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 group-hover:bg-blue-200 dark:group-hover:bg-blue-800"
@@ -417,6 +420,8 @@ const Navbar = () => {
                               <div
                                 className={`text-xs px-2 py-1 rounded-full mt-2 inline-block ${dropdownItem.recommended === "Coming Soon"
                                   ? "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-400"
+                                  : dropdownItem.recommended === "Discontinued"
+                                  ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
                                   : dropdownItem.recommended === "Currently Out of Stock"
                                   ? "bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400"
                                   : "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400"

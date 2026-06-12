@@ -92,8 +92,8 @@ const Footer = () => {
                             <h3 className="text-lg font-semibold">Products</h3>
                             <ul className="space-y-2">
                                 {[
-                                    { name: "Reliance Solar", href: "/reliance", disabled: true },
-                                    { name: "Shakti Solar", href: "/shakti-solar" },
+                                    { name: "Reliance Solar", href: "/reliance", disabled: true, disabledLabel: "Coming Soon" },
+                                    { name: "Shakti Solar", href: "/shakti-solar", disabled: true, disabledLabel: "Discontinued" },
                                     { name: "Tata Solar", href: "/tata-solar" },
                                     { name: "Waree | Adani", href: "/integrated" },
                                     { name: "Hybrid Solar", href: "/hybrid-solar" },
@@ -102,7 +102,7 @@ const Footer = () => {
                                         {link.disabled ? (
                                             <span className="text-gray-500 text-sm cursor-not-allowed inline-flex items-center gap-2">
                                                 {link.name}
-                                                <span className="text-xs bg-amber-900/40 text-amber-400 px-1.5 py-0.5 rounded-full">Coming Soon</span>
+                                                <span className={`text-xs px-1.5 py-0.5 rounded-full ${link.disabledLabel === "Discontinued" ? "bg-gray-700/40 text-gray-400" : "bg-amber-900/40 text-amber-400"}`}>{link.disabledLabel}</span>
                                             </span>
                                         ) : (
                                             <Link href={link.href} className="text-gray-300 hover:text-solar-orange transition-colors duration-200 text-sm"> {link.name} </Link>

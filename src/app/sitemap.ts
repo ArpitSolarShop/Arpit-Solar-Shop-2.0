@@ -116,10 +116,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Quote City Routes (Dynamic parameters for SEO)
     const quoteCities = [
         "varanasi",
-        "lucknow",
-        "prayagraj",
-        "allahabad",
-        "kanpur",
         "gorakhpur",
         "azamgarh",
         "ghazipur",
@@ -128,9 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "mau",
         "ballia",
         "bhadhohi",
-        "chandauli",
-        "sonbhadra",
-        "ayodhya"
+        "chandauli"
     ];
 
     const quoteCityRoutes = quoteCities.map((city) => ({

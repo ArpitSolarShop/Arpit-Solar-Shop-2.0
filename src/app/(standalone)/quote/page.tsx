@@ -15,10 +15,6 @@ type Props = {
 
 const cityTranslations: Record<string, string> = {
     "varanasi": "वाराणसी",
-    "lucknow": "लखनऊ",
-    "prayagraj": "प्रयागराज",
-    "allahabad": "प्रयागराज",
-    "kanpur": "कानपुर",
     "gorakhpur": "गोरखपुर",
     "azamgarh": "आजमगढ़",
     "ghazipur": "गाजीपुर",
@@ -27,9 +23,7 @@ const cityTranslations: Record<string, string> = {
     "mau": "मऊ",
     "ballia": "बलिया",
     "bhadhohi": "भदोही",
-    "chandauli": "चंदौली",
-    "sonbhadra": "सोनभद्र",
-    "ayodhya": "अयोध्या"
+    "chandauli": "चंदौली"
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
@@ -426,9 +420,9 @@ function QuoteFooter() {
                     <div className="md:col-span-2">
                         <h4 className="text-white font-bold text-sm mb-3">Our Offerings</h4>
                         <ul className="space-y-2 text-xs">
-                            <li><Link href="/solar-installation" className="hover:text-white transition">Solar Installation</Link></li>
+                            <li><Link href="/solar-installation/varanasi" className="hover:text-white transition">Solar Installation</Link></li>
                             <li><Link href="/hybrid-solar" className="hover:text-white transition">Hybrid Solar</Link></li>
-                            <li><Link href="/solar-system" className="hover:text-white transition">Solar Systems</Link></li>
+                            <li><Link href="/solar-system/3kw-on-grid" className="hover:text-white transition">Solar Systems</Link></li>
                         </ul>
                     </div>
                     <div className="md:col-span-2">
