@@ -65,7 +65,7 @@ const INTEGRATED_FALLBACK_DATA: IntegratedRow[] = [
     phase: p.phase === 1 ? '1Ph' : '3Ph',
     price: p.price,
     inverter_capacity_kw: Math.ceil(p.kWp),
-    module_watt: 545,
+    module_watt: 590,
     module_type: 'Mono PERC',
     no_of_modules: p.qty,
     price_includes_gst: true,
@@ -105,6 +105,7 @@ export default function IntegratedPriceData() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<IntegratedRow | null>(null)
   const [moduleTypeFilter, setModuleTypeFilter] = useState<string>('all')
+  const [brandFilter, setBrandFilter] = useState<string>('all')
 
   useEffect(() => {
     let mounted = true
@@ -181,11 +182,15 @@ export default function IntegratedPriceData() {
   }, [])
 
   const filteredRows = useMemo(() => {
-    if (moduleTypeFilter === 'all') {
-      return rows
+    let result = rows;
+    if (moduleTypeFilter !== 'all') {
+      result = result.filter(row => row.module_type === moduleTypeFilter);
     }
-    return rows.filter(row => row.module_type === moduleTypeFilter)
-  }, [rows, moduleTypeFilter])
+    if (brandFilter !== 'all') {
+      result = result.filter(row => row.brand === brandFilter);
+    }
+    return result;
+  }, [rows, moduleTypeFilter, brandFilter])
 
   const moduleTypeStats = useMemo(() => {
     const stats: Record<string, number> = {
@@ -201,6 +206,11 @@ export default function IntegratedPriceData() {
   const moduleTypes = useMemo(() => {
     const types = Array.from(new Set(rows.map(r => r.module_type || 'TOPCON')));
     return types.sort();
+  }, [rows])
+
+  const uniqueBrands = useMemo(() => {
+    const b = Array.from(new Set(rows.map(r => r.brand || 'Generic')));
+    return b.sort();
   }, [rows])
 
   const handleRowClick = (row: IntegratedRow) => {
@@ -224,19 +234,35 @@ export default function IntegratedPriceData() {
           </div>
         </div>
 
-        <Tabs defaultValue="all" value={moduleTypeFilter} onValueChange={setModuleTypeFilter} className="w-full">
-          <TabsList className="bg-slate-100 p-1 mb-6">
-            <TabsTrigger value="all" className="px-6">
-              All Systems ({moduleTypeStats.all})
-            </TabsTrigger>
-            {moduleTypes.map(type => (
-              <TabsTrigger key={type} value={type} className="px-6">
-                {type} ({moduleTypeStats[type] || 0})
+        <div className="flex flex-col gap-4 mb-6">
+          <Tabs defaultValue="all" value={moduleTypeFilter} onValueChange={setModuleTypeFilter} className="w-full">
+            <TabsList className="bg-slate-100 p-1">
+              <TabsTrigger value="all" className="px-6">
+                All Technologies ({moduleTypeStats.all})
               </TabsTrigger>
-            ))}
-          </TabsList>
+              {moduleTypes.map(type => (
+                <TabsTrigger key={type} value={type} className="px-6">
+                  {type} ({moduleTypeStats[type] || 0})
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
 
-          <div className="overflow-x-auto border rounded-xl bg-white shadow-sm">
+          <Tabs defaultValue="all" value={brandFilter} onValueChange={setBrandFilter} className="w-full">
+            <TabsList className="bg-slate-100 p-1">
+              <TabsTrigger value="all" className="px-6">
+                All Brands
+              </TabsTrigger>
+              {uniqueBrands.map(b => (
+                <TabsTrigger key={b} value={b} className="px-6">
+                  {b}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <div className="overflow-x-auto border rounded-xl bg-white shadow-sm">
             <table className="min-w-[1200px] w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-slate-600 text-xs uppercase font-semibold">
@@ -302,7 +328,6 @@ export default function IntegratedPriceData() {
               </TableBody>
             </table>
           </div>
-        </Tabs>
       </div>
 
       {!loading && !error && filteredRows.length > 0 && (

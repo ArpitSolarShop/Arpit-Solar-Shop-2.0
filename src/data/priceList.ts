@@ -9,59 +9,50 @@ export const companyDetails = {
     address: "Sh16/114-25-K-2, Sharvodayanagar, Kadipur, Shivpur, Varanasi 221003 (UP)",
 };
 
-// Tata Price List - On-Grid SPS
+// Tata Price List - On-Grid SPS (DCR)
 export const tataProducts: Product[] = [
-    { kWp: 2.24, phase: 1, module: 560, qty: 4, price: 130000, wire: 150, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 3.36, phase: 1, module: 560, qty: 6, price: 180000, wire: 150, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 4.48, phase: 1, module: 560, qty: 8, price: 240000, wire: 150, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 5.04, phase: 1, module: 560, qty: 9, price: 270000, wire: 150, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 5.60, phase: 1, module: 560, qty: 9, price: 300000, wire: 150, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 5.04, phase: 3, module: 560, qty: 9, price: 300000, wire: 225, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 6.16, phase: 3, module: 560, qty: 11, price: 345000, wire: 225, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 8.40, phase: 3, module: 560, qty: 15, price: 440000, wire: 225, outOfVns: 5000, supplier: 'tata' },
-    { kWp: 10.08, phase: 3, module: 560, qty: 18, price: 510000, wire: 225, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 2.36, phase: 1, module: 590, qty: 4, price: 145000, wire: 150, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 3.54, phase: 1, module: 590, qty: 6, price: 195000, wire: 150, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 4.72, phase: 1, module: 590, qty: 8, price: 255000, wire: 150, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 5.31, phase: 1, module: 590, qty: 9, price: 295000, wire: 150, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 5.90, phase: 1, module: 590, qty: 10, price: 310000, wire: 150, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 5.31, phase: 3, module: 590, qty: 9, price: 325000, wire: 225, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 6.49, phase: 3, module: 590, qty: 11, price: 375500, wire: 225, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 8.85, phase: 3, module: 590, qty: 15, price: 480000, wire: 225, outOfVns: 5000, supplier: 'tata' },
+    { kWp: 10.62, phase: 3, module: 590, qty: 18, price: 551000, wire: 225, outOfVns: 5000, supplier: 'tata' },
 ];
 
 // Waaree TOPCON Price List - On-Grid SPS
 export const waareeTopconProducts: Product[] = [
-    { kWp: 2.32, phase: 1, module: 580, qty: 4, price: 135000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 3.00, phase: 1, module: 600, qty: 5, price: 180000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 3.48, phase: 1, module: 580, qty: 6, price: 185000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 4.64, phase: 1, module: 580, qty: 8, price: 245000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 5.22, phase: 1, module: 580, qty: 9, price: 275000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 5.80, phase: 1, module: 580, qty: 9, price: 305000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 5.04, phase: 3, module: 580, qty: 9, price: 305000, wire: 225, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 6.38, phase: 3, module: 580, qty: 11, price: 350000, wire: 225, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 8.12, phase: 3, module: 580, qty: 14, price: 430000, wire: 225, outOfVns: 5000, supplier: 'waaree-topcon' },
-    { kWp: 10.44, phase: 3, module: 580, qty: 18, price: 515000, wire: 225, outOfVns: 5000, supplier: 'waaree-topcon' },
+    { kWp: 2.14, phase: 1, module: 535, qty: 4, price: 135000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
+    { kWp: 3.21, phase: 1, module: 535, qty: 6, price: 185000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
+    { kWp: 4.28, phase: 1, module: 535, qty: 8, price: 245000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
+    { kWp: 5.35, phase: 1, module: 535, qty: 10, price: 285000, wire: 150, outOfVns: 5000, supplier: 'waaree-topcon' },
+    { kWp: 6.42, phase: 3, module: 535, qty: 12, price: 362000, wire: 225, outOfVns: 5000, supplier: 'waaree-topcon' },
+    { kWp: 8.02, phase: 3, module: 535, qty: 15, price: 445000, wire: 225, outOfVns: 5000, supplier: 'waaree-topcon' },
+    { kWp: 10.16, phase: 3, module: 535, qty: 19, price: 540000, wire: 225, outOfVns: 5000, supplier: 'waaree-topcon' },
 ];
 
 // Adani TOPCON Price List - On-Grid SPS
 export const adaniTopconProducts: Product[] = [
-    { kWp: 2.32, phase: 1, module: 580, qty: 4, price: 135000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 3.00, phase: 1, module: 600, qty: 5, price: 180000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 3.48, phase: 1, module: 580, qty: 6, price: 185000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 4.64, phase: 1, module: 580, qty: 8, price: 245000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 5.22, phase: 1, module: 580, qty: 9, price: 275000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 5.80, phase: 1, module: 580, qty: 9, price: 305000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 5.04, phase: 3, module: 580, qty: 9, price: 305000, wire: 225, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 6.38, phase: 3, module: 580, qty: 11, price: 350000, wire: 225, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 8.12, phase: 3, module: 580, qty: 14, price: 430000, wire: 225, outOfVns: 5000, supplier: 'adani-topcon' },
-    { kWp: 10.44, phase: 3, module: 580, qty: 18, price: 515000, wire: 225, outOfVns: 5000, supplier: 'adani-topcon' },
+    { kWp: 2.14, phase: 1, module: 535, qty: 4, price: 135000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
+    { kWp: 3.21, phase: 1, module: 535, qty: 6, price: 185000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
+    { kWp: 4.28, phase: 1, module: 535, qty: 8, price: 245000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
+    { kWp: 5.35, phase: 1, module: 535, qty: 10, price: 285000, wire: 150, outOfVns: 5000, supplier: 'adani-topcon' },
+    { kWp: 6.42, phase: 3, module: 535, qty: 12, price: 362000, wire: 225, outOfVns: 5000, supplier: 'adani-topcon' },
+    { kWp: 8.02, phase: 3, module: 535, qty: 15, price: 445000, wire: 225, outOfVns: 5000, supplier: 'adani-topcon' },
+    { kWp: 10.16, phase: 3, module: 535, qty: 19, price: 540000, wire: 225, outOfVns: 5000, supplier: 'adani-topcon' },
 ];
 
 // Premier TOPCON Price List - On-Grid SPS
 export const premierTopconProducts: Product[] = [
-    { kWp: 2.32, phase: 1, module: 580, qty: 4, price: 135000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 3.00, phase: 1, module: 600, qty: 5, price: 180000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 3.48, phase: 1, module: 580, qty: 6, price: 185000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 4.64, phase: 1, module: 580, qty: 8, price: 245000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 5.22, phase: 1, module: 580, qty: 9, price: 275000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 5.80, phase: 1, module: 580, qty: 9, price: 305000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 5.04, phase: 3, module: 580, qty: 9, price: 305000, wire: 225, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 6.38, phase: 3, module: 580, qty: 11, price: 350000, wire: 225, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 8.12, phase: 3, module: 580, qty: 14, price: 430000, wire: 225, outOfVns: 5000, supplier: 'premier-topcon' },
-    { kWp: 10.44, phase: 3, module: 580, qty: 18, price: 515000, wire: 225, outOfVns: 5000, supplier: 'premier-topcon' },
+    { kWp: 2.14, phase: 1, module: 535, qty: 4, price: 135000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
+    { kWp: 3.21, phase: 1, module: 535, qty: 6, price: 185000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
+    { kWp: 4.28, phase: 1, module: 535, qty: 8, price: 245000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
+    { kWp: 5.35, phase: 1, module: 535, qty: 10, price: 285000, wire: 150, outOfVns: 5000, supplier: 'premier-topcon' },
+    { kWp: 6.42, phase: 3, module: 535, qty: 12, price: 362000, wire: 225, outOfVns: 5000, supplier: 'premier-topcon' },
+    { kWp: 8.02, phase: 3, module: 535, qty: 15, price: 445000, wire: 225, outOfVns: 5000, supplier: 'premier-topcon' },
+    { kWp: 10.16, phase: 3, module: 535, qty: 19, price: 540000, wire: 225, outOfVns: 5000, supplier: 'premier-topcon' },
 ];
 
 // Waaree TOPCON DCR Hybrid with Battery Price List

@@ -143,6 +143,18 @@ export async function POST(req: NextRequest) {
                     }
                 }
 
+                // FIX: Filter by Brand for Integrated Products (Waaree vs Adani vs Premier)
+                if (categoryFilter === 'Integrated' && formData.additional_details?.brand) {
+                    const requestedBrand = formData.additional_details.brand.toLowerCase();
+                    const brandMatches = filteredProducts.filter((p: any) =>
+                        (p.brand || '').toLowerCase() === requestedBrand ||
+                        (p.specifications?.brand || '').toLowerCase() === requestedBrand
+                    );
+                    if (brandMatches.length > 0) {
+                        filteredProducts = brandMatches;
+                    }
+                }
+
                 // Find closest match — prefer exact match by kW AND price (from frontend) to disambiguate duplicate kW entries
                 const frontendPrice = formData.additional_details?.price ? Number(formData.additional_details.price) : null;
 
@@ -203,7 +215,7 @@ export async function POST(req: NextRequest) {
                 selectedProductData.phase = systemData.phase === 'Three' ? 3 : 1;
                 if (specs.module_watt) selectedProductData.panelWattage = specs.module_watt;
                 if (specs.module_count) selectedProductData.panelCount = specs.module_count;
-                if (specs.inverter_kw) selectedProductData.inverterSize = specs.inverter_kw;
+                if (specs.inverter_capacity_kw || specs.inverter_kw) selectedProductData.inverterSize = specs.inverter_capacity_kw || specs.inverter_kw;
                 if (specs.technology || specs.module_type) selectedProductData.panelType = specs.technology || specs.module_type;
                 if (specs.brand) selectedProductData.panelBrand = specs.brand;
                 if (specs.variant) selectedProductData.variant = specs.variant;
