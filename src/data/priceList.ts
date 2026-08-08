@@ -95,22 +95,33 @@ export const waareeHybridNDcrNoBatteryProducts: Product[] = [
     { kWp: 5.22, phase: 1, module: 580, qty: 9, price: 283240, wire: 150, outOfVns: 5000, supplier: 'waaree-ndcr-nobattery' },
 ];
 
+// Reliance Price List - On-Grid SPS
+export const relianceProducts: Product[] = [
+    { kWp: 2.84, phase: 1, module: 710, qty: 4, price: 195000, wire: 150, outOfVns: 5000, supplier: 'reliance' },
+    { kWp: 3.55, phase: 1, module: 710, qty: 5, price: 215000, wire: 150, outOfVns: 5000, supplier: 'reliance' },
+    { kWp: 4.97, phase: 1, module: 710, qty: 7, price: 315000, wire: 150, outOfVns: 5000, supplier: 'reliance' },
+    { kWp: 4.97, phase: 3, module: 710, qty: 7, price: 345000, wire: 225, outOfVns: 5000, supplier: 'reliance' },
+    { kWp: 9.23, phase: 3, module: 710, qty: 13, price: 545000, wire: 225, outOfVns: 5000, supplier: 'reliance' },
+    { kWp: 9.94, phase: 3, module: 710, qty: 14, price: 565000, wire: 225, outOfVns: 5000, supplier: 'reliance' },
+];
+
 // Combined products - Tata and all module variants
 export const products: Product[] = [
     ...tataProducts,
     ...waareeTopconProducts,
     ...adaniTopconProducts,
     ...premierTopconProducts,
+    ...relianceProducts,
     ...waareeHybridDcrWithBatteryProducts,
     ...waareeHybridDcrNoBatteryProducts,
     ...waareeHybridNDcrWithBatteryProducts,
-    ...waareeHybridNDcrNoBatteryProducts,
     ...waareeHybridNDcrNoBatteryProducts,
 ];
 
 // Supplier groups for easy navigation
 export const productsBySupplier = {
     tata: tataProducts,
+    reliance: relianceProducts,
     waareeTopcon: waareeTopconProducts,
     adaniTopcon: adaniTopconProducts,
     premierTopcon: premierTopconProducts,

@@ -23,12 +23,6 @@ export const env = {
         anonKey: getEnvVar('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
     },
 
-    // Server-side only
-    kit19: {
-        api: getEnvVar('KIT19_API', false),
-        auth: getEnvVar('KIT19_AUTH', false),
-    },
-
     supabaseServiceKey: getEnvVar('SUPABASE_SERVICE_ROLE_KEY', false),
 
     // Optional

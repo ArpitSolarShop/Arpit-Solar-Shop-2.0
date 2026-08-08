@@ -145,9 +145,9 @@ import { submitHeroLead } from "@/app/actions/crm"
 import { calculateSubsidy } from "@/utils/calculations"
 
 // ---------------------------
-// KIT19: SEND LEAD VIA SERVER ACTION
+// SEND LEAD TO CRM VIA SERVER ACTION
 // ---------------------------
-const sendToKit19 = async (formData: QuoteFormData, estimateData: EstimateData, customerType: CustomerType) => {
+const sendToCRM = async (formData: QuoteFormData, estimateData: EstimateData, customerType: CustomerType) => {
     try {
         await submitHeroLead({ 
             name: formData.fullName, 
@@ -157,7 +157,7 @@ const sendToKit19 = async (formData: QuoteFormData, estimateData: EstimateData, 
             category: "General Inquiry"
         }, customerType);
     } catch (err) {
-        console.error("Kit19 Sync Failed", err);
+        console.error("CRM Sync Failed", err);
     }
 }
 
@@ -197,7 +197,7 @@ export function HeroGetQuote() {
     }
 
     // ---------------------------
-    // Submit initial details into supabase + KIT19 ONCE
+    // Submit initial details into supabase + CRM ONCE
     // ---------------------------
     const handleSubmitDetails = async (e?: React.FormEvent) => {
         e?.preventDefault()
@@ -219,16 +219,16 @@ export function HeroGetQuote() {
             setMsg({ title: "Details saved", desc: "Let’s get a quick estimate." })
             setStep(1)
 
-            // === KIT19: SEND ONLY ONCE — HERE ===
-            sendToKit19(formData, estimateData, customerType)
+            // === CRM: SEND ONLY ONCE — HERE ===
+            sendToCRM(formData, estimateData, customerType)
 
         } catch (err: any) {
             console.error('Insert failed', err)
             setMsg({ title: "Could not save details", desc: err?.message ?? 'Proceeding without ID' })
             setStep(1)
 
-            // === KIT19: STILL SEND EVEN IF SUPABASE FAILS ===
-            sendToKit19(formData, estimateData, customerType)
+            // === CRM: STILL SEND EVEN IF SUPABASE FAILS ===
+            sendToCRM(formData, estimateData, customerType)
         } finally {
             setLoading(false)
         }
@@ -303,7 +303,7 @@ export function HeroGetQuote() {
     }
 
     // ---------------------------
-    // Update existing quote record and send to backend — NO KIT19 HERE
+    // Update existing quote record and send to backend
     // ---------------------------
     const handleDirectQuote = async (product: ProductSystem) => {
         const id = `${product.brand}-${product.size}-${product.mountingType ?? 'default'}`
@@ -347,7 +347,7 @@ export function HeroGetQuote() {
             if (!res.ok) throw new Error(`Server responded ${res.status}`)
             setMsg({ title: "Quote request sent!", desc: "We will get back to you shortly." })
 
-            // === NO KIT19 CALL HERE ===
+
 
         } catch (err: any) {
             console.error('Direct quote failed', err)

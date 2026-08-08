@@ -5,20 +5,12 @@
 export const apiConfig = {
     baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
     endpoints: {
-        quote: {
-            submit: '/api/quote/submit',
-        },
         projects: {
             list: '/api/projects',
         },
     },
     // External APIs
-    external: {
-        kit19: {
-            url: process.env.KIT19_API || '',
-            // Note: Auth token is server-side only
-        },
-    },
+    external: {},
 } as const;
 
 /**

@@ -103,7 +103,7 @@ export default function PrivacyPolicyPage() {
                         <ul className="list-disc list-inside space-y-2 text-gray-700">
                             <li><strong>Solar Brand Partners:</strong> Tata Power Solar, Shakti Solar, Waaree, Adani, etc. for order processing and warranty management.</li>
                             <li><strong>Installation Teams:</strong> Our authorized installation partners for scheduling and executing installations.</li>
-                            <li><strong>CRM &amp; Communication Platforms:</strong> Kit19 CRM, DoubleTick WhatsApp API, and similar service providers for customer communication management.</li>
+                            <li><strong>CRM &amp; Communication Platforms:</strong> Neodove CRM, DoubleTick WhatsApp API, and similar service providers for customer communication management.</li>
                             <li><strong>Cloud Service Providers:</strong> Supabase, Vercel, and similar platforms for data storage and website hosting.</li>
                             <li><strong>Government Authorities:</strong> For subsidy applications and compliance with legal requirements.</li>
                         </ul>

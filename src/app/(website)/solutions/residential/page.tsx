@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RelianceTier2Table } from "@/components/products/RelianceTier2Table";
 import { ArrowUpDown, Search, Home, Sun, TrendingUp, DollarSign, Battery, CheckCircle, Lock, LucideIcon } from "lucide-react";
 import UniversalQuoteForm, { QuoteCategory } from "@/components/forms/UniversalQuoteForm";
 import { supabase } from "@/integrations/supabase/client";
@@ -153,14 +154,7 @@ function ResidentialSolarTable({ data, onRowClick, disabled }: { data: Residenti
                 <TableCell className="font-medium text-green-600">₹{item.monthlySavings.toLocaleString("en-IN")}</TableCell>
                 <TableCell className="font-medium text-blue-600">{item.paybackPeriod}</TableCell>
                 <TableCell>
-                  <Button 
-                    onClick={() => onRowClick(item)} 
-                    size="sm" 
-                    disabled={disabled}
-                    className={`${disabled ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-black hover:bg-gray-800 text-white'}`}
-                  >
-                    {disabled ? 'Coming Soon' : 'Get Quote'}
-                  </Button>
+                  <Button onClick={() => onRowClick(item)} size="sm" variant={disabled ? "secondary" : "default"} disabled={disabled}>Get Quote</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -251,20 +245,12 @@ function PriceComparison({ dataShakti, dataReliance, dataTata }: { dataShakti: R
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {systemsToCompare.map(({ brand, logo, data }) => {
-              const isReliance = brand === 'Reliance Solar';
               return data && (
-                <div key={brand} className={`bg-white p-4 rounded-lg border relative overflow-hidden ${isReliance ? 'opacity-60 grayscale' : ''}`}>
-                  {isReliance && (
-                    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                      <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200 font-bold py-1 px-3 shadow-sm rotate-[-10deg]">
-                        Coming Soon
-                      </Badge>
-                    </div>
-                  )}
+                <div key={brand} className="bg-white p-4 rounded-lg border relative overflow-hidden">
                   <div className="flex items-center gap-2 mb-3">
                     <img src={logo} alt={brand} className="h-6 w-auto" />
                     <h4 className="font-semibold text-gray-900">{brand}</h4>
-                    {brand === bestValue?.brand && !isReliance && (
+                    {brand === bestValue?.brand && brand !== 'Reliance Solar' && (
                       <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200">Best Value</Badge>
                     )}
                   </div>
@@ -382,20 +368,25 @@ export default function Residential() {
         }));
       }
 
-      // Fetch Reliance Data
-      const { data: rel } = await supabase.from('reliance_grid_tie_systems').select('*').order('sl_no', { ascending: true });
-      if (rel) {
-        setRelianceRows(rel.map((r: any): ResidentialSystem => {
-          const systemSize = Number(r.system_size);
-          const totalPrice = Number(r.hdg_elevated_price);
-          const d = computeDerived(systemSize, totalPrice);
-          return {
-            slNo: r.sl_no, systemSize, totalPrice, noOfModules: r.no_of_modules,
-            inverterCapacity: Number(r.inverter_capacity), phase: r.phase,
-            pricePerWatt: Number(r.price_per_watt), ...d,
-          };
-        }));
-      }
+      // Hardcoded Reliance Data based on provided price sheet
+      const relianceDataRaw = [
+        { sl_no: 1, system_size: 2.84, no_of_modules: 4, inverter_capacity: 3, phase: '1Ph', hdg_elevated_price: 195000, price_per_watt: 195000 / (2.84 * 1000) },
+        { sl_no: 2, system_size: 3.55, no_of_modules: 5, inverter_capacity: 3.3, phase: '1Ph', hdg_elevated_price: 215000, price_per_watt: 215000 / (3.55 * 1000) },
+        { sl_no: 3, system_size: 4.97, no_of_modules: 7, inverter_capacity: 5, phase: '1Ph', hdg_elevated_price: 315000, price_per_watt: 315000 / (4.97 * 1000) },
+        { sl_no: 4, system_size: 4.97, no_of_modules: 7, inverter_capacity: 5, phase: '3Ph', hdg_elevated_price: 345000, price_per_watt: 345000 / (4.97 * 1000) },
+        { sl_no: 5, system_size: 9.23, no_of_modules: 13, inverter_capacity: 10, phase: '3Ph', hdg_elevated_price: 545000, price_per_watt: 545000 / (9.23 * 1000) },
+        { sl_no: 6, system_size: 9.94, no_of_modules: 14, inverter_capacity: 10, phase: '3Ph', hdg_elevated_price: 565000, price_per_watt: 565000 / (9.94 * 1000) },
+      ];
+      setRelianceRows(relianceDataRaw.map((r: any): ResidentialSystem => {
+        const systemSize = Number(r.system_size);
+        const totalPrice = Number(r.hdg_elevated_price);
+        const d = computeDerived(systemSize, totalPrice);
+        return {
+          slNo: r.sl_no, systemSize, totalPrice, noOfModules: r.no_of_modules,
+          inverterCapacity: Number(r.inverter_capacity), phase: r.phase,
+          pricePerWatt: Number(r.price_per_watt), ...d,
+        };
+      }));
 
       // Fetch Tata Data
       const { data: tata } = await supabase.from('tata_grid_tie_systems').select('*').order('sl_no', { ascending: true });
@@ -556,9 +547,8 @@ export default function Residential() {
                   <span>Shakti Solar</span>
                 </TabsTrigger>
                 <TabsTrigger value="reliance" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
-                  <img src="/Reliance.webp" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block grayscale" />
+                  <img src="/Reliance.webp" alt="Reliance Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
                   <span>Reliance Solar</span>
-                  <Badge className="ml-1 px-1.5 py-0 text-[10px] bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Soon</Badge>
                 </TabsTrigger>
                 <TabsTrigger value="tata" className="flex items-center gap-2 py-2 px-3 sm:px-4 text-xs sm:text-sm flex-1 whitespace-nowrap">
                   <img src="/Tata Power Solar.webp" alt="Tata Power Solar" className="h-3 sm:h-4 w-auto hidden sm:block" />
@@ -580,20 +570,8 @@ export default function Residential() {
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value="reliance" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-900">
-                    <img src="/Reliance.webp" alt="Reliance Solar" className="h-5 w-auto grayscale" />
-                    {relianceCompanyName} - Residential Solar Systems
-                    <Badge variant="outline" className="ml-2 bg-amber-50 text-amber-600 border-amber-200">Coming Soon</Badge>
-                  </CardTitle>
-                  <CardDescription>{relianceProductDesc} ({relianceWorkScope})</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResidentialSolarTable data={relianceRows} onRowClick={handleRelianceRowClick} disabled />
-                </CardContent>
-              </Card>
+            <TabsContent value="reliance" className="mt-6">
+              <RelianceTier2Table data={relianceRows} onRowClick={handleRelianceRowClick} />
             </TabsContent>
             <TabsContent value="tata" className="space-y-6">
               <Card>

@@ -116,8 +116,6 @@ const Navbar = () => {
             href: "/reliance",
             image: "/Reliance.webp",
             description: "Leading renewable energy solutions",
-            recommended: "Coming Soon",
-            disabled: true,
           },
           {
             name: "Shakti Solar",

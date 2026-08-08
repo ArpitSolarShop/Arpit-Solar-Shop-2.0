@@ -48,7 +48,7 @@ export default async function AdminLeadsPage() {
                 <CardHeader>
                     <CardTitle>Recent Submissions (Database Backup)</CardTitle>
                     <p className="text-sm text-gray-500">
-                        These are all leads captured in your local database. Use this as a backup if the CRM (Kit19) misses any data.
+                        These are all leads captured in your local database. Use this as a backup if the CRM (Neodove) misses any data.
                     </p>
                 </CardHeader>
                 <CardContent>

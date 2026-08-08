@@ -40,10 +40,10 @@ export function QuickSiteVisitForm({ city, children }: QuickSiteVisitFormProps) 
 
             if (supabaseError) {
                 console.warn("Supabase insert failed:", supabaseError);
-                // We typically continue to try Kit19 even if Supabase fails (as per HeroGetQuote logic)
+                // We continue to CRM even if Supabase fails
             }
 
-            // 2. Send to Kit19 API via Server Action
+            // 2. Send to CRM via Server Action
             try {
                 const payload = {
                     name: formData.name,
@@ -55,7 +55,7 @@ export function QuickSiteVisitForm({ city, children }: QuickSiteVisitFormProps) 
 
                 await submitSiteVisit(payload);
             } catch (err) {
-                console.warn("Kit19 submission failed:", err);
+                console.warn("CRM submission failed:", err);
             }
 
             setSuccess(true);

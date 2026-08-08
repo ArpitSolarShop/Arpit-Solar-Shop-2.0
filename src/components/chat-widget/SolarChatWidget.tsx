@@ -8,6 +8,7 @@ import { Sun, Send, Shield, Phone, Home, Building, MapPin, Ruler, Lightbulb, Use
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { submitChatbotLead } from "@/app/actions/crm";
 
 // --- TYPES ---
 interface ChatMessage {
@@ -273,45 +274,18 @@ export default function SolarChatWidget({ isOpen, onClose }: SolarChatWidgetProp
             const { error } = await supabase.from('solar_quote_requests').insert(insertData);
             if (error) throw error;
 
-            // Optional CRM - Kit19 (non-blocking)
+            // Push to CRM (Neodove) via secure server action
             try {
-                const crmPayload = {
-                    PersonName: insertData.name || '',
-                    CompanyName: '',
-                    MobileNo: insertData.phone || '',
-                    MobileNo1: '',
-                    MobileNo2: '',
-                    EmailID: insertData.email || '',
-                    EmailID1: '',
-                    EmailID2: '',
-                    City: insertData.project_location || '',
-                    State: '',
-                    Country: 'India',
-                    CountryCode: '+91',
-                    CountryCode1: '',
-                    CountryCode2: '',
-                    PinCode: '',
-                    ResidentialAddress: '',
-                    OfficeAddress: '',
-                    SourceName: insertData.source || 'AI Chatbot',
-                    MediumName: (typeof window !== 'undefined' ? (document.title || window.location.pathname) : 'Website'),
-                    CampaignName: 'AI Chatbot Lead',
-                    InitialRemarks: `Roof: ${userData.roofArea || 'N/A'}, MonthlyBill: ${userData.monthlyBill || 'N/A'}`,
-                }
-
-                const resp = await fetch('https://sipapi.kit19.com/Enquiry/Add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'kit19-Auth-Key': '4e7bb26557334f91a21e56a4ea9c8752' },
-                    body: JSON.stringify(crmPayload),
-                })
-
-                if (!resp.ok) {
-                    console.warn('CRM (Kit19) returned non-OK response', await resp.text())
-                } else {
-                    console.log('CRM (Kit19) accepted payload', crmPayload)
-                }
-            } catch (err) {
-                console.warn('CRM (Kit19) failed:', err)
+                await submitChatbotLead({
+                    name: userData.name || '',
+                    phone: userData.phone || '',
+                    email: userData.email || '',
+                    location: userData.location || '',
+                    roofArea: userData.roofArea || 'N/A',
+                    monthlyBill: userData.monthlyBill || 'N/A',
+                });
+            } catch (crmErr) {
+                console.warn('CRM submission failed (non-blocking):', crmErr);
             }
 
             toast({ title: "Request Submitted!", description: "We have received your details." });

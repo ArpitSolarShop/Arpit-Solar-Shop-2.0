@@ -1,7 +1,75 @@
 'use server'
 
-import { pushLeadToCRM, CRMLead } from "@/lib/server/services/kit19-crm";
 import { insertQuoteRequest } from "@/lib/server/services/supabase";
+
+// ============================================================
+// NEODOVE CRM — Facebook Lead-Gen Webhook Format
+// Endpoint: POST https://api.neodove.com/integration/fb/<integration_id>/leads
+// ============================================================
+const NEODOVE_FB_WEBHOOK_URL = 'https://api.neodove.com/integration/fb/07f1ea3f-f2c6-4955-8397-fee0d6d17bd6/leads';
+const NEODOVE_PAGE_ID = '101734858445127'; // Facebook Page ID used in the webhook payload
+
+/**
+ * Push a lead to Neodove CRM using the Facebook lead-gen webhook format.
+ * This is a fire-and-forget style call — errors are logged but do not block user flow
+ * unless explicitly needed.
+ */
+async function pushLeadToNeodove(formData: any) {
+    const now = Math.floor(Date.now() / 1000);
+    // Use a unique leadgen_id based on timestamp + phone hash to avoid duplicates
+    const leadgenId = `web_${now}_${(formData.phone || '').replace(/\D/g, '').slice(-6)}`;
+    const formId = `web_form_${now}`;
+
+    const payload = {
+        object: "page",
+        entry: [
+            {
+                id: NEODOVE_PAGE_ID,
+                time: now,
+                changes: [
+                    {
+                        value: {
+                            form_id: formId,
+                            leadgen_id: leadgenId,
+                            created_time: now,
+                            page_id: NEODOVE_PAGE_ID,
+                            // Pass lead data as additional fields — Neodove extracts from the webhook
+                            field_data: [
+                                { name: "full_name", values: [formData.name || "Unknown"] },
+                                { name: "phone_number", values: [formData.phone ? `+91${formData.phone.replace(/\D/g, '').slice(-10)}` : ""] },
+                                { name: "email", values: [formData.email || ""] },
+                                { name: "city", values: [formData.city || formData.location || formData.project_location || ""] },
+                                { name: "source", values: [formData._source || "Website"] },
+                            ]
+                        },
+                        field: "leadgen"
+                    }
+                ]
+            }
+        ]
+    };
+
+    const res = await fetch(NEODOVE_FB_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Neodove CRM error:", res.status, errorText);
+        throw new Error(`Failed to push to Neodove: ${res.status} ${errorText}`);
+    }
+
+    console.log(`✅ Lead pushed to Neodove: ${formData.name} (${formData.phone})`);
+    return true;
+}
+
+// ============================================================
+// SERVER ACTIONS — One per form type
+// ============================================================
 
 export async function submitHeroLead(formData: any, customerType: string = "residential") {
     try {
@@ -16,22 +84,8 @@ export async function submitHeroLead(formData: any, customerType: string = "resi
             remarks: `Initial Interest. Category: ${formData.category} | Monthly Bill: ${formData.monthlyBill || 'N/A'}`
         });
 
-        // 2. Push to Neodove - MUST SUCCEED
-        await pushLeadToNeodove(formData);
-
-        // 3. Push to Kit19 (Best effort)
-        const lead: CRMLead = {
-            name: formData.name,
-            phone: formData.phone,
-            email: "",
-            address: formData.city || "Varanasi",
-            city: formData.city || "Varanasi",
-            source: "Website Hero Section",
-            medium: "Organic",
-            campaign: "Hero Lead Form",
-            remarks: `Type: ${customerType} | Monthly Bill: ${formData.monthlyBill || 'N/A'}`
-        };
-        await pushLeadToCRM(lead);
+        // 2. Push to Neodove CRM
+        await pushLeadToNeodove({ ...formData, _source: "Website Hero Section" });
 
         return { success: true };
     } catch (error) {
@@ -53,22 +107,8 @@ export async function submitContactForm(formData: any) {
             remarks: `Message: ${formData.message}`
         });
 
-        // 2. Push to Neodove - MUST SUCCEED
-        await pushLeadToNeodove(formData);
-
-        // 3. Push to Kit19 (Best effort)
-        const lead: CRMLead = {
-            name: formData.name,
-            phone: formData.phone,
-            email: formData.email,
-            address: "Contact Page Inquiry",
-            city: formData.city || "Varanasi",
-            source: "Website Contact Page",
-            medium: "Contact Form",
-            campaign: "Organic Website Traffic",
-            remarks: `Message: ${formData.message}`
-        };
-        await pushLeadToCRM(lead);
+        // 2. Push to Neodove CRM
+        await pushLeadToNeodove({ ...formData, _source: "Website Contact Page" });
 
         return { success: true };
     } catch (error) {
@@ -89,22 +129,8 @@ export async function submitSiteVisit(formData: any) {
             remarks: `Requested visit for: ${formData.location}`
         });
 
-        // 2. Push to Neodove - MUST SUCCEED
-        await pushLeadToNeodove(formData);
-
-        // 3. Push to Kit19 (Best effort)
-        const lead: CRMLead = {
-            name: formData.name,
-            phone: formData.phone,
-            email: "",
-            address: formData.address || formData.location || "N/A",
-            city: formData.city || formData.location, // Use location as city if city not provided
-            source: "Quick Site Visit",
-            medium: "Site Visit Popup",
-            campaign: `Site Visit - ${formData.location}`,
-            remarks: `Requested Site Visit in ${formData.location}`
-        };
-        await pushLeadToCRM(lead);
+        // 2. Push to Neodove CRM
+        await pushLeadToNeodove({ ...formData, _source: "Quick Site Visit" });
 
         return { success: true };
     } catch (error) {
@@ -113,32 +139,71 @@ export async function submitSiteVisit(formData: any) {
     }
 }
 
-async function pushLeadToNeodove(formData: any) {
-    const payload = {
-        name: formData.name || "Unknown",
-        mobile: formData.phone ? Number(formData.phone.replace(/\D/g, '')) : 0,
-        email: formData.email || "",
-        detail1: formData.city || formData.location || "",
-        detail2: formData.category || formData.message || "Website Lead"
-    };
+/**
+ * Server action for the Universal Quote Form (Tata/Reliance/Shakti/Hybrid/Integrated).
+ * Pushes the lead to Neodove CRM.
+ * DB insertion is handled by /api/generate-quote, so we only do CRM here.
+ */
+export async function submitUniversalQuoteLead(formData: any) {
+    try {
+        await pushLeadToNeodove({
+            name: formData.name,
+            phone: formData.phone,
+            email: formData.email || "",
+            city: formData.project_location || "",
+            _source: `${formData.product_category || 'Generic'} Quote Form`,
+        });
 
-    const res = await fetch('https://6513442b-f879-45c9-be19-944f45086e60.neodove.com/integration/custom/1e376832-40d7-47df-bb80-682287d9e15a/leads', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Spoof headers to bypass basic bot protection
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-US,en;q=0.9',
-        },
-        body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Neodove CRM error:", errorText);
-        throw new Error(`Failed to push to Neodove: ${res.status} ${errorText}`);
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to submit universal quote lead:", error);
+        return { success: false, error: "Failed to submit" };
     }
-    
-    return true;
 }
+
+/**
+ * Server action for the AI Chatbot (Yami).
+ */
+export async function submitChatbotLead(formData: any) {
+    try {
+        await pushLeadToNeodove({
+            name: formData.name,
+            phone: formData.phone,
+            email: formData.email || "",
+            city: formData.location || "",
+            _source: "AI Chatbot (Yami)",
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to submit chatbot lead:", error);
+        return { success: false, error: "Failed to submit" };
+    }
+}
+
+/**
+ * Server action for Checkout / Order form.
+ * Pushes the customer's order info as a lead to Neodove CRM.
+ */
+export async function submitCheckoutLead(formData: any) {
+    try {
+        await pushLeadToNeodove({
+            name: formData.name,
+            phone: formData.phone,
+            email: formData.email || "",
+            city: formData.city || "",
+            _source: "Checkout / Order",
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to submit checkout lead:", error);
+        return { success: false, error: "Failed to submit" };
+    }
+}
+
+/**
+ * Standalone Neodove push function for use in API routes (server-side only).
+ * Exported so generate-quote route can call it directly.
+ */
+export { pushLeadToNeodove };

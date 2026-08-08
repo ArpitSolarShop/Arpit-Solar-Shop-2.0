@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { CheckCircle, AlertCircle, Zap } from "lucide-react"
+import { submitUniversalQuoteLead } from "@/app/actions/crm"
 
 export type QuoteCategory = "Tata" | "Reliance" | "Shakti" | "Hybrid" | "Integrated" | "Generic" | "Calculator";
 
@@ -175,9 +176,19 @@ const UniversalQuoteForm = ({
                 // We continue to CRM even if PDF fails? Yes, lead capture is priority.
             }
 
-            // 5. Send to CRM (Kit19) - Handled by /api/generate-quote now
-            // Client-side call removed to prevent duplicates and API key exposure
-            console.log("Submitting to API (which handles Kit19 internally)");
+            // 5. Send to CRM (Neodove) via server action
+            try {
+                await submitUniversalQuoteLead({
+                    name: formData.name,
+                    phone: formData.phone,
+                    email: formData.email,
+                    project_location: formData.project_location,
+                    product_category: category,
+                    power_demand_kw: formData.power_demand_kw,
+                });
+            } catch (crmErr) {
+                console.warn("CRM submission failed (non-blocking):", crmErr);
+            }
 
             // Success UI
             toast({

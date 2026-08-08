@@ -543,7 +543,73 @@ export default function Reliance() {
   const [isFormOpen, setIsFormOpen] = useState(false); const [selectedProduct, setSelectedProduct] = useState<any>(null); const [productType, setProductType] = useState<"residential" | "commercial" | "cables" | "kit">("residential"); const [selectedCommercialType, setSelectedCommercialType] = useState<string>(""); const [gridData, setGridData] = useState<GridTieSystemData[]>([]); const [largeData, setLargeData] = useState<LargeSystemData[]>([]); const [cableData, setCableData] = useState<DCCableData[]>([]); const [kitData, setKitData] = useState<KitItem[]>([]); const [productDescription, setProductDescription] = useState<string>("RIL 690-720 Wp HJT Solar Modules"); const [commercialLimit, setCommercialLimit] = useState<number>(165.6); const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const loadData = async () => { try { const [gridRes, largeRes, cablesRes, kitsRes, configRes] = await Promise.all([supabase.from('reliance_grid_tie_systems').select('*').order('sl_no', { ascending: true }), supabase.from('reliance_large_systems').select('*').order('sl_no', { ascending: true }), supabase.from('reliance_dc_cable_data').select('*').order('sr_no', { ascending: true }), supabase.from('reliance_kit_items').select('*').order('sr_no', { ascending: true }), supabase.from('reliance_system_config').select('*'),]); if (gridRes.data) { setGridData(gridRes.data.map((r: any) => ({ slNo: r.sl_no, systemSize: Number(r.system_size), noOfModules: r.no_of_modules, inverterCapacity: Number(r.inverter_capacity), phase: r.phase, hdgElevatedWithGst: Number(r.price_per_watt ?? r.hdg_elevated_with_gst ?? 0), hdgElevatedPrice: Number(r.hdg_elevated_price ?? 0), }))) } if (largeRes.data) { setLargeData(largeRes.data.map((r: any) => ({ slNo: r.sl_no, systemSizeKWp: Number(r.system_size_kwp), systemSizeKW: Number(r.system_size_kw), noOfModules: r.no_of_modules, inverterCapacity: Number(r.inverter_capacity), phase: r.phase, shortRailTinShedPricePerWatt: Number(r.short_rail_tin_shed_price_per_watt), shortRailTinShedPrice: Number(r.short_rail_tin_shed_price), hdgElevatedRccPricePerWatt: Number(r.hdg_elevated_rcc_price_per_watt), hdgElevatedRccPrice: Number(r.hdg_elevated_rcc_price), preGiMmsPricePerWatt: Number(r.pre_gi_mms_price_per_watt), preGiMmsPrice: Number(r.pre_gi_mms_price), priceWithoutMmsPricePerWatt: Number(r.price_without_mms_price_per_watt), priceWithoutMmsPrice: Number(r.price_without_mms_price), }))) } if (cablesRes.data) { setCableData(cablesRes.data.map((r: any) => ({ srNo: r.sr_no, productDescription: r.product_description, uom: r.uom, quantity: r.quantity, price: Number(r.price), total: Number(r.total), }))) } if (kitsRes.data) { setKitData(kitsRes.data.map((r: any) => ({ srNo: r.sr_no, item: r.item, description: r.description, }))) } if (configRes.data) { const config = Object.fromEntries(configRes.data.map((c: any) => [c.key, c.value])); if (config['PRODUCT_DESCRIPTION']) setProductDescription(config['PRODUCT_DESCRIPTION']); if (config['COMMERCIAL_SYSTEM_SIZE_LIMIT']) setCommercialLimit(parseFloat(config['COMMERCIAL_SYSTEM_SIZE_LIMIT'])); } } catch (error) { console.error("Error loading data:", error); } finally { setLoading(false); } }; loadData();
+    const loadData = async () => {
+      try {
+        const [largeRes, cablesRes, kitsRes, configRes] = await Promise.all([
+          supabase.from('reliance_large_systems').select('*').order('sl_no', { ascending: true }),
+          supabase.from('reliance_dc_cable_data').select('*').order('sr_no', { ascending: true }),
+          supabase.from('reliance_kit_items').select('*').order('sr_no', { ascending: true }),
+          supabase.from('reliance_system_config').select('*'),
+        ]);
+        
+        // Hardcoded Reliance Residential Data
+        const hardcodedGridData: GridTieSystemData[] = [
+          { slNo: 1, systemSize: 2.84, noOfModules: 4, inverterCapacity: 3, phase: '1Ph', hdgElevatedWithGst: 195000 / (2.84 * 1000), hdgElevatedPrice: 195000 },
+          { slNo: 2, systemSize: 3.55, noOfModules: 5, inverterCapacity: 3.3, phase: '1Ph', hdgElevatedWithGst: 215000 / (3.55 * 1000), hdgElevatedPrice: 215000 },
+          { slNo: 3, systemSize: 4.97, noOfModules: 7, inverterCapacity: 5, phase: '1Ph', hdgElevatedWithGst: 315000 / (4.97 * 1000), hdgElevatedPrice: 315000 },
+          { slNo: 4, systemSize: 4.97, noOfModules: 7, inverterCapacity: 5, phase: '3Ph', hdgElevatedWithGst: 345000 / (4.97 * 1000), hdgElevatedPrice: 345000 },
+          { slNo: 5, systemSize: 9.23, noOfModules: 13, inverterCapacity: 10, phase: '3Ph', hdgElevatedWithGst: 545000 / (9.23 * 1000), hdgElevatedPrice: 545000 },
+          { slNo: 6, systemSize: 9.94, noOfModules: 14, inverterCapacity: 10, phase: '3Ph', hdgElevatedWithGst: 565000 / (9.94 * 1000), hdgElevatedPrice: 565000 },
+        ];
+        setGridData(hardcodedGridData);
+
+        if (largeRes.data) {
+          setLargeData(largeRes.data.map((r: any) => ({
+            slNo: r.sl_no,
+            systemSizeKWp: Number(r.system_size_kwp),
+            systemSizeKW: Number(r.system_size_kw),
+            noOfModules: r.no_of_modules,
+            inverterCapacity: Number(r.inverter_capacity),
+            phase: r.phase,
+            shortRailTinShedPricePerWatt: Number(r.short_rail_tin_shed_price_per_watt),
+            shortRailTinShedPrice: Number(r.short_rail_tin_shed_price),
+            hdgElevatedRccPricePerWatt: Number(r.hdg_elevated_rcc_price_per_watt),
+            hdgElevatedRccPrice: Number(r.hdg_elevated_rcc_price),
+            preGiMmsPricePerWatt: Number(r.pre_gi_mms_price_per_watt),
+            preGiMmsPrice: Number(r.pre_gi_mms_price),
+            priceWithoutMmsPricePerWatt: Number(r.price_without_mms_price_per_watt),
+            priceWithoutMmsPrice: Number(r.price_without_mms_price),
+          })));
+        }
+        if (cablesRes.data) {
+          setCableData(cablesRes.data.map((r: any) => ({
+            srNo: r.sr_no,
+            productDescription: r.product_description,
+            uom: r.uom,
+            quantity: r.quantity,
+            price: Number(r.price),
+            total: Number(r.total),
+          })));
+        }
+        if (kitsRes.data) {
+          setKitData(kitsRes.data.map((r: any) => ({
+            srNo: r.sr_no,
+            item: r.item,
+            description: r.description,
+          })));
+        }
+        if (configRes.data) {
+          const config = Object.fromEntries(configRes.data.map((c: any) => [c.key, c.value]));
+          if (config['PRODUCT_DESCRIPTION']) setProductDescription(config['PRODUCT_DESCRIPTION']);
+          if (config['COMMERCIAL_SYSTEM_SIZE_LIMIT']) setCommercialLimit(parseFloat(config['COMMERCIAL_SYSTEM_SIZE_LIMIT']));
+        }
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
   const handleRowClick = (product: any, type: string) => { setSelectedProduct(product); setProductType(type.includes("commercial") ? "commercial" : (type as any)); setSelectedCommercialType(type); setIsFormOpen(true); };

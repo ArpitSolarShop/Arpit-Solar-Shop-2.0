@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { submitCheckoutLead } from "@/app/actions/crm";
 
 export default function CheckoutPage() {
     const { items, cartTotal, clearCart, updateQuantity, removeFromCart } = useCart();
@@ -101,6 +102,20 @@ export default function CheckoutPage() {
                 title: "Order Placed Successfully!",
                 description: `Your order ${order.order_number} has been received. We will contact you shortly for payment and delivery.`,
             });
+
+            // Push to CRM (Neodove) — non-blocking
+            try {
+                await submitCheckoutLead({
+                    name: formData.name,
+                    phone: formData.phone,
+                    email: formData.email,
+                    address: formData.address,
+                    city: formData.city,
+                    pincode: formData.pincode,
+                });
+            } catch (crmErr) {
+                console.warn("CRM submission failed (non-blocking):", crmErr);
+            }
 
             clearCart();
 

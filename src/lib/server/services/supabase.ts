@@ -117,9 +117,14 @@ export async function uploadToBucket(filePath: string): Promise<string> {
 }
 
 // Insert a new quote request into the solar_quote_requests table
-export async function insertQuoteRequest(data: any) {
-  // Sanitize data: remove columns that don't exist in the solar_quote_requests table.
-  const { address, phase, cables, price_includes_gst, gst_rate, additional_details, brand, ...cleanData } = data;
+export async function insertQuoteRequest(insertData: any) {
+  // Sanitize data: remove columns that don't exist
+  const {
+    id,
+    created_at,
+    updated_at,
+    ...cleanData
+  } = insertData;
 
   console.log('Inserting into solar_quote_requests (Sanitized):', cleanData);
   const { error } = await supabase.from('solar_quote_requests').insert([cleanData]);

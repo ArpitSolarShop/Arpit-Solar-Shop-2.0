@@ -219,7 +219,7 @@ export default function TermsAndConditionsPage() {
                             <li>Your data may be shared with our authorized brand partners, installation teams, and CRM service providers solely for the purpose of fulfilling your order.</li>
                             <li>We do not sell your personal data to third-party advertisers.</li>
                             <li>We use industry-standard security measures to protect your data.</li>
-                            <li>Your data may be processed through third-party platforms including Supabase, Kit19 CRM, DoubleTick WhatsApp API, and similar service providers.</li>
+                            <li>Your data may be processed through third-party platforms including Supabase, Neodove CRM, DoubleTick WhatsApp API, and similar service providers.</li>
                         </ul>
                     </section>
 

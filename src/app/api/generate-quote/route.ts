@@ -13,7 +13,8 @@ import { generatePdfFromHtml } from '@/lib/server/services/pdf';
 import { sendWhatsAppMessage } from '@/lib/server/services/whatsapp';
 import { generateQuoteHtml } from '@/lib/quoteTemplate';
 import { defaultComponents } from '@/lib/companyDetails';
-import { pushLeadToCRM } from '@/lib/server/services/kit19-crm';
+import { pushLeadToNeodove } from '@/app/actions/crm';
+import { products as localProducts } from '@/data/priceList';
 
 export const maxDuration = 120;
 
@@ -224,16 +225,29 @@ export async function POST(req: NextRequest) {
                 // Fallback Estimation
                 console.log('⚠️ No unified product found, using fallback estimation.');
                 const systemSizeNum = parseFloat(power_demand_kw) || 3;
-
-                if (categoryFilter === 'Hybrid') {
-                    initialPrice = systemSizeNum * 95000;
-                    gstRate = 12;
-                } else {
-                    initialPrice = systemSizeNum * 45000;
+                
+                // Try fetching from local priceList.ts
+                const localMatches = localProducts.filter(p => p.supplier.toLowerCase().includes(categoryFilter.toLowerCase()) && p.kWp === systemSizeNum);
+                
+                if (localMatches.length > 0) {
+                    const localMatch = localMatches[0];
+                    initialPrice = localMatch.price;
                     gstRate = 8.9;
+                    selectedProductData.capacity = systemSizeNum;
+                    selectedProductData.phase = localMatch.phase;
+                    selectedProductData.panelWattage = localMatch.module;
+                    selectedProductData.panelCount = localMatch.qty;
+                } else {
+                    if (categoryFilter === 'Hybrid') {
+                        initialPrice = systemSizeNum * 95000;
+                        gstRate = 12;
+                    } else {
+                        initialPrice = systemSizeNum * 45000;
+                        gstRate = 8.9;
+                    }
+                    selectedProductData.capacity = systemSizeNum;
                 }
                 priceIncludesGst = true; // Default fallbacks are inclusive
-                selectedProductData.capacity = systemSizeNum;
             }
 
             // OVERRIDE with request values if provided (helpful for custom manual quotes or frontends that know the rate)
@@ -493,24 +507,18 @@ export async function POST(req: NextRequest) {
             whatsappResult.error = waError.message;
         }
 
-        // 9. Sync to CRM (Kit19)
+        // 9. Sync to Neodove CRM
         try {
-            console.log('🔄 Syncing to Kit19 CRM...');
-            await pushLeadToCRM({
+            console.log('🔄 Syncing to Neodove CRM...');
+            await pushLeadToNeodove({
                 name: formData.name,
                 phone: formData.phone,
-                email: formData.email,
-                address: formData.address || 'N/A', // Matches project_location
-                city: formData.city,
-                state: formData.state,
-                pincode: formData.pin_code || formData.pincode, // Check both keys
-                source: "Website",
-                medium: "Quote API",
-                campaign: formData.product_category || "Solar Quote",
-                remarks: `Interested in ${formData.product_category} (${formData.power_demand_kw}kW) | Variant: ${formData.additional_details?.variant || 'Standard'}`
+                email: formData.email || '',
+                city: formData.city || formData.project_location || '',
+                _source: `Quote API - ${formData.product_category || 'Solar'}`,
             });
-        } catch (crmErr) {
-            console.error('CRM Sync Warning:', crmErr);
+        } catch (neodoveErr) {
+            console.error('CRM Sync Warning (Neodove):', neodoveErr);
         }
 
         return NextResponse.json({ success: true, pdfUrl, whatsappResult });
