@@ -151,14 +151,15 @@ export async function POST(request: NextRequest) {
         }
 
         // Env validation
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-            console.error('Missing Supabase env vars');
-            return NextResponse.json({ success: false, message: 'Server configuration error.' }, { status: 500 });
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !supabaseKey) {
+            console.error('Missing Supabase env vars (NEXT_PUBLIC_SUPABASE_URL or KEY)');
+            return NextResponse.json({ success: false, message: 'सर्वर कॉन्फ़िगरेशन एरर।' }, { status: 500 });
         }
 
         const supabase = createClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.SUPABASE_SERVICE_ROLE_KEY
+            supabaseKey
         );
 
         // Extract UTM params

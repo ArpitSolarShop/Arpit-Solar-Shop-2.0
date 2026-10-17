@@ -451,9 +451,6 @@ const lightStyles = `
      Olive Gold:         #829622
      Soft Background:    #F4F8F5
    ═══════════════════════════════════════════════════════════════════════ */
-
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
-
 * {
     box-sizing: border-box;
 }
