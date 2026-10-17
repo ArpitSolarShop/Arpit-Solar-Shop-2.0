@@ -2,5 +2,9 @@
     "css.validate": false,
     "less.validate": false,
     "scss.validate": false,
-    "css.lint.unknownAtRules": "ignore"
+    "css.lint.unknownAtRules": "ignore",
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/.venv/lib/python3.14/site-packages"
+    ]
 }

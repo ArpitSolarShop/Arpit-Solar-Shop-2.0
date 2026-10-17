@@ -38,6 +38,11 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# python
+.venv/
+__pycache__/
+*.docx
 next-env.d.ts
 
 # generated output files (quotes PDFs)

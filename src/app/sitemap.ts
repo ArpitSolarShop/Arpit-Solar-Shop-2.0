@@ -58,6 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "/tata-solar",
         "/reliance",
         "/integrated",
+        "/feedback",
         "/terms-and-conditions",
         "/privacy-policy",
     ].map((route) => ({
