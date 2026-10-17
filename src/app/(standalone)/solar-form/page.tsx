@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import SolarLeadForm from './SolarLeadForm';
+import SolarLeadForm from '@/app/(standalone)/solar-form/SolarLeadForm';
 
 export const viewport: Viewport = {
     width: 'device-width',

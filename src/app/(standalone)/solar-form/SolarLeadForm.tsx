@@ -947,3 +947,6 @@ const lightStyles = `
     }
 }
 `;
+
+export { SolarLeadForm };
+
