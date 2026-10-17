@@ -122,6 +122,13 @@ export default function SolarLeadForm() {
             const data = await res.json();
 
             if (res.ok && data.success) {
+                if (typeof window !== 'undefined' && typeof (window as unknown as { fbq?: Function }).fbq === 'function') {
+                    try {
+                        (window as unknown as { fbq: Function }).fbq('track', 'Lead');
+                    } catch {
+                        // ignore tracking errors
+                    }
+                }
                 setStatus('success');
             } else {
                 setErrorMsg(data.message || 'कुछ गड़बड़ हो गई। कृपया दोबारा कोशिश करें।');
