@@ -27,6 +27,10 @@ export default function MetaPixel() {
         }
     }, [pathname]);
 
+    if (pathname === '/solar-form') {
+        return null;
+    }
+
     return (
         <>
             <Script
