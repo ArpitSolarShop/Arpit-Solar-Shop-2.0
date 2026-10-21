@@ -20,6 +20,10 @@ async function sendLeadWhatsApp(
     const now = new Date().toLocaleString('hi-IN', { timeZone: 'Asia/Kolkata' });
 
     const propertyInfo = leadData.property_type || leadData.installation_location || '—';
+    const sourceLabel = leadData.utm_source
+        ? `Meta Ads (${leadData.utm_source}${leadData.utm_campaign ? ` - ${leadData.utm_campaign}` : ''})`
+        : (leadData.source || 'Direct Website');
+
     const message = [
         `🔔 *नई लीड आई है!*`,
         `━━━━━━━━━━━━━━━━`,
@@ -32,7 +36,7 @@ async function sendLeadWhatsApp(
         `✅ *कॉल अनुमति:* ${leadData.consent_given ? 'हाँ' : 'नहीं'}`,
         `━━━━━━━━━━━━━━━━`,
         `🕐 *समय:* ${now}`,
-        `📋 *सोर्स:* Lead Capture Form`,
+        `📋 *सोर्स:* ${sourceLabel}`,
     ].join('\n');
 
     const toClean = toPhone.replace(/[^0-9]/g, '');

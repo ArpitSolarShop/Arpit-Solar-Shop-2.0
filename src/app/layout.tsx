@@ -13,6 +13,7 @@ import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/providers/Providers";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import DoubleTick from "@/components/analytics/DoubleTick";
+import MetaPixel from "@/components/analytics/MetaPixel";
 import StructuredData from "@/components/analytics/StructuredData";
 import DynamicBreadcrumbs from "@/components/analytics/DynamicBreadcrumbs";
 
@@ -77,6 +78,7 @@ export default function RootLayout({
         <Providers>
           {children}
           {/* <FloatingChatButton /> */}
+          <MetaPixel />
           <DoubleTick />
           <Analytics />
           <StructuredData />

@@ -35,6 +35,7 @@ const TrustedPartnersSection = () => {
                 src="/Shakti Solar.webp"
                 alt="Shakti Solar Logo"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
               />
             </div>
@@ -51,6 +52,7 @@ const TrustedPartnersSection = () => {
                 src="/Tata Power Solar.webp"
                 alt="Tata Power Solar Logo"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
               />
             </div>
@@ -67,6 +69,7 @@ const TrustedPartnersSection = () => {
                 src="/Reliance.webp"
                 alt="Reliance Industries Ltd. Logo"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
               />
             </div>
