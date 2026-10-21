@@ -124,7 +124,12 @@ export default function SolarLeadForm() {
             if (res.ok && data.success) {
                 if (typeof window !== 'undefined' && typeof (window as unknown as { fbq?: Function }).fbq === 'function') {
                     try {
-                        (window as unknown as { fbq: Function }).fbq('track', 'Lead');
+                        (window as unknown as { fbq: Function }).fbq('track', 'Lead', {
+                            content_name: 'Solar Consultation Lead',
+                            content_category: formData.property_type || 'Solar',
+                            value: 0,
+                            currency: 'INR',
+                        });
                     } catch {
                         // ignore tracking errors
                     }

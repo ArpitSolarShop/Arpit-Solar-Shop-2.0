@@ -13,12 +13,36 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
     title: 'मुफ्त सोलर कंसल्टेशन | Arpit Solar Shop',
     description: 'वाराणसी में अपने घर पर सोलर लगवाएं। मुफ्त कंसल्टेशन के लिए अभी फॉर्म भरें। सरकारी सब्सिडी और बिजली बचत की पूरी जानकारी।',
-    robots: 'index, follow',
+    robots: {
+        index: true,
+        follow: true,
+    },
     openGraph: {
         title: 'मुफ्त सोलर कंसल्टेशन | Arpit Solar Shop',
         description: 'वाराणसी में अपने घर पर सोलर लगवाएं। मुफ्त कंसल्टेशन के लिए अभी फॉर्म भरें।',
         type: 'website',
         locale: 'hi_IN',
+        url: 'https://www.arpitsolar.com/solar-form',
+        siteName: 'Arpit Solar Shop',
+        images: [
+            {
+                url: '/og-image.jpg',
+                width: 1200,
+                height: 630,
+                alt: 'Arpit Solar Shop - मुफ्त सोलर कंसल्टेशन',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'मुफ्त सोलर कंसल्टेशन | Arpit Solar Shop',
+        description: 'वाराणसी में अपने घर पर सोलर लगवाएं। मुफ्त कंसल्टेशन के लिए अभी फॉर्म भरें।',
+        images: ['/og-image.jpg'],
+    },
+    // Allow Meta crawler to see full referrer URL for better pixel attribution
+    referrer: 'no-referrer-when-downgrade',
+    other: {
+        'fb:app_id': META_PIXEL_ID,
     },
 };
 
@@ -38,6 +62,13 @@ export default function SolarFormPage() {
                     'https://connect.facebook.net/en_US/fbevents.js');
                     fbq('init', '${META_PIXEL_ID}');
                     fbq('track', 'PageView');
+                    fbq('trackCustom', 'ViewContent', {
+                        content_name: 'Solar Lead Form',
+                        content_category: 'Solar Consultation',
+                        content_type: 'lead_form',
+                        value: 0,
+                        currency: 'INR'
+                    });
                 `}
             </Script>
             <noscript>
