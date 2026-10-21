@@ -2,10 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import SolarLeadForm from '@/app/(standalone)/solar-form/SolarLeadForm';
 
+const META_PIXEL_ID = '1725191222258757';
+
 export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
-    maximumScale: 1,
     themeColor: '#F4F8F5',
 };
 
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
         title: 'मुफ्त सोलर कंसल्टेशन | Arpit Solar Shop',
         description: 'वाराणसी में अपने घर पर सोलर लगवाएं। मुफ्त कंसल्टेशन के लिए अभी फॉर्म भरें।',
         type: 'website',
+        locale: 'hi_IN',
     },
 };
 
@@ -34,7 +36,7 @@ export default function SolarFormPage() {
                     t.src=v;s=b.getElementsByTagName(e)[0];
                     s.parentNode.insertBefore(t,s)}(window, document,'script',
                     'https://connect.facebook.net/en_US/fbevents.js');
-                    fbq('init', '1725191222258757');
+                    fbq('init', '${META_PIXEL_ID}');
                     fbq('track', 'PageView');
                 `}
             </Script>
@@ -43,7 +45,7 @@ export default function SolarFormPage() {
                     height="1"
                     width="1"
                     style={{ display: 'none' }}
-                    src="https://www.facebook.com/tr?id=1725191222258757&ev=PageView&noscript=1"
+                    src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
                     alt=""
                 />
             </noscript>
