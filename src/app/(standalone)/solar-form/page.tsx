@@ -52,23 +52,26 @@ export default function SolarFormPage() {
             {/* Meta Pixel Code */}
             <Script id="meta-pixel-solar-form" strategy="afterInteractive">
                 {`
-                    !function(f,b,e,v,n,t,s)
-                    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                    n.queue=[];t=b.createElement(e);t.async=!0;
-                    t.src=v;s=b.getElementsByTagName(e)[0];
-                    s.parentNode.insertBefore(t,s)}(window, document,'script',
-                    'https://connect.facebook.net/en_US/fbevents.js');
-                    fbq('init', '${META_PIXEL_ID}');
-                    fbq('track', 'PageView');
-                    fbq('track', 'ViewContent', {
-                        content_name: 'Solar Lead Form',
-                        content_category: 'Solar Consultation',
-                        content_type: 'lead_form',
-                        value: 0,
-                        currency: 'INR'
-                    });
+                    if (!window.__fbq_solar_form_initialized) {
+                        window.__fbq_solar_form_initialized = true;
+                        !function(f,b,e,v,n,t,s)
+                        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                        n.queue=[];t=b.createElement(e);t.async=!0;
+                        t.src=v;s=b.getElementsByTagName(e)[0];
+                        s.parentNode.insertBefore(t,s)}(window, document,'script',
+                        'https://connect.facebook.net/en_US/fbevents.js');
+                        fbq('init', '${META_PIXEL_ID}');
+                        fbq('track', 'PageView');
+                        fbq('track', 'ViewContent', {
+                            content_name: 'Solar Lead Form',
+                            content_category: 'Solar Consultation',
+                            content_type: 'lead_form',
+                            value: 0,
+                            currency: 'INR'
+                        });
+                    }
                 `}
             </Script>
             <noscript>
