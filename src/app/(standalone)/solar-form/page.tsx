@@ -62,7 +62,7 @@ export default function SolarFormPage() {
                     'https://connect.facebook.net/en_US/fbevents.js');
                     fbq('init', '${META_PIXEL_ID}');
                     fbq('track', 'PageView');
-                    fbq('trackCustom', 'ViewContent', {
+                    fbq('track', 'ViewContent', {
                         content_name: 'Solar Lead Form',
                         content_category: 'Solar Consultation',
                         content_type: 'lead_form',
