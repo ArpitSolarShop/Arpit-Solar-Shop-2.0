@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -54,6 +54,10 @@ export default function SolarLeadForm() {
     const [errorMsg, setErrorMsg] = useState('');
     const [utmParams, setUtmParams] = useState<Record<string, string>>({});
 
+    // Synchronous guards to prevent any double-click or duplicate Lead events
+    const isSubmittingRef = useRef(false);
+    const leadTrackedRef = useRef(false);
+
     // Capture UTM params on mount
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -73,6 +77,12 @@ export default function SolarLeadForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // 1. Synchronously block any subsequent clicks, Enter-presses, or double submissions
+        if (isSubmittingRef.current || leadTrackedRef.current || status === 'submitting' || status === 'success') {
+            return;
+        }
+
         setErrorMsg('');
 
         // Client-side validation
@@ -101,6 +111,7 @@ export default function SolarLeadForm() {
             return;
         }
 
+        isSubmittingRef.current = true;
         setStatus('submitting');
 
         try {
@@ -122,24 +133,32 @@ export default function SolarLeadForm() {
             const data = await res.json();
 
             if (res.ok && data.success) {
-                if (typeof window !== 'undefined' && typeof (window as unknown as { fbq?: Function }).fbq === 'function') {
-                    try {
-                        (window as unknown as { fbq: Function }).fbq('track', 'Lead', {
-                            content_name: 'Solar Consultation Lead',
-                            content_category: formData.property_type || 'Solar',
-                            value: 0,
-                            currency: 'INR',
-                        });
-                    } catch {
-                        // ignore tracking errors
+                // 2. Strict idempotency guard: Fire Meta Lead event EXACTLY ONCE per submission
+                if (!leadTrackedRef.current) {
+                    leadTrackedRef.current = true;
+                    if (typeof window !== 'undefined' && typeof (window as unknown as { fbq?: Function }).fbq === 'function') {
+                        try {
+                            // Provide explicit eventID so Meta deduplicates any redundant signal
+                            const eventId = data.lead_id ? `lead_${data.lead_id}` : `lead_${Date.now()}`;
+                            (window as unknown as { fbq: Function }).fbq('track', 'Lead', {
+                                content_name: 'Solar Consultation Lead',
+                                content_category: formData.property_type || 'Solar',
+                                value: 0,
+                                currency: 'INR',
+                            }, { eventID: eventId });
+                        } catch {
+                            // ignore tracking errors
+                        }
                     }
                 }
                 setStatus('success');
             } else {
+                isSubmittingRef.current = false;
                 setErrorMsg(data.message || 'कुछ गड़बड़ हो गई। कृपया दोबारा कोशिश करें।');
                 setStatus('error');
             }
         } catch {
+            isSubmittingRef.current = false;
             setErrorMsg('नेटवर्क एरर। कृपया अपना इंटरनेट कनेक्शन चेक करें।');
             setStatus('error');
         }
@@ -424,7 +443,7 @@ export default function SolarLeadForm() {
                     <button
                         type="submit"
                         className="submit-btn"
-                        disabled={status === 'submitting'}
+                        disabled={status === 'submitting' || isSubmittingRef.current}
                     >
                         {status === 'submitting' ? (
                             <span className="btn-loading">
