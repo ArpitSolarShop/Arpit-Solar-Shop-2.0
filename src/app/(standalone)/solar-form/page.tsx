@@ -52,6 +52,25 @@ export default function SolarFormPage() {
             {/* Meta Pixel Code */}
             <Script id="meta-pixel-solar-form" strategy="afterInteractive">
                 {`
+                    // Safety shim for Meta Event Setup Tool (iwl.js) which calls getBoundingClientRect on non-element nodes
+                    if (typeof EventTarget !== 'undefined' && !EventTarget.prototype.getBoundingClientRect) {
+                        EventTarget.prototype.getBoundingClientRect = function() {
+                            return (this && this.parentElement && typeof this.parentElement.getBoundingClientRect === 'function')
+                                ? this.parentElement.getBoundingClientRect()
+                                : { top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0, x: 0, y: 0 };
+                        };
+                    }
+                    if (typeof Node !== 'undefined' && !Node.prototype.getBoundingClientRect) {
+                        Node.prototype.getBoundingClientRect = function() {
+                            return this.parentElement?.getBoundingClientRect() || { top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0, x: 0, y: 0 };
+                        };
+                    }
+                    if (typeof window !== 'undefined' && !window.getBoundingClientRect) {
+                        window.getBoundingClientRect = function() {
+                            return { top: 0, left: 0, right: window.innerWidth, bottom: window.innerHeight, width: window.innerWidth, height: window.innerHeight, x: 0, y: 0 };
+                        };
+                    }
+
                     if (!window.__fbq_solar_form_initialized) {
                         window.__fbq_solar_form_initialized = true;
                         !function(f,b,e,v,n,t,s)
